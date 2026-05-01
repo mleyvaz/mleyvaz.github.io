@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Special Issue — Symmetry in Uncertainty and Intelligent Decision-Making · Symmetry (MDPI)</title>
+  <meta name="description" content="Call for Papers — Special Issue 'Symmetry in Uncertainty and Intelligent Decision-Making' in Symmetry (MDPI, IF 2.2, Q1, Open Access). Guest Editor: Prof. Dr. Maikel Yelandi Leyva-Vázquez. Deadline: 31 October 2026.">
+  <meta name="keywords" content="Symmetry MDPI, Special Issue, neutrosophic, plithogenic, fuzzy logic, MCDM, decision-making, uncertainty, aggregation operators, Leyva-Vazquez, Guest Editor, Call for Papers">
+  <meta name="author" content="Maikel Yelandi Leyva Vázquez">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Special Issue — Symmetry in Uncertainty and Intelligent Decision-Making (Symmetry, MDPI)">
+  <meta property="og:description" content="Q1, IF 2.2, Open Access. Guest Editor: Maikel Yelandi Leyva-Vázquez. Deadline 31 October 2026. APC waivers available for Latin American authors.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mleyvaz.github.io/symmetry-si/">
+  <meta property="og:image" content="https://mleyvaz.github.io/symmetry-si/assets/symmetry-si-banner.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Special Issue — Symmetry in Uncertainty and Intelligent Decision-Making">
+  <meta name="twitter:description" content="Q1, IF 2.2, Open Access · Guest Editor: M. Y. Leyva-Vázquez · Deadline 31 Oct 2026">
+  <meta name="twitter:image" content="https://mleyvaz.github.io/symmetry-si/assets/symmetry-si-banner.png">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;⚖️&lt;/text&gt;&lt;/svg&gt;">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../styles.css">
+
+  <style>
+    /* Page-specific tweaks (only what isn't in the global stylesheet) */
+    .si-hero {
+      min-height: auto;
+      padding: 8rem 0 3rem;
+    }
+    .si-hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    @media (max-width: 860px) {
+      .si-hero-grid { grid-template-columns: 1fr; }
+    }
+    .si-banner {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius);
+      box-shadow: 0 12px 40px rgba(31, 78, 121, 0.18);
+      border: 1px solid var(--line);
+    }
+    .si-meta-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.8rem 0;
+    }
+    .si-meta-item {
+      background: var(--bg-paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1rem 1.2rem;
+    }
+    .si-meta-label {
+      display: block;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--ink-soft);
+      margin-bottom: 0.3rem;
+    }
+    .si-meta-value {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      color: var(--navy-deep);
+      font-size: 1.05rem;
+    }
+    .si-cta-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .si-section {
+      padding: 4rem 0;
+      border-top: 1px solid var(--line);
+    }
+    .si-section h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      color: var(--navy-deep);
+      margin-bottom: 1.2rem;
+      letter-spacing: -0.01em;
+    }
+    .si-section h3 {
+      font-size: 1.15rem;
+      color: var(--navy);
+      margin-top: 2rem;
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.01em;
+    }
+    .si-prose p {
+      max-width: 70ch;
+      color: var(--ink-soft);
+      margin-bottom: 1rem;
+      line-height: 1.7;
+    }
+    .si-topics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.9rem;
+      margin-top: 1rem;
+      max-width: 70ch;
+    }
+    @media (max-width: 640px) {
+      .si-topics { grid-template-columns: 1fr; }
+      .si-meta-list { grid-template-columns: 1fr; }
+    }
+    .si-topic {
+      background: var(--bg-paper);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--gold);
+      padding: 0.85rem 1.1rem;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      color: var(--ink);
+    }
+    .si-dates {
+      width: 100%;
+      max-width: 70ch;
+      margin-top: 1rem;
+      border-collapse: collapse;
+      background: var(--bg-paper);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+    .si-dates th, .si-dates td {
+      padding: 0.85rem 1.1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+    }
+    .si-dates th {
+      background: var(--navy-deep);
+      color: #fff;
+      font-weight: 500;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .si-dates tr:last-child td { border-bottom: none; }
+    .si-dates strong { color: var(--gold); }
+    .lang-toggle {
+      display: inline-flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      padding: 0.4rem;
+      background: var(--bg-paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .lang-toggle button {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      border-radius: 4px;
+      transition: all var(--transition);
+    }
+    .lang-toggle button.active {
+      background: var(--navy);
+      color: #fff;
+    }
+    .si-callout {
+      background: linear-gradient(135deg, rgba(31,78,121,0.06), rgba(184,134,11,0.06));
+      border-left: 4px solid var(--gold);
+      padding: 1.5rem 1.8rem;
+      border-radius: var(--radius);
+      margin: 2rem 0;
+      max-width: 70ch;
+    }
+    .si-callout h3 {
+      margin-top: 0;
+      color: var(--navy-deep);
+    }
+    .si-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 3rem;
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+    }
+    .si-back:hover { color: var(--gold); }
+    [data-lang-content] { display: none; }
+    [data-lang-content].active { display: block; }
+  </style>
+</head>
+<body>
+
+  <!-- ============ NAVBAR ============ -->
+  <nav class="navbar" id="navbar">
+    <div class="container nav-container">
+      <a href="../" class="nav-logo">MLV</a>
+      <ul class="nav-menu">
+        <li><a href="../#about">About</a></li>
+        <li><a href="../#books">Books</a></li>
+        <li><a href="../#research">Research</a></li>
+        <li><a href="./" class="nav-cta">Symmetry SI</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero si-hero">
+    <div class="container">
+      <p class="hero-eyebrow">Special Issue · Open Call for Papers</p>
+
+      <div class="si-hero-grid">
+        <div>
+          <h1 class="hero-title">
+            Symmetry in <span class="accent">Uncertainty</span><br>
+            and Intelligent<br>
+            Decision-Making
+          </h1>
+          <p class="hero-subtitle">
+            A curated collection in <em>Symmetry</em> (MDPI) on the role of symmetry
+            and asymmetry in modeling, measuring, and reducing uncertainty across
+            fuzzy, neutrosophic, plithogenic, and probabilistic frameworks.
+          </p>
+
+          <div class="si-meta-list">
+            <div class="si-meta-item">
+              <span class="si-meta-label">Journal</span>
+              <span class="si-meta-value">Symmetry (MDPI)</span>
+            </div>
+            <div class="si-meta-item">
+              <span class="si-meta-label">Indexing</span>
+              <span class="si-meta-value">SCIE · Scopus · Q1</span>
+            </div>
+            <div class="si-meta-item">
+              <span class="si-meta-label">Impact Factor</span>
+              <span class="si-meta-value">2.2</span>
+            </div>
+            <div class="si-meta-item">
+              <span class="si-meta-label">CiteScore</span>
+              <span class="si-meta-value">5.3</span>
+            </div>
+            <div class="si-meta-item">
+              <span class="si-meta-label">Access</span>
+              <span class="si-meta-value">Open Access</span>
+            </div>
+            <div class="si-meta-item">
+              <span class="si-meta-label">Deadline</span>
+              <span class="si-meta-value">31 Oct 2026</span>
+            </div>
+          </div>
+
+          <div class="si-cta-row">
+            <a href="https://www.mdpi.com/journal/symmetry/special_issues/9TYN84UB70"
+               class="btn btn-primary" target="_blank" rel="noopener">Submit on MDPI ↗</a>
+            <a href="assets/symmetry-si-flyer.pdf"
+               class="btn btn-ghost" target="_blank" rel="noopener">Download flyer (PDF)</a>
+          </div>
+        </div>
+
+        <div>
+          <img src="assets/symmetry-si-banner.png" alt="Special Issue Banner — Symmetry in Uncertainty and Intelligent Decision-Making"
+               class="si-banner">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ GUEST EDITOR ============ -->
+  <section class="si-section">
+    <div class="container">
+      <p class="section-eyebrow">Guest Editor</p>
+      <h2>Prof. Dr. Maikel Yelandi Leyva-Vázquez</h2>
+      <div class="si-prose">
+        <p>
+          Faculty of Mathematical and Physical Sciences, Universidad de Guayaquil
+          (Guayaquil, Ecuador). Editor-in-Chief of <em>Neutrosophic Sets and Systems</em> (NSS,
+          Scopus Q1) and <em>Neutrosophic Computing and Machine Learning</em> (NCML).
+          Director of the Asociación Latinoamericana de Ciencias Neutrosóficas (ALCN).
+          Co-author with Florentin Smarandache of <em>The Honest Classroom</em> and
+          <em>The Third Answer</em>.
+        </p>
+        <p>
+          ORCID: <a href="https://orcid.org/0000-0003-2799-3990" target="_blank" rel="noopener">0000-0003-2799-3990</a>
+          · Contact: <a href="mailto:mleyvaz@gmail.com">mleyvaz@gmail.com</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCOPE ============ -->
+  <section class="si-section">
+    <div class="container">
+      <p class="section-eyebrow">Scope</p>
+
+      <div class="lang-toggle" role="tablist" aria-label="Language switcher">
+        <button class="active" data-lang="en" type="button">English</button>
+        <button data-lang="es" type="button">Español</button>
+      </div>
+
+      <div data-lang-content="en" class="active si-prose">
+        <p>
+          Symmetry is a fundamental principle in many frameworks for representing
+          uncertainty and supporting intelligent decision-making. It appears in
+          aggregation operators through anonymity and reciprocity axioms, in symmetric
+          divergences such as Jensen–Shannon and Hellinger, and in balanced models based
+          on fuzzy, intuitionistic, neutrosophic, plithogenic, and bipolar sets.
+        </p>
+        <p>
+          Symmetry often improves mathematical tractability and interpretability, while
+          <em>symmetry breaking</em> — asymmetric preferences, heavy-tailed uncertainty, or
+          non-reciprocal trust — can reveal key features of decision problems.
+        </p>
+        <p>
+          This Special Issue invites original contributions on the role of symmetry and
+          asymmetry in modeling, measuring, and reducing uncertainty in intelligent
+          decision-making. Symmetry-aware <strong>and</strong> symmetry-breaking approaches are
+          equally welcome.
+        </p>
+      </div>
+
+      <div data-lang-content="es" class="si-prose">
+        <p>
+          La simetría es un principio fundamental en numerosos marcos para representar
+          la incertidumbre y apoyar la toma de decisiones inteligente. Aparece en los
+          operadores de agregación a través de los axiomas de anonimato y reciprocidad,
+          en divergencias simétricas como Jensen–Shannon y Hellinger, y en modelos
+          balanceados sobre conjuntos difusos, intuicionistas, neutrosóficos, plitogénicos
+          y bipolares.
+        </p>
+        <p>
+          La simetría mejora la tractabilidad matemática y la interpretabilidad, mientras
+          que la <em>ruptura de simetría</em> — preferencias asimétricas, incertidumbre de
+          cola pesada, confianza no recíproca — revela las propiedades más informativas
+          de los problemas reales de decisión.
+        </p>
+        <p>
+          Este SI invita contribuciones originales sobre el papel de la simetría y la
+          asimetría en el modelado, medición y reducción de la incertidumbre. Aproximaciones
+          tanto <em>symmetry-aware</em> como <em>symmetry-breaking</em> son igualmente bienvenidas.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TOPICS ============ -->
+  <section class="si-section">
+    <div class="container">
+      <p class="section-eyebrow">Topics in scope</p>
+      <h2>What we are looking for</h2>
+
+      <h3>Methodological frameworks</h3>
+      <div class="si-topics">
+        <div class="si-topic">Aggregation operators and divergence measures</div>
+        <div class="si-topic">Preference relations and group consensus</div>
+        <div class="si-topic">Fuzzy and intuitionistic frameworks</div>
+        <div class="si-topic">Neutrosophic and plithogenic frameworks</div>
+        <div class="si-topic">Rough and probabilistic frameworks</div>
+        <div class="si-topic">Symmetry-aware and symmetry-breaking models</div>
+      </div>
+
+      <h3>Application domains</h3>
+      <div class="si-topics">
+        <div class="si-topic">Multi-criteria decision-making (MCDM)</div>
+        <div class="si-topic">Machine learning under uncertainty</div>
+        <div class="si-topic">Large language model (LLM) evaluation</div>
+        <div class="si-topic">Risk management</div>
+        <div class="si-topic">Healthcare and medical decision support</div>
+        <div class="si-topic">Energy and sustainability</div>
+        <div class="si-topic">Education and intelligent tutoring</div>
+        <div class="si-topic">Group consensus and policy decisions</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DATES ============ -->
+  <section class="si-section">
+    <div class="container">
+      <p class="section-eyebrow">Important dates</p>
+      <h2>Timeline</h2>
+      <table class="si-dates">
+        <thead>
+          <tr>
+            <th>Milestone</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Submission portal opens</td>
+            <td>28 April 2026 ✅</td>
+          </tr>
+          <tr>
+            <td><strong>Submission deadline</strong></td>
+            <td><strong>31 October 2026</strong></td>
+          </tr>
+          <tr>
+            <td>Expected publication</td>
+            <td>Rolling — articles online upon acceptance (Open Access)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ HOW TO SUBMIT ============ -->
+  <section class="si-section">
+    <div class="container">
+      <p class="section-eyebrow">How to submit</p>
+      <h2>Submission process</h2>
+      <div class="si-prose">
+        <p>
+          Manuscripts should be submitted through the
+          <a href="https://susy.mdpi.com/user/manuscripts/upload?journal=symmetry" target="_blank" rel="noopener">MDPI submission system</a>.
+          During submission, please select <strong>"Symmetry in Uncertainty and Intelligent
+          Decision-Making"</strong> as the Special Issue from the dropdown list.
+        </p>
+        <p>
+          All manuscripts undergo standard peer review. Please follow the
+          <a href="https://www.mdpi.com/journal/symmetry/instructions" target="_blank" rel="noopener">Instructions for Authors</a>
+          and use the official <em>Symmetry</em> LaTeX or Word template.
+        </p>
+
+        <div class="si-callout">
+          <h3>APC waivers for Latin American authors</h3>
+          <p>
+            The standard Article Processing Charge (APC) is 2400 CHF. For authors based
+            at Latin American institutions, I am coordinating partial or full APC waivers
+            on a case-by-case basis with the editorial office. Please contact me at
+            <a href="mailto:mleyvaz@gmail.com">mleyvaz@gmail.com</a> <strong>before</strong> submission to
+            discuss waiver eligibility.
+          </p>
+          <p>
+            For authors of the Asociación Latinoamericana de Ciencias Neutrosóficas (ALCN)
+            and contributors to NSS / NCML, I will prioritize waiver requests within the
+            available quota.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="si-section">
+    <div class="container">
+      <p class="section-eyebrow">Contact</p>
+      <h2>Questions about scope or fit?</h2>
+      <div class="si-prose">
+        <p>
+          If you are unsure whether your work fits the Special Issue, or if you would
+          like to discuss framing before submission, please reach out. I am happy to
+          provide informal feedback on abstracts before formal submission.
+        </p>
+        <p>
+          <strong>Email:</strong> <a href="mailto:mleyvaz@gmail.com">mleyvaz@gmail.com</a><br>
+          <strong>ORCID:</strong> <a href="https://orcid.org/0000-0003-2799-3990" target="_blank" rel="noopener">0000-0003-2799-3990</a><br>
+          <strong>Affiliation:</strong> Faculty of Mathematical and Physical Sciences, Universidad de Guayaquil, Guayaquil 090613, Guayas, Ecuador
+        </p>
+        <p>
+          <strong>Editorial office (MDPI):</strong>
+          <a href="mailto:symmetry@mdpi.com">symmetry@mdpi.com</a> · MDPI, Grosspeteranlage 5, 4052 Basel, Switzerland
+        </p>
+
+        <a href="../" class="si-back">← Back to homepage</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer style="background: var(--bg-dark); color: #B8C1D0; padding: 2rem 0; text-align: center; font-size: 0.85rem;">
+    <div class="container">
+      <p>
+        Special Issue page maintained by Prof. Dr. Maikel Y. Leyva-Vázquez, Guest Editor.
+        © 2026.
+      </p>
+      <p style="margin-top: 0.5rem;">
+        <a href="https://www.mdpi.com/journal/symmetry/special_issues/9TYN84UB70" target="_blank" rel="noopener" style="color: var(--gold-light);">Official MDPI page</a>
+        · <a href="https://www.mdpi.com/si/280201" target="_blank" rel="noopener" style="color: var(--gold-light);">Short link</a>
+        · <a href="../" style="color: var(--gold-light);">Personal site</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Language toggle
+    const buttons = document.querySelectorAll('.lang-toggle button');
+    const contents = document.querySelectorAll('[data-lang-content]');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lang = btn.dataset.lang;
+        buttons.forEach(b => b.classList.toggle('active', b === btn));
+        contents.forEach(c => c.classList.toggle('active', c.dataset.langContent === lang));
+      });
+    });
+
+    // Navbar scroll effect (matches main site)
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      if (nav) nav.classList.toggle('scrolled', window.scrollY > 30);
+    });
+  </script>
+</body>
+</html>
