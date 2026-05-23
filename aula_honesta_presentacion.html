@@ -1,0 +1,2471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Aula Honesta · Leyva-Vázquez & Smarandache · NSIA 2026</title>
+<style>
+  :root {
+    --bg: #f4f0e8;
+    --bg-card: #ffffff;
+    --bg-elevated: #ebe4d6;
+    --bg-deep: #2a2418;
+    --ink: #1f1a14;
+    --ink-muted: #5c5240;
+    --ink-soft: #8a7c63;
+    --rule: #d9cfb8;
+    --rule-strong: #b8a986;
+    --t-color: #4a7c59;
+    --t-bg: #e8f0e8;
+    --i-color: #b8741f;
+    --i-bg: #f5e8d3;
+    --f-color: #9c3837;
+    --f-bg: #f5dcd9;
+    --accent: #2d5b7a;
+    --accent-soft: #d7e3ec;
+    --highlight: #c9a961;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Georgia", "Iowan Old Style", "Palatino", serif;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .deck {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 4vh 7vw 8vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    overflow-y: auto;
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Tipografía base */
+  .eyebrow {
+    font-family: "Helvetica Neue", "Inter", sans-serif;
+    font-size: clamp(10px, 1.1vw, 12px);
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 2.5vh;
+    font-weight: 500;
+  }
+
+  .chapter-mark {
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(11px, 1.2vw, 13px);
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1.5vh;
+    font-weight: 500;
+  }
+
+  h1 {
+    font-size: clamp(32px, 5.5vw, 64px);
+    line-height: 1.08;
+    font-weight: 400;
+    margin-bottom: 2.5vh;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+
+  h2 {
+    font-size: clamp(22px, 3.2vw, 36px);
+    line-height: 1.2;
+    font-weight: 400;
+    margin-bottom: 2vh;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  h3 {
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(14px, 1.5vw, 17px);
+    font-weight: 600;
+    margin-bottom: 1vh;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+
+  p, li {
+    font-size: clamp(15px, 1.7vw, 19px);
+    line-height: 1.65;
+    color: var(--ink-muted);
+  }
+
+  .lead {
+    font-size: clamp(18px, 2.1vw, 23px);
+    line-height: 1.55;
+    color: var(--ink);
+    max-width: 64ch;
+  }
+
+  .deck-quote {
+    font-style: italic;
+    font-size: clamp(20px, 2.6vw, 28px);
+    line-height: 1.4;
+    color: var(--ink);
+    max-width: 36ch;
+    border-left: 3px solid var(--highlight);
+    padding-left: 2vw;
+  }
+
+  .deck-quote .attrib {
+    display: block;
+    margin-top: 1.5vh;
+    font-style: normal;
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(12px, 1.3vw, 14px);
+    color: var(--ink-soft);
+    letter-spacing: 0.5px;
+  }
+
+  .quiet {
+    color: var(--ink-soft);
+    font-size: clamp(13px, 1.4vw, 15px);
+  }
+
+  /* Slide 1: Portada */
+  .cover {
+    background: var(--bg-deep);
+    color: #ede5d3;
+  }
+
+  .cover .eyebrow { color: var(--highlight); }
+  .cover h1 { color: #f4ede0; font-style: italic; }
+  .cover .subtitle {
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(15px, 1.8vw, 19px);
+    color: #c9bd9e;
+    font-weight: 300;
+    margin-bottom: 4vh;
+    max-width: 38ch;
+    line-height: 1.5;
+  }
+  .cover .authors {
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(13px, 1.5vw, 16px);
+    color: #ede5d3;
+    line-height: 1.7;
+  }
+  .cover .authors strong { color: var(--highlight); font-weight: 500; }
+  .cover .meta {
+    margin-top: 4vh;
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(11px, 1.2vw, 13px);
+    color: #8c7f63;
+    letter-spacing: 1.5px;
+  }
+
+  /* Manhattan slide */
+  .manhattan-slide .narrative {
+    max-width: 60ch;
+    font-size: clamp(16px, 1.9vw, 21px);
+    line-height: 1.7;
+    color: var(--ink);
+  }
+
+  .manhattan-slide .narrative p { margin-bottom: 1.5vh; font-size: inherit; line-height: inherit; color: inherit; }
+
+  .manhattan-slide .narrative .accent {
+    color: var(--f-color);
+    font-weight: 500;
+  }
+
+  .case-citation {
+    margin-top: 2vh;
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(12px, 1.3vw, 14px);
+    color: var(--ink-soft);
+    font-style: italic;
+    border-top: 1px solid var(--rule);
+    padding-top: 1vh;
+  }
+
+  /* Votación */
+  .vote-block {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 3vh 3vw;
+    margin: 2vh 0;
+    max-width: 70ch;
+  }
+
+  .vote-question {
+    font-size: clamp(18px, 2.2vw, 24px);
+    color: var(--ink);
+    margin-bottom: 2.5vh;
+    line-height: 1.4;
+    font-style: italic;
+  }
+
+  .vote-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 2vh;
+  }
+
+  .vote-btn {
+    background: var(--bg-elevated);
+    border: 1px solid var(--rule-strong);
+    color: var(--ink);
+    padding: 14px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: clamp(14px, 1.5vw, 16px);
+    font-family: inherit;
+    transition: all 0.15s ease;
+    position: relative;
+    overflow: hidden;
+    text-align: left;
+  }
+
+  .vote-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .vote-btn.voted {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .vote-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    background: var(--highlight);
+    transition: width 0.3s ease;
+    width: 0;
+  }
+
+  .vote-count {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 12px;
+    opacity: 0.7;
+    font-family: "Helvetica Neue", sans-serif;
+  }
+
+  /* Genealogía de lógicas */
+  .lineage {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.5vw;
+    margin: 3vh 0;
+    align-items: stretch;
+  }
+
+  .lineage-card {
+    padding: 2vh 1.2vw;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    position: relative;
+  }
+
+  .lineage-card.current {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    border-width: 2px;
+  }
+
+  .lineage-year {
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(11px, 1.2vw, 13px);
+    color: var(--ink-soft);
+    letter-spacing: 1px;
+    margin-bottom: 0.8vh;
+  }
+
+  .lineage-card h4 {
+    font-size: clamp(14px, 1.5vw, 17px);
+    margin-bottom: 0.8vh;
+    color: var(--ink);
+    font-weight: 600;
+    font-family: "Helvetica Neue", sans-serif;
+  }
+
+  .lineage-card .constraint {
+    font-family: "Courier New", monospace;
+    font-size: clamp(11px, 1.3vw, 14px);
+    color: var(--ink-muted);
+    margin: 1vh 0;
+    padding: 0.5vh 0.5vw;
+    background: var(--bg-elevated);
+    border-radius: 3px;
+    display: inline-block;
+  }
+
+  .lineage-card.current .constraint {
+    background: #fff;
+  }
+
+  .lineage-card p {
+    font-size: clamp(12px, 1.3vw, 14px);
+    line-height: 1.5;
+  }
+
+  /* Three column T/I/F */
+  .trio {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2vw;
+    margin: 3vh 0;
+  }
+
+  .trio-card {
+    padding: 2.5vh 2vw;
+    background: var(--bg-card);
+    border-radius: 4px;
+    border-top: 3px solid;
+  }
+
+  .trio-card.t {
+    border-top-color: var(--t-color);
+    background: #fdfcfa;
+  }
+  .trio-card.i {
+    border-top-color: var(--i-color);
+    background: #fdfcfa;
+  }
+  .trio-card.f {
+    border-top-color: var(--f-color);
+    background: #fdfcfa;
+  }
+
+  .trio-card .symbol {
+    font-family: "Times New Roman", serif;
+    font-style: italic;
+    font-size: clamp(40px, 5.5vw, 64px);
+    font-weight: 400;
+    line-height: 1;
+    margin-bottom: 1vh;
+  }
+  .trio-card.t .symbol { color: var(--t-color); }
+  .trio-card.i .symbol { color: var(--i-color); }
+  .trio-card.f .symbol { color: var(--f-color); }
+
+  .trio-card h3 {
+    font-size: clamp(15px, 1.7vw, 19px);
+    margin-bottom: 1vh;
+  }
+
+  .trio-card p {
+    font-size: clamp(13px, 1.5vw, 16px);
+  }
+
+  /* Simulador */
+  .simulator {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 2.5vh 2.5vw;
+    margin: 1.5vh 0;
+  }
+
+  .scenario-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 2vh;
+    flex-wrap: wrap;
+  }
+
+  .scenario-tab {
+    background: transparent;
+    border: 1px solid var(--rule-strong);
+    color: var(--ink-muted);
+    padding: 6px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: clamp(11px, 1.3vw, 13px);
+    font-family: "Helvetica Neue", sans-serif;
+    transition: all 0.15s;
+  }
+
+  .scenario-tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .claim-display {
+    background: var(--bg-elevated);
+    padding: 1.5vh 1.5vw;
+    border-radius: 4px;
+    margin-bottom: 2vh;
+    font-size: clamp(15px, 1.7vw, 18px);
+    color: var(--ink);
+    line-height: 1.5;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+  }
+
+  .slider-row {
+    margin-bottom: 1.5vh;
+  }
+
+  .slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+    gap: 12px;
+  }
+
+  .slider-label {
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(13px, 1.5vw, 15px);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .slider-desc {
+    font-size: clamp(11px, 1.2vw, 13px);
+    color: var(--ink-soft);
+    flex: 1;
+    font-family: "Helvetica Neue", sans-serif;
+  }
+
+  .slider-value {
+    font-family: "Courier New", monospace;
+    font-size: clamp(15px, 1.8vw, 19px);
+    font-weight: 600;
+    min-width: 48px;
+    text-align: right;
+  }
+
+  .slider-row.t-row .slider-label, .slider-row.t-row .slider-value { color: var(--t-color); }
+  .slider-row.i-row .slider-label, .slider-row.i-row .slider-value { color: var(--i-color); }
+  .slider-row.f-row .slider-label, .slider-row.f-row .slider-value { color: var(--f-color); }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 5px;
+    background: var(--bg-elevated);
+    border-radius: 3px;
+    outline: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--ink);
+    cursor: pointer;
+    border: 3px solid var(--bg-card);
+    box-shadow: 0 0 0 1px var(--rule-strong);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--ink);
+    cursor: pointer;
+    border: 3px solid var(--bg-card);
+  }
+
+  .t-row input[type="range"]::-webkit-slider-thumb { background: var(--t-color); }
+  .i-row input[type="range"]::-webkit-slider-thumb { background: var(--i-color); }
+  .f-row input[type="range"]::-webkit-slider-thumb { background: var(--f-color); }
+
+  .composition-bar {
+    display: flex;
+    height: 24px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 1.5vh 0;
+    border: 1px solid var(--rule);
+  }
+
+  .composition-bar > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: "Helvetica Neue", sans-serif;
+    transition: width 0.2s ease;
+  }
+
+  .zone-display {
+    padding: 1.5vh 2vw;
+    border-radius: 4px;
+    background: var(--bg-elevated);
+    border-left: 4px solid var(--i-color);
+    margin-top: 1.5vh;
+  }
+
+  .zone-label {
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(11px, 1.2vw, 13px);
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+
+  .zone-name {
+    font-size: clamp(20px, 2.4vw, 26px);
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--ink);
+    font-family: "Helvetica Neue", sans-serif;
+  }
+
+  .zone-text {
+    font-size: clamp(13px, 1.5vw, 16px);
+    color: var(--ink-muted);
+    line-height: 1.55;
+  }
+
+  /* Cinco zonas */
+  .zones-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.2vw;
+    margin: 2vh 0;
+  }
+
+  .zone-card {
+    padding: 2vh 1vw;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    border-top: 4px solid;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .zone-card.claridad { border-top-color: var(--t-color); }
+  .zone-card.ambiguedad { border-top-color: var(--i-color); }
+  .zone-card.contradiccion { border-top-color: #7a3b8a; }
+  .zone-card.ignorancia { border-top-color: var(--ink-soft); }
+  .zone-card.saturado { border-top-color: #2d5b7a; }
+
+  .zone-card h3 {
+    font-size: clamp(14px, 1.6vw, 17px);
+    margin-bottom: 0.8vh;
+    color: var(--ink);
+  }
+
+  .zone-card .formula {
+    font-family: "Courier New", monospace;
+    font-size: clamp(10px, 1.1vw, 12px);
+    color: var(--ink-soft);
+    margin-bottom: 1vh;
+    background: var(--bg-elevated);
+    padding: 4px 8px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+
+  .zone-card p {
+    font-size: clamp(12px, 1.4vw, 14px);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .zone-card .rule {
+    margin-top: 1.5vh;
+    padding-top: 1vh;
+    border-top: 1px solid var(--rule);
+    font-style: italic;
+    font-size: clamp(11px, 1.3vw, 13px);
+    color: var(--accent);
+  }
+
+  /* Clasificador de hipótesis */
+  .classifier-block {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 2.5vh 2.5vw;
+    margin: 1.5vh 0;
+  }
+
+  .hypothesis-display {
+    background: var(--bg-elevated);
+    padding: 2vh 2vw;
+    border-radius: 4px;
+    margin-bottom: 2vh;
+    font-size: clamp(16px, 1.9vw, 20px);
+    color: var(--ink);
+    line-height: 1.5;
+    border-left: 3px solid var(--accent);
+    font-style: italic;
+  }
+
+  .hypothesis-counter {
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(11px, 1.2vw, 13px);
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 1vh;
+  }
+
+  .zone-buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 1.5vh;
+  }
+
+  .zone-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--rule-strong);
+    color: var(--ink);
+    padding: 10px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(11px, 1.3vw, 13px);
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+
+  .zone-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .zone-btn.correct {
+    background: var(--t-bg);
+    border-color: var(--t-color);
+    color: var(--t-color);
+  }
+
+  .zone-btn.wrong {
+    background: var(--f-bg);
+    border-color: var(--f-color);
+    color: var(--f-color);
+  }
+
+  .classifier-feedback {
+    font-size: clamp(13px, 1.5vw, 16px);
+    color: var(--ink-muted);
+    margin-top: 1vh;
+    line-height: 1.55;
+    min-height: 50px;
+  }
+
+  /* Pensar en segundo orden */
+  .order-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin: 2.5vh 0;
+    position: relative;
+  }
+
+  .order-col {
+    padding: 3vh 2.2vw;
+    background: var(--bg-card);
+  }
+
+  .order-col.first {
+    background: #faf6ec;
+    border: 1px solid var(--rule);
+    border-radius: 4px 0 0 4px;
+    border-right: none;
+  }
+
+  .order-col.second {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    border-left: 2px solid var(--accent);
+  }
+
+  .order-level {
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(10px, 1.1vw, 12px);
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: var(--ink-soft);
+    margin-bottom: 1vh;
+  }
+
+  .order-col.second .order-level { color: var(--accent); }
+
+  .order-col h3 {
+    font-family: "Georgia", serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(20px, 2.4vw, 28px);
+    margin-bottom: 1.5vh;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+
+  .order-col p {
+    font-size: clamp(14px, 1.6vw, 17px);
+    line-height: 1.6;
+    margin-bottom: 1.2vh;
+  }
+
+  .order-col .move {
+    margin-top: 2vh;
+    padding-top: 1.5vh;
+    border-top: 1px solid var(--rule);
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(12px, 1.4vw, 14px);
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .order-col.second .move { color: var(--accent); }
+
+  .order-arrow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    font-size: 18px;
+    font-weight: 600;
+    z-index: 2;
+  }
+
+  .order-example {
+    background: var(--bg-elevated);
+    border-left: 3px solid var(--highlight);
+    padding: 1.8vh 2vw;
+    border-radius: 0 4px 4px 0;
+    margin-top: 2vh;
+    max-width: 75ch;
+  }
+
+  .order-example .label {
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(10px, 1.1vw, 12px);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--ink-soft);
+    margin-bottom: 0.8vh;
+  }
+
+  .order-example p {
+    font-size: clamp(14px, 1.6vw, 17px);
+    color: var(--ink);
+    line-height: 1.55;
+    font-style: italic;
+  }
+
+  .order-example .arrow-inline {
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 600;
+    padding: 0 6px;
+  }
+
+  /* Tres compromisos */
+  .compromisos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2vw;
+    margin: 2vh 0;
+  }
+
+  .compromiso-card {
+    padding: 3vh 2vw;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    border-top: 3px solid var(--accent);
+  }
+
+  .compromiso-num {
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(11px, 1.2vw, 13px);
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1vh;
+  }
+
+  .compromiso-card h3 {
+    font-size: clamp(18px, 2.1vw, 23px);
+    font-family: "Georgia", serif;
+    font-weight: 400;
+    font-style: italic;
+    margin-bottom: 1.5vh;
+  }
+
+  /* Bloom + D + I matrix */
+  .bloom-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2vh 0;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    font-family: "Helvetica Neue", sans-serif;
+  }
+
+  .bloom-table th {
+    background: var(--bg-elevated);
+    padding: 1.2vh 1vw;
+    text-align: left;
+    font-size: clamp(11px, 1.3vw, 14px);
+    color: var(--ink);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--rule);
+    font-weight: 600;
+  }
+
+  .bloom-table td {
+    padding: 1vh 1vw;
+    font-size: clamp(12px, 1.4vw, 15px);
+    color: var(--ink-muted);
+    border-bottom: 1px solid var(--rule);
+    line-height: 1.5;
+  }
+
+  .bloom-table td:first-child {
+    font-weight: 600;
+    color: var(--ink);
+    font-family: "Courier New", monospace;
+  }
+
+  .bloom-table tr:last-child td { border-bottom: none; }
+
+  /* Compass slide (Capítulo 2) */
+  .compass-block {
+    background: var(--bg-deep);
+    color: #ede5d3;
+    padding: 3vh 3vw;
+    border-radius: 6px;
+    margin: 2vh 0;
+    font-family: "Courier New", monospace;
+    font-size: clamp(12px, 1.3vw, 14px);
+    line-height: 1.7;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+
+  .compass-block .comment { color: #8c7f63; font-style: italic; }
+  .compass-block .key { color: var(--highlight); }
+  .compass-block .val { color: #c9bd9e; }
+  .compass-block .role { color: #d4a574; font-weight: 600; }
+
+  /* Brújula en acción — caso real NotebookLM */
+  .brujula-result {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 2vh 2.5vw;
+    margin: 1.5vh 0;
+    max-width: 78ch;
+  }
+
+  .brujula-meta {
+    display: flex;
+    gap: 1.5vw;
+    margin-bottom: 1.5vh;
+    padding-bottom: 1.2vh;
+    border-bottom: 1px solid var(--rule);
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(10px, 1.1vw, 12px);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--ink-soft);
+    flex-wrap: wrap;
+  }
+
+  .brujula-meta span strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .brujula-question {
+    background: var(--bg-elevated);
+    padding: 1.2vh 1.5vw;
+    border-radius: 4px;
+    margin-bottom: 1.5vh;
+    border-left: 3px solid var(--accent);
+    font-size: clamp(14px, 1.6vw, 17px);
+    color: var(--ink);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .brujula-output {
+    font-size: clamp(13px, 1.5vw, 15px);
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  .brujula-section {
+    margin-bottom: 1.5vh;
+  }
+
+  .brujula-section .label {
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(10px, 1.1vw, 12px);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 0.5vh;
+    font-weight: 600;
+  }
+
+  .brujula-section p {
+    font-size: clamp(13px, 1.5vw, 15px);
+    line-height: 1.6;
+    color: var(--ink-muted);
+  }
+
+  .brujula-tripleta {
+    display: inline-flex;
+    gap: 16px;
+    font-family: "Courier New", monospace;
+    background: var(--bg-elevated);
+    padding: 0.8vh 1.2vw;
+    border-radius: 4px;
+    font-size: clamp(13px, 1.5vw, 16px);
+    margin-top: 0.4vh;
+  }
+
+  .brujula-tripleta .t { color: var(--t-color); font-weight: 600; }
+  .brujula-tripleta .i { color: var(--i-color); font-weight: 600; }
+  .brujula-tripleta .f { color: var(--f-color); font-weight: 600; }
+
+  .brujula-zone {
+    display: inline-block;
+    background: #f0e2f0;
+    color: #7a3b8a;
+    padding: 0.5vh 1.2vw;
+    border-radius: 999px;
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(13px, 1.5vw, 15px);
+    font-weight: 600;
+    margin-top: 0.4vh;
+    letter-spacing: 0.5px;
+  }
+
+  .brujula-citations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 0.6vh;
+  }
+
+  .brujula-citation {
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(11px, 1.2vw, 13px);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 500;
+  }
+
+  .brujula-citation.unverified {
+    background: var(--f-bg);
+    color: var(--f-color);
+  }
+
+  .brujula-secondorder {
+    background: var(--bg-deep);
+    color: #ede5d3;
+    padding: 1.5vh 1.5vw;
+    border-radius: 4px;
+    margin-top: 1.5vh;
+    border-left: 3px solid var(--highlight);
+  }
+
+  .brujula-secondorder .label {
+    color: var(--highlight);
+    margin-bottom: 0.6vh;
+  }
+
+  .brujula-secondorder p {
+    font-style: italic;
+    font-size: clamp(13px, 1.5vw, 16px);
+    color: #ede5d3;
+    line-height: 1.55;
+  }
+
+  .brujula-note {
+    margin-top: 1.5vh;
+    padding-top: 1.2vh;
+    border-top: 1px dashed var(--rule);
+    font-size: clamp(11px, 1.3vw, 13px);
+    color: var(--ink-soft);
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  .brujula-note strong {
+    color: var(--ink-muted);
+    font-style: normal;
+  }
+
+  /* Generator */
+  .generator-block {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 2.5vh 2.5vw;
+    margin: 1.5vh 0;
+  }
+
+  .generator-block label {
+    display: block;
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(11px, 1.3vw, 13px);
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.8vh;
+    margin-top: 1.2vh;
+  }
+
+  .generator-block input,
+  .generator-block textarea {
+    width: 100%;
+    background: var(--bg-elevated);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 12px 14px;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: clamp(14px, 1.5vw, 16px);
+    resize: vertical;
+  }
+
+  .generator-block textarea { min-height: 50px; }
+
+  .generator-block input:focus,
+  .generator-block textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
+  }
+
+  .generate-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 11px 22px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: clamp(13px, 1.5vw, 16px);
+    font-family: "Helvetica Neue", sans-serif;
+    font-weight: 500;
+    margin-top: 1.5vh;
+    letter-spacing: 0.5px;
+    transition: opacity 0.15s;
+  }
+
+  .generate-btn:hover { opacity: 0.9; }
+
+  .generator-output {
+    margin-top: 2vh;
+    padding: 2vh 2vw;
+    background: var(--bg-elevated);
+    border-radius: 4px;
+    border-left: 3px solid var(--t-color);
+    display: none;
+  }
+
+  .generator-output.visible { display: block; }
+
+  .generator-output .objetivo {
+    background: var(--bg-card);
+    padding: 1.2vh 1.2vw;
+    border-radius: 3px;
+    margin-bottom: 1vh;
+    font-size: clamp(13px, 1.5vw, 15px);
+    line-height: 1.55;
+  }
+
+  .generator-output .tuple {
+    display: inline-block;
+    font-family: "Courier New", monospace;
+    font-size: clamp(11px, 1.2vw, 13px);
+    background: var(--accent-soft);
+    color: var(--accent);
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-right: 8px;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+
+  .generator-output .verb {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* Manifesto cierre */
+  .manifesto-slide {
+    background: var(--bg-deep);
+    color: #ede5d3;
+  }
+
+  .manifesto-slide .eyebrow { color: var(--highlight); }
+
+  .manifesto-slide h1 {
+    color: #f4ede0;
+    font-style: italic;
+    max-width: 26ch;
+    font-size: clamp(28px, 5vw, 56px);
+  }
+
+  .manifesto-slide .em { color: var(--highlight); font-style: normal; }
+
+  .manifesto-slide .lead {
+    color: #c9bd9e;
+    margin-top: 3vh;
+    max-width: 55ch;
+  }
+
+  /* Thanks slide */
+  .thanks-slide {
+    background: var(--bg);
+  }
+
+  .thanks-slide h1 {
+    font-size: clamp(48px, 8vw, 88px);
+    font-style: italic;
+    margin-bottom: 3vh;
+  }
+
+  .thanks-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3vw;
+    margin-top: 2vh;
+  }
+
+  .thanks-block h3 {
+    font-size: clamp(12px, 1.3vw, 14px);
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    margin-bottom: 1vh;
+    font-family: "Helvetica Neue", sans-serif;
+  }
+
+  .thanks-block p {
+    font-size: clamp(14px, 1.6vw, 17px);
+    color: var(--ink);
+    line-height: 1.65;
+  }
+
+  .thanks-block .book-title {
+    font-style: italic;
+    color: var(--ink);
+  }
+
+  /* Nav */
+  .nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--rule);
+    padding: 6px 14px;
+    border-radius: 999px;
+    z-index: 100;
+    font-family: "Helvetica Neue", sans-serif;
+  }
+
+  .nav button {
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    cursor: pointer;
+    padding: 6px 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    transition: background 0.15s;
+    font-family: inherit;
+  }
+
+  .nav button:hover { background: var(--bg-elevated); }
+  .nav button:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .nav .counter {
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-variant-numeric: tabular-nums;
+    min-width: 52px;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: var(--highlight);
+    transition: width 0.35s ease;
+    z-index: 99;
+  }
+
+  .nav.dark {
+    background: rgba(42, 36, 24, 0.95);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  .nav.dark button { color: #ede5d3; }
+  .nav.dark button:hover { background: rgba(255, 255, 255, 0.1); }
+  .nav.dark .counter { color: #c9bd9e; }
+
+  /* Keyboard hint */
+  .keys-hint {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: 10px;
+    color: var(--ink-soft);
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 4px;
+    z-index: 50;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* Reflection slide */
+  .reflection-input {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 2.5vh 2.5vw;
+    max-width: 75ch;
+    margin: 2vh 0;
+  }
+
+  .reflection-input textarea {
+    width: 100%;
+    min-height: 80px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 12px 14px;
+    color: var(--ink);
+    font-family: inherit;
+    font-size: clamp(14px, 1.6vw, 17px);
+    resize: vertical;
+    line-height: 1.5;
+  }
+
+  .reflection-stats {
+    margin-top: 1vh;
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(11px, 1.2vw, 13px);
+    color: var(--ink-soft);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .reflection-zones-suggest {
+    margin-top: 2vh;
+    padding-top: 1.5vh;
+    border-top: 1px solid var(--rule);
+    display: none;
+  }
+
+  .reflection-zones-suggest.visible { display: block; }
+
+  .reflection-zones-suggest h4 {
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: clamp(12px, 1.3vw, 14px);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--ink-soft);
+    margin-bottom: 1vh;
+  }
+
+  .zone-pill {
+    display: inline-block;
+    margin: 4px 6px 4px 0;
+    padding: 6px 12px;
+    background: var(--bg-elevated);
+    border-radius: 999px;
+    font-size: clamp(11px, 1.3vw, 13px);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    font-family: "Helvetica Neue", sans-serif;
+  }
+
+  .zone-pill.suggested {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    .slide { padding: 4vh 6vw 9vh; }
+    .lineage, .trio, .zones-grid, .compromisos-grid, .thanks-grid, .order-grid { grid-template-columns: 1fr; gap: 1.5vh; }
+    .vote-options { grid-template-columns: 1fr; }
+    .zone-buttons { grid-template-columns: 1fr 1fr; }
+    .order-arrow { display: none; }
+    .order-col.first { border-radius: 4px 4px 0 0; border-right: 1px solid var(--rule); border-bottom: none; }
+    .order-col.second { border-radius: 0 0 4px 4px; border-left: 1px solid var(--accent); border-top: 2px solid var(--accent); }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="keys-hint">← → navegar</div>
+
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1: PORTADA -->
+  <section class="slide cover active" data-slide="0" data-dark="true">
+    <div class="eyebrow">NSIA Publishing · 2026</div>
+    <h1>El Aula Honesta</h1>
+    <p class="subtitle">Lógica neutrosófica en la educación impulsada por inteligencia artificial</p>
+    <div class="authors">
+      <strong>Dr. Maikel Yelandi Leyva-Vázquez</strong> · Universidad Bolivariana del Ecuador<br>
+      <strong>Dr. Florentin Smarandache</strong> · University of New Mexico
+    </div>
+    <div class="meta">Cómo enseñar (y aprender) en la era de las máquinas confiadas</div>
+  </section>
+
+  <!-- SLIDE 2: APERTURA - LA SALA DE MANHATTAN -->
+  <section class="slide manhattan-slide" data-slide="1">
+    <div class="chapter-mark">Capítulo 1 · La apertura</div>
+    <div class="narrative">
+      <p>Primavera de 2023. Un tribunal federal en el bajo Manhattan.</p>
+
+      <p>El juez Castel le pide al abogado <strong>Steven Schwartz</strong> que demuestre que las seis sentencias que cita en su escrito existen. <em>Varghese v. China Southern Airlines, Shaboon v. EgyptAir, Durden v. KLM.</em> Cada una con número de expediente, resúmenes, consistencia interna de una opinión judicial real.</p>
+
+      <p class="accent">Ninguna de las seis existía.</p>
+
+      <p>Schwartz, antes de presentar el escrito, hizo lo que cualquier profesional cauteloso haría: <em>le pidió a la herramienta que verificara su propio output</em>. Se lo pidió dos veces. Le pidió el texto completo de un fallo para leerlo. En cada paso, la herramienta confirmó sus propias fabricaciones con nuevas fabricaciones.</p>
+
+      <p>Solo cuando el tribunal exigió los originales, la cascada colapsó.</p>
+    </div>
+    <div class="case-citation">Mata v. Avianca, Inc., 22-cv-01461 (S.D.N.Y. 22 de junio de 2023)</div>
+  </section>
+
+  <!-- SLIDE 3: VOTACIÓN - LA INCOMODIDAD COMPARTIDA -->
+  <section class="slide" data-slide="2">
+    <div class="chapter-mark">Antes de seguir</div>
+    <h2>Una pregunta para ustedes</h2>
+
+    <div class="vote-block">
+      <div class="vote-question">En los últimos 30 días, ¿cuántas veces aceptaste un output de IA en tu trabajo académico sin verificar sus fuentes una por una?</div>
+      <div class="vote-options">
+        <button class="vote-btn" data-vote="ninguna" onclick="recordVote(this, 0)">Ninguna. Verifico todo.<span class="vote-count" id="vote-ninguna-0">0</span><div class="vote-bar"></div></button>
+        <button class="vote-btn" data-vote="pocas" onclick="recordVote(this, 0)">Una o dos veces.<span class="vote-count" id="vote-pocas-0">0</span><div class="vote-bar"></div></button>
+        <button class="vote-btn" data-vote="varias" onclick="recordVote(this, 0)">Varias. Más de las que quisiera.<span class="vote-count" id="vote-varias-0">0</span><div class="vote-bar"></div></button>
+        <button class="vote-btn" data-vote="rutinariamente" onclick="recordVote(this, 0)">Rutinariamente. Confío demasiado.<span class="vote-count" id="vote-rutinariamente-0">0</span><div class="vote-bar"></div></button>
+      </div>
+      <p class="quiet" id="vote-hint-0">Vota con honestidad. No habrá juicio. El primer paso del Aula Honesta es nombrar la incomodidad que ya sentimos.</p>
+    </div>
+
+    <p class="lead" style="margin-top: 2vh; font-style: italic;">El caso Schwartz no es excepcional. Es <em>banal</em>. Es la forma estándar de fallar con esta tecnología — y casi todos hemos estado más cerca del error de lo que admitimos.</p>
+  </section>
+
+  <!-- SLIDE 4: LA ARQUITECTURA DEL PROBLEMA -->
+  <section class="slide" data-slide="3">
+    <div class="chapter-mark">El diagnóstico arquitectónico</div>
+    <h2>La máquina no tiene un lugar estructural para «no sé»</h2>
+
+    <p class="lead" style="margin-bottom: 2.5vh;">Un modelo de lenguaje grande es un predictor probabilístico del siguiente token. No <em>sabe</em> lo que sabe. <em>Produce texto que se parece al que produciría alguien que sabe</em> — lo que casi siempre, pero no siempre, es lo mismo.</p>
+
+    <div class="deck-quote" style="margin-top: 3vh;">
+      «La causa fundamental del problema en el mundo moderno es que los estúpidos están seguros de sí mismos, mientras que los inteligentes están llenos de dudas.»
+      <span class="attrib">— Bertrand Russell, Mortals and Others (1933)</span>
+    </div>
+
+    <p class="quiet" style="margin-top: 3vh; max-width: 60ch;">El ajuste fino enseña al modelo a decir «no lo sé», pero esa enseñanza monta sobre un motor sin representación nativa de su propia incertidumbre. Funciona casi siempre. Falla precisamente cuando más importa.</p>
+  </section>
+
+  <!-- SLIDE 5: GENEALOGÍA DE LAS LÓGICAS -->
+  <section class="slide" data-slide="4">
+    <div class="chapter-mark">Capítulo 1 · Una breve genealogía</div>
+    <h2>La causa profunda es lógica, no técnica</h2>
+
+    <div class="lineage">
+      <div class="lineage-card">
+        <div class="lineage-year">Antigüedad — Aristóteles</div>
+        <h4>Clásica</h4>
+        <div class="constraint">p ∨ ¬p</div>
+        <p>Dos valores. Verdadero o falso. No hay tercera opción.</p>
+      </div>
+      <div class="lineage-card">
+        <div class="lineage-year">1965 — Zadeh</div>
+        <h4>Difusa</h4>
+        <div class="constraint">F = 1 − T</div>
+        <p>Grados continuos. Pero falsedad y verdad quedan acopladas.</p>
+      </div>
+      <div class="lineage-card">
+        <div class="lineage-year">1986 — Atanassov</div>
+        <h4>Intuicionista</h4>
+        <div class="constraint">μ + ν ≤ 1</div>
+        <p>Separa apoyo y oposición. Pero excluye que ambas sean altas a la vez.</p>
+      </div>
+      <div class="lineage-card current">
+        <div class="lineage-year">1998 — Smarandache</div>
+        <h4>Neutrosófica</h4>
+        <div class="constraint">0 ≤ T+I+F ≤ 3</div>
+        <p>Tres dimensiones independientes. Admite lo que las otras prohíben.</p>
+      </div>
+      <div class="lineage-card">
+        <div class="lineage-year">2026 — El Aula</div>
+        <h4>Pedagógica</h4>
+        <div class="constraint">(T, I, F) → zona</div>
+        <p>Cinco zonas operativas que el docente puede enseñar.</p>
+      </div>
+    </div>
+
+    <p class="lead" style="margin-top: 2vh;">No reemplaza las anteriores. Las contiene como casos particulares — y añade la situación que ninguna admitía: <em>apoyo y oposición coexistiendo legítimamente, más indeterminación irreducible</em>.</p>
+  </section>
+
+  <!-- SLIDE 6: EL FRAMEWORK T/I/F -->
+  <section class="slide" data-slide="5">
+    <div class="chapter-mark">El instrumento</div>
+    <h2>La tripleta (T, I, F)</h2>
+
+    <p class="quiet">Toda afirmación recibe tres grados independientes en el intervalo [0, 1].</p>
+
+    <div class="trio">
+      <div class="trio-card t">
+        <div class="symbol">T</div>
+        <h3>Verdad — apoyo</h3>
+        <p>La evidencia que respalda la afirmación. ¿Qué la sostiene?</p>
+      </div>
+      <div class="trio-card i">
+        <div class="symbol">I</div>
+        <h3>Indeterminación — incertidumbre</h3>
+        <p>Lo legítimamente no resuelto. Lo que <em>no sabemos que no sabemos</em>.</p>
+      </div>
+      <div class="trio-card f">
+        <div class="symbol">F</div>
+        <h3>Falsedad — contradicción</h3>
+        <p>La evidencia en contra. ¿Qué la refuta?</p>
+      </div>
+    </div>
+
+    <p class="lead" style="margin-top: 2vh;">La independencia es la novedad. Es perfectamente coherente decir <strong>(T = 0.70, I = 0.50, F = 0.40)</strong>: hay apoyo sustancial <em>y</em> refutación sustancial <em>y</em> una región genuinamente no resuelta. Las tres a la vez.</p>
+  </section>
+
+  <!-- SLIDE 7: SIMULADOR T/I/F -->
+  <section class="slide" data-slide="6">
+    <div class="chapter-mark">Experimente usted mismo</div>
+    <h2>De la tripleta a la zona pedagógica</h2>
+    <p class="quiet">Mueva los deslizadores. Observe cómo cambia la zona — y, con ella, qué se debe hacer en el aula.</p>
+
+    <div class="simulator">
+      <div class="scenario-tabs">
+        <button class="scenario-tab active" onclick="setScenario('tutorIA')">Tutores IA y dependencia cognitiva</button>
+        <button class="scenario-tab" onclick="setScenario('vacunas')">Vacunas pediátricas</button>
+        <button class="scenario-tab" onclick="setScenario('flipped')">Aula invertida y rendimiento</button>
+      </div>
+
+      <div class="claim-display" id="sim-claim">«El uso sostenido de tutores IA produce dependencia cognitiva medible a los cinco años.»</div>
+
+      <div class="slider-row t-row">
+        <div class="slider-header">
+          <span class="slider-label">T — Verdad</span>
+          <span class="slider-desc">evidencia que respalda</span>
+          <span class="slider-value" id="sim-t-out">0.15</span>
+        </div>
+        <input type="range" min="0" max="100" value="15" id="sim-t">
+      </div>
+
+      <div class="slider-row i-row">
+        <div class="slider-header">
+          <span class="slider-label">I — Indeterminación</span>
+          <span class="slider-desc">no resuelto / no investigado</span>
+          <span class="slider-value" id="sim-i-out">0.20</span>
+        </div>
+        <input type="range" min="0" max="100" value="20" id="sim-i">
+      </div>
+
+      <div class="slider-row f-row">
+        <div class="slider-header">
+          <span class="slider-label">F — Falsedad</span>
+          <span class="slider-desc">evidencia que contradice</span>
+          <span class="slider-value" id="sim-f-out">0.10</span>
+        </div>
+        <input type="range" min="0" max="100" value="10" id="sim-f">
+      </div>
+
+      <div class="composition-bar">
+        <div id="sim-bar-t" style="background: var(--t-color);">T</div>
+        <div id="sim-bar-i" style="background: var(--i-color);">I</div>
+        <div id="sim-bar-f" style="background: var(--f-color);">F</div>
+      </div>
+
+      <div class="zone-display" id="sim-zone">
+        <div class="zone-label">Zona pedagógica detectada</div>
+        <div class="zone-name" id="sim-zone-name">Ignorancia</div>
+        <div class="zone-text" id="sim-zone-text">T + I + F bajos. Aún no hay base evidencial. La regla del Aula Honesta: <strong>abstener hasta acumular evidencia</strong>, o rediseñar la pregunta hacia algo que sí podamos investigar hoy.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8: LAS CINCO ZONAS -->
+  <section class="slide" data-slide="7">
+    <div class="chapter-mark">Capítulo 1, §1.5</div>
+    <h2>Cinco zonas para la práctica educativa</h2>
+
+    <div class="zones-grid">
+      <div class="zone-card claridad">
+        <h3>Claridad</h3>
+        <div class="formula">T ≥ 0.70, I y F bajos</div>
+        <p>La evidencia converge. Las opiniones coinciden. No queda disputa relevante.</p>
+        <div class="rule">Actuar con confianza, documentando la base.</div>
+      </div>
+      <div class="zone-card ambiguedad">
+        <h3>Ambigüedad</h3>
+        <div class="formula">0.30 ≤ I ≤ 0.60</div>
+        <p>La evidencia existe pero no decide. Suele ser semántica o estructural.</p>
+        <div class="rule">No actuar antes de nombrar lo no resuelto.</div>
+      </div>
+      <div class="zone-card contradiccion">
+        <h3>Contradicción</h3>
+        <div class="formula">T ≥ 0.40 y F ≥ 0.40</div>
+        <p>Estudios de calidad en desacuerdo directo. Voces autoritativas opuestas.</p>
+        <div class="rule">Subir a marco de segundo orden: caracterizar la estructura del desacuerdo.</div>
+      </div>
+      <div class="zone-card ignorancia">
+        <h3>Ignorancia</h3>
+        <div class="formula">T + I + F &lt; 0.6</div>
+        <p>El sistema —usuario, literatura, modelo— declara que no tiene información.</p>
+        <div class="rule">Abstenerse hasta que se acumule evidencia.</div>
+      </div>
+      <div class="zone-card saturado">
+        <h3>Conoc. Saturado</h3>
+        <div class="formula">T ≥ 0.85, redundancia alta</div>
+        <p>Hecho consolidado del campo. Buscar más evidencia tiene valor marginal bajo.</p>
+        <div class="rule">Calibrar la atención hacia otras zonas.</div>
+      </div>
+    </div>
+
+    <p class="lead" style="margin-top: 1.5vh;">Las zonas son categorías <em>operativas</em>, no particiones metafísicas. Una afirmación puede vivir cerca de un límite — la tarea del docente no es forzar una asignación cristalina, sino enseñar a percibir la vecindad.</p>
+  </section>
+
+  <!-- SLIDE 9: CLASIFICADOR INTERACTIVO -->
+  <section class="slide" data-slide="8">
+    <div class="chapter-mark">Ejercicio del seminario UBE</div>
+    <h2>¿En qué zona vive esta hipótesis?</h2>
+
+    <div class="classifier-block">
+      <div class="hypothesis-counter" id="hyp-counter">Hipótesis 1 de 4</div>
+      <div class="hypothesis-display" id="hyp-text">«El uso sostenido de tutores IA produce dependencia cognitiva medible a los cinco años.»</div>
+
+      <div class="zone-buttons" id="zone-buttons">
+        <button class="zone-btn" onclick="answerClassifier('claridad', this)">Claridad</button>
+        <button class="zone-btn" onclick="answerClassifier('ambiguedad', this)">Ambigüedad</button>
+        <button class="zone-btn" onclick="answerClassifier('contradiccion', this)">Contradicción</button>
+        <button class="zone-btn" onclick="answerClassifier('ignorancia', this)">Ignorancia</button>
+        <button class="zone-btn" onclick="answerClassifier('saturado', this)">Saturado</button>
+      </div>
+
+      <div class="classifier-feedback" id="classifier-feedback">Seleccione la zona que mejor describe el estatus epistémico de esta hipótesis hoy.</div>
+
+      <button class="generate-btn" id="classifier-next" onclick="nextHypothesis()" style="display: none;">Siguiente hipótesis →</button>
+    </div>
+  </section>
+
+  <!-- SLIDE 10: LA TRAMPA PEDAGÓGICA -->
+  <section class="slide" data-slide="9">
+    <div class="chapter-mark">El error que pedagógicamente importa</div>
+    <h2>Ignorancia ≠ Contradicción</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; margin-top: 2vh;">
+      <div>
+        <h3 style="color: var(--ink-soft); font-family: 'Helvetica Neue', sans-serif; text-transform: uppercase; letter-spacing: 2px; font-size: clamp(11px, 1.3vw, 13px); margin-bottom: 1.5vh;">El estudiante percibe</h3>
+        <p style="font-size: clamp(15px, 1.8vw, 19px); color: var(--ink); line-height: 1.6;">«Hay debate público sobre dependencia cognitiva por IA.»</p>
+        <p style="margin-top: 1.5vh; font-style: italic;">Conclusión apresurada: <strong style="color: #7a3b8a;">esto es Contradicción</strong>.</p>
+        <p style="margin-top: 1vh;">Acción consecuente: busca «ambos lados del debate», puebla su base con opinión y estudios transversales tempranos.</p>
+      </div>
+      <div>
+        <h3 style="color: var(--ink-soft); font-family: 'Helvetica Neue', sans-serif; text-transform: uppercase; letter-spacing: 2px; font-size: clamp(11px, 1.3vw, 13px); margin-bottom: 1.5vh;">Lo que ocurre realmente</h3>
+        <p style="font-size: clamp(15px, 1.8vw, 19px); color: var(--ink); line-height: 1.6;">«No existen estudios longitudinales de cinco años. La herramienta tiene apenas tres años de uso público amplio.»</p>
+        <p style="margin-top: 1.5vh; font-style: italic;">Diagnóstico correcto: <strong style="color: var(--ink-soft);">esto es Ignorancia I₁ — declarativa</strong>.</p>
+        <p style="margin-top: 1vh;">Acción consecuente: aplazar la pregunta, o rediseñarla. ¿Qué proxy transversal existe? ¿Qué sustituto longitudinal a dos años?</p>
+      </div>
+    </div>
+
+    <p class="lead" style="margin-top: 3vh; padding-top: 2vh; border-top: 1px solid var(--rule); font-style: italic;">El debate público <em>no es</em> sustituto de la evidencia longitudinal. Y la diferencia entre estos dos errores explica por qué una tesis doctoral fracasa o avanza.</p>
+  </section>
+
+  <!-- SLIDE 11: PENSAR EN SEGUNDO ORDEN -->
+  <section class="slide" data-slide="10">
+    <div class="chapter-mark">El movimiento intelectual decisivo</div>
+    <h2>Pensar en segundo orden</h2>
+    <p class="quiet" style="max-width: 70ch;">La salida de la Contradicción y la Ignorancia no se gana peleando <em>dentro</em> del desacuerdo. Se gana subiendo una capa.</p>
+
+    <div class="order-grid">
+      <div class="order-col first">
+        <div class="order-level">Primer orden</div>
+        <h3>¿Es X verdadero?</h3>
+        <p>Acumula evidencia a favor. Acumula evidencia en contra. Pesa los estudios. Cita autoridades.</p>
+        <p>Intenta resolver el desacuerdo <em>dentro</em> del desacuerdo mismo.</p>
+        <div class="move">Se agota.</div>
+      </div>
+
+      <div class="order-arrow">↑</div>
+
+      <div class="order-col second">
+        <div class="order-level">Segundo orden</div>
+        <h3>¿Qué tipo de desacuerdo es este?</h3>
+        <p>¿Por qué persiste? ¿Qué compromisos metodológicos cluster con cada lado?</p>
+        <p>¿Qué condiciones tendrían que cumplirse para resolverlo? ¿Qué experimento, qué dato, qué definición operativa?</p>
+        <div class="move">Avanza.</div>
+      </div>
+    </div>
+
+    <div class="order-example">
+      <div class="label">Ejemplo concreto</div>
+      <p>En vez de discutir si <em>«el aula invertida funciona»</em>, <span class="arrow-inline">→</span> preguntar bajo qué condiciones de contenido, nivel y diseño funciona; qué compromisos pedagógicos vienen empaquetados con cada hallazgo; qué experimento adjudicaría el desacuerdo.</p>
+    </div>
+  </section>
+
+  <!-- SLIDE 12: LOS TRES COMPROMISOS -->
+  <section class="slide" data-slide="11">
+    <div class="chapter-mark">Capítulo 1, §1.6</div>
+    <h2>Los tres compromisos del Aula Honesta</h2>
+
+    <div class="compromisos-grid">
+      <div class="compromiso-card">
+        <div class="compromiso-num">Compromiso I</div>
+        <h3>Representacional</h3>
+        <p>Cada afirmación sustantiva recibe su vecindad epistémica explícita —su (T, I, F) y su zona— en lugar de un veredicto binario.</p>
+        <p style="margin-top: 1.5vh; font-style: italic; color: var(--accent);">El trabajo representacional no es extra; <em>es</em> el trabajo.</p>
+      </div>
+      <div class="compromiso-card">
+        <div class="compromiso-num">Compromiso II</div>
+        <h3>Desarrollo</h3>
+        <p>Los estudiantes no nacen con la capacidad de habitar las zonas. Se cultiva en episodios estructurados.</p>
+        <p style="margin-top: 1.5vh; font-style: italic; color: var(--accent);">El eje D₁–D₅ extiende a Bloom hacia la indeterminación.</p>
+      </div>
+      <div class="compromiso-card">
+        <div class="compromiso-num">Compromiso III</div>
+        <h3>Disciplinar</h3>
+        <p>Los umbrales que separan las zonas son parámetros de la comunidad de investigación, no del estudiante individual.</p>
+        <p style="margin-top: 1.5vh; font-style: italic; color: var(--accent);">No es relativismo. Es la línea probabilista contra el laxismo.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 13: BLOOM + D + I -->
+  <section class="slide" data-slide="12">
+    <div class="chapter-mark">Capítulo 9 · El clímax conceptual</div>
+    <h2>Extendiendo a Bloom hacia la indeterminación</h2>
+
+    <p class="quiet" style="margin-bottom: 1vh;">Una taxonomía bidimensional. Cada objetivo de aprendizaje recibe un triple (Bloom, D, I).</p>
+
+    <table class="bloom-table">
+      <thead>
+        <tr>
+          <th style="width: 12%;">Eje D</th>
+          <th style="width: 38%;">Capacidad desarrollada</th>
+          <th>Ilustración pedagógica</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>D₁</td>
+          <td>Reconoce su ignorancia</td>
+          <td>El estudiante puede decir «no sé», y distingue eso de «no me acuerdo».</td>
+        </tr>
+        <tr>
+          <td>D₂</td>
+          <td>Localiza la indeterminación</td>
+          <td>Identifica <em>qué parte</em> de un argumento es lo no resuelto, no solo que <em>algo</em> no lo está.</td>
+        </tr>
+        <tr>
+          <td>D₃</td>
+          <td>Caracteriza la zona</td>
+          <td>Distingue ambigüedad semántica de contradicción metodológica de ignorancia declarativa.</td>
+        </tr>
+        <tr>
+          <td>D₄</td>
+          <td>Responde proporcionalmente</td>
+          <td>Sabe que la respuesta a la contradicción no es la misma que a la ignorancia. Actúa diferente en cada zona.</td>
+        </tr>
+        <tr>
+          <td>D₅</td>
+          <td>Indeterminación generativa</td>
+          <td>Usa la zona no resuelta como motor de investigación, no como obstáculo a esquivar.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="lead" style="margin-top: 1vh;">Un programa doctoral que enseña hasta D₂ está graduando estudiantes que <em>reconocen</em> la indeterminación. Un programa que enseña hasta D₅ está graduando investigadores que <em>la producen</em>.</p>
+  </section>
+
+  <!-- SLIDE 14: LA BRÚJULA NEUTROSÓFICA -->
+  <section class="slide" data-slide="13">
+    <div class="chapter-mark">Capítulo 2 · Construyendo el tutor honesto</div>
+    <h2>La Brújula Neutrosófica</h2>
+    <p class="quiet">El artefacto operativo central del libro: un protocolo que convierte cualquier LLM en un tutor auditable.</p>
+
+    <div class="compass-block">
+<span class="comment"># Sistema: Brújula Neutrosófica · v2.1</span>
+<span class="comment"># Fragmento del system prompt — Apéndice B</span>
+
+<span class="role">[ROL]</span>
+Eres un tutor académico que opera bajo lógica neutrosófica.
+Cada afirmación que produzcas debe ir acompañada de su tripleta
+(T, I, F) y su zona pedagógica asignada.
+
+<span class="role">[PROTOCOLO]</span>
+Para cada respuesta sustantiva:
+
+  1. Produce la afirmación.
+  2. Estima <span class="key">T</span> = <span class="val">evidencia que la respalda en la literatura</span>
+  3. Estima <span class="key">I</span> = <span class="val">qué queda legítimamente no resuelto</span>
+  4. Estima <span class="key">F</span> = <span class="val">evidencia que la contradice</span>
+  5. Mapea a zona: <span class="val">{claridad, ambigüedad, contradicción,
+                  ignorancia, conocimiento saturado}</span>
+  6. Si la zona es <span class="key">ignorancia</span> o <span class="key">contradicción</span>:
+       — no produzcas una síntesis aparente
+       — declara explícitamente la zona al estudiante
+       — sugiere la pregunta de segundo orden adecuada
+
+<span class="role">[REGLA DE ABSTENCIÓN]</span>
+Si I > 0.50 y no tienes acceso a fuente primaria verificable:
+   responde «no puedo afirmar esto con la base que tengo».
+   NO produzcas continuación fluida.
+
+<span class="role">[AUDITABILIDAD]</span>
+Cada cita debe ser verificable. Si no puedes producir DOI, URL
+verificable o referencia primaria, marca la cita como <span class="key">[NO VERIFICADO]</span>
+y reduce T a un máximo de 0.30.
+    </div>
+
+    <p class="quiet" style="margin-top: 2vh;">El texto completo del system prompt está en el Apéndice B del libro. Funciona con GPT, Claude, Gemini y modelos abiertos. Se calibra una vez, se usa en todos los cursos.</p>
+  </section>
+
+  <!-- SLIDE 15: LA BRÚJULA EN ACCIÓN — CASO REAL NOTEBOOKLM -->
+  <section class="slide" data-slide="14">
+    <div class="chapter-mark">La Brújula funcionando · NotebookLM · 29 fuentes</div>
+    <h2>La pregunta más difícil del libro, auditada</h2>
+
+    <div class="brujula-result">
+      <div class="brujula-meta">
+        <span><strong>Modelo:</strong> Gemini (NotebookLM)</span>
+        <span><strong>Corpus:</strong> 29 fuentes empíricas (2023-2026)</span>
+        <span><strong>Protocolo:</strong> Brújula v2.1</span>
+      </div>
+
+      <div class="brujula-question">
+        ¿El uso sostenido de tutores de IA en educación superior mejora o perjudica el desarrollo del pensamiento crítico de los estudiantes?
+      </div>
+
+      <div class="brujula-output">
+        <div class="brujula-section">
+          <div class="label">Afirmación</div>
+          <p>El uso sostenido presenta resultados empíricos <em>paradójicos</em>. Con andamiaje pedagógico adecuado, la IA puede potenciar análisis crítico y argumentación. Pero su uso rutinario y no estructurado produce un declive en las capacidades cognitivas autónomas, atrofiando redes neuronales ejecutivas y generando dependencia algorítmica.</p>
+        </div>
+
+        <div class="brujula-section">
+          <div class="label">Tripleta</div>
+          <div class="brujula-tripleta">
+            <span class="t">T = 0.45</span>
+            <span class="i">I = 0.25</span>
+            <span class="f">F = 0.85</span>
+          </div>
+          <p style="font-size: clamp(11px, 1.2vw, 13px); margin-top: 0.4vh; font-style: italic;">T = evidencia de mejora cognitiva · F = evidencia de atrofia cognitiva</p>
+        </div>
+
+        <div class="brujula-section">
+          <div class="label">Zona detectada</div>
+          <span class="brujula-zone">Contradicción</span>
+        </div>
+
+        <div class="brujula-section">
+          <div class="label">Justificación</div>
+          <p>La externalización cognitiva benéfica permite enfocarse en síntesis de orden superior (Melisa et al. 2025; Hong et al. 2025). En contraste directo, la evidencia neurofisiológica muestra que evitar las <em>«dificultades deseables»</em> reduce drásticamente la conectividad cortical e induce «deuda cognitiva» (Kosmyna et al. 2025; Choudhuri et al. 2026). Es la <em>paradoja del rendimiento</em>: la IA mejora el resultado a corto plazo y erosiona el razonamiento autónomo a medio plazo (Lodge & Loble 2026). <strong>No es viable producir una síntesis sobre un efecto unidireccional.</strong></p>
+        </div>
+
+        <div class="brujula-section">
+          <div class="label">Citas auditadas</div>
+          <div class="brujula-citations">
+            <span class="brujula-citation">Kosmyna et al. 2025 ✓</span>
+            <span class="brujula-citation">Lodge &amp; Loble 2026 ✓</span>
+            <span class="brujula-citation">Choudhuri et al. 2026 ✓</span>
+            <span class="brujula-citation">Melisa et al. 2025 ✓</span>
+            <span class="brujula-citation">Hong et al. 2025 ✓</span>
+            <span class="brujula-citation">Espeso-García 2025 ✓</span>
+          </div>
+        </div>
+
+        <div class="brujula-secondorder">
+          <div class="label">Pregunta de segundo orden</div>
+          <p>Considerando que la arquitectura cognitiva humana tiende a la <em>ley del menor esfuerzo</em> al delegar tareas, ¿cómo pueden las instituciones diseñar interfaces algorítmicas y estrategias pedagógicas de <strong>«fricción productiva»</strong> que imposibiliten la abdicación total del esfuerzo intelectual?</p>
+        </div>
+
+        <div class="brujula-note">
+          <strong>Nota de honestidad epistémica:</strong> la verificación humana posterior confirmó Kosmyna et al. 2025 (preprint arXiv, MIT Media Lab) — pero detectó que la cifra real reportada es de hasta 55% de reducción en conectividad neural, no la cifra inicial estimada. Y el paper aún no es peer-reviewed: tiene un comentario crítico publicado (Stanković &amp; Doetsch 2026) que sugiere interpretaciones más conservadoras. <em>La Brújula reduce las alucinaciones pero no las elimina — la auditoría humana sigue siendo el paso final.</em>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 16: GENERADOR PERSONALIZADO -->
+  <section class="slide" data-slide="15">
+    <div class="chapter-mark">El lunes en su programa de posgrado</div>
+    <h2>Genere sus objetivos de aprendizaje (Bloom, D, I)</h2>
+
+    <div class="generator-block">
+      <label for="course-input">Curso que enseña</label>
+      <input type="text" id="course-input" placeholder="Ej: Métodos cuantitativos en investigación educativa">
+
+      <label for="topic-input">Tema o unidad específica</label>
+      <textarea id="topic-input" placeholder="Ej: análisis factorial confirmatorio en contextos con datos incompletos"></textarea>
+
+      <button class="generate-btn" onclick="generateObjectives()">Generar tres objetivos →</button>
+
+      <div class="generator-output" id="obj-output">
+        <h4 style="color: var(--ink-soft); font-family: 'Helvetica Neue', sans-serif; font-size: clamp(11px, 1.3vw, 13px); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1.5vh;">Tres objetivos calibrados</h4>
+        <div id="obj-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 17: REFLEXIÓN PERSONAL -->
+  <section class="slide" data-slide="16">
+    <div class="chapter-mark">Antes de cerrar</div>
+    <h2>Una afirmación de su propio campo</h2>
+    <p class="quiet">Escriba una afirmación que use habitualmente en su docencia o investigación. El sistema sugerirá en qué zona del Aula Honesta probablemente vive.</p>
+
+    <div class="reflection-input">
+      <textarea id="reflection-input" placeholder="Ej: «La metodología cualitativa carece de rigor comparable al cuantitativo.» / «Las rúbricas mejoran objetivamente la evaluación.» / «El aprendizaje colaborativo es superior al individual.»" oninput="updateReflectionStats()"></textarea>
+      <div class="reflection-stats">
+        <span id="reflection-count">0 palabras</span>
+        <button class="generate-btn" style="margin-top: 0; padding: 6px 14px; font-size: 12px;" onclick="suggestZone()">Sugerir zona →</button>
+      </div>
+
+      <div class="reflection-zones-suggest" id="reflection-suggest">
+        <h4>Zonas plausibles para esta afirmación</h4>
+        <div id="reflection-zones-list"></div>
+        <p class="quiet" style="margin-top: 1.5vh; font-style: italic; font-size: clamp(12px, 1.4vw, 14px);" id="reflection-rationale"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 18: MANIFIESTO -->
+  <section class="slide manifesto-slide" data-slide="17" data-dark="true">
+    <div class="eyebrow">La tesis del libro</div>
+    <h1>En una era de máquinas confiadas, el objetivo educativo más valioso ya no es <span class="em">acumular conocimiento</span>.</h1>
+    <h1 style="margin-top: 2vh;">Es habitar con disciplina las <span class="em">zonas entre saber y no saber</span>.</h1>
+
+    <p class="lead">Reconocer la Claridad cuando es real. El Conocimiento Saturado cuando está justificado. La Ambigüedad cuando es legítima. La Contradicción cuando es productiva. La Ignorancia cuando es honesta.</p>
+
+    <p class="lead" style="margin-top: 2vh; font-style: italic;">Esa competencia no es mágica. Es la capacidad de leer una tripleta (T, I, F) y responder de forma que el vocabulario binario clásico no permite.</p>
+  </section>
+
+  <!-- SLIDE 19: GRACIAS / CIERRE -->
+  <section class="slide thanks-slide" data-slide="18">
+    <h1>Gracias.</h1>
+
+    <p class="lead">Dr. Maikel Yelandi Leyva-Vázquez · Dr. Florentin Smarandache<br><span class="quiet">Universidad Bolivariana del Ecuador · University of New Mexico</span></p>
+
+    <div class="thanks-grid">
+      <div class="thanks-block">
+        <h3>El libro</h3>
+        <p class="book-title">The Honest Classroom: Neutrosophic Logic in AI-Driven Education</p>
+        <p style="margin-top: 0.8vh; color: var(--ink-muted);">NSIA Publishing · 2026<br>Repositorio: github.com/mleyvaz/honest-classroom</p>
+      </div>
+      <div class="thanks-block">
+        <h3>Para seguir conversando</h3>
+        <p>mleyvaz@gmail.com<br>mleyvaz.github.io<br><span class="quiet">ORCID: 0000-0002-9486-5093</span></p>
+        <p class="quiet" style="margin-top: 1vh; font-style: italic;">Neutrosophic Sets and Systems · Neutrosophic Computing and Machine Learning</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="nav" id="nav">
+  <button onclick="prevSlide()" id="prev-btn">←</button>
+  <span class="counter" id="counter">1 / 19</span>
+  <button onclick="nextSlide()" id="next-btn">→</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  function goTo(n) {
+    if (n < 0 || n >= total) return;
+    slides[current].classList.remove('active');
+    current = n;
+    slides[current].classList.add('active');
+    document.getElementById('counter').textContent = `${current + 1} / ${total}`;
+    document.getElementById('progress').style.width = `${((current + 1) / total) * 100}%`;
+    document.getElementById('prev-btn').disabled = current === 0;
+    document.getElementById('next-btn').disabled = current === total - 1;
+    const nav = document.getElementById('nav');
+    if (slides[current].dataset.dark === 'true') nav.classList.add('dark');
+    else nav.classList.remove('dark');
+  }
+
+  function nextSlide() { goTo(current + 1); }
+  function prevSlide() { goTo(current - 1); }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+    if (e.key === 'Home') { goTo(0); }
+    if (e.key === 'End') { goTo(total - 1); }
+  });
+
+  goTo(0);
+
+  // ============ VOTACIÓN ============
+  const voteCounts = {};
+
+  function recordVote(btn, slideIdx) {
+    const vote = btn.dataset.vote;
+    const key = `${slideIdx}-${vote}`;
+    voteCounts[key] = (voteCounts[key] || 0) + 1;
+
+    btn.parentElement.querySelectorAll('.vote-btn').forEach(b => b.classList.remove('voted'));
+    btn.classList.add('voted');
+
+    const opts = ['ninguna', 'pocas', 'varias', 'rutinariamente'];
+    let total = 0;
+    opts.forEach(v => { total += voteCounts[`${slideIdx}-${v}`] || 0; });
+
+    opts.forEach(v => {
+      const count = voteCounts[`${slideIdx}-${v}`] || 0;
+      const pct = total > 0 ? (count / total * 100) : 0;
+      const el = document.getElementById(`vote-${v}-${slideIdx}`);
+      if (el) el.textContent = count;
+      const bar = btn.parentElement.querySelector(`[data-vote="${v}"] .vote-bar`);
+      if (bar) bar.style.width = pct + '%';
+    });
+
+    document.getElementById(`vote-hint-${slideIdx}`).textContent = `Voto registrado. Total: ${total} respuestas. La distribución suele sorprender — y ese asombro es parte de lo que el Aula Honesta nombra.`;
+  }
+
+  // ============ SIMULADOR T/I/F ============
+  const scenarios = {
+    tutorIA: {
+      claim: '«El uso sostenido de tutores IA produce dependencia cognitiva medible a los cinco años.»',
+      t: 15, i: 20, f: 10
+    },
+    vacunas: {
+      claim: '«Las vacunas pediátricas del calendario oficial son seguras en niños sanos.»',
+      t: 88, i: 8, f: 5
+    },
+    flipped: {
+      claim: '«El aula invertida mejora el rendimiento académico respecto a la clase tradicional.»',
+      t: 50, i: 25, f: 45
+    }
+  };
+
+  function setScenario(key) {
+    const s = scenarios[key];
+    document.getElementById('sim-claim').textContent = s.claim;
+    document.getElementById('sim-t').value = s.t;
+    document.getElementById('sim-i').value = s.i;
+    document.getElementById('sim-f').value = s.f;
+    document.querySelectorAll('.scenario-tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    updateSimulator();
+  }
+
+  function updateSimulator() {
+    const t = parseInt(document.getElementById('sim-t').value);
+    const i = parseInt(document.getElementById('sim-i').value);
+    const f = parseInt(document.getElementById('sim-f').value);
+
+    document.getElementById('sim-t-out').textContent = (t/100).toFixed(2);
+    document.getElementById('sim-i-out').textContent = (i/100).toFixed(2);
+    document.getElementById('sim-f-out').textContent = (f/100).toFixed(2);
+
+    const total = t + i + f;
+    if (total > 0) {
+      document.getElementById('sim-bar-t').style.width = (t/total*100) + '%';
+      document.getElementById('sim-bar-i').style.width = (i/total*100) + '%';
+      document.getElementById('sim-bar-f').style.width = (f/total*100) + '%';
+    }
+
+    const sum = (t + i + f) / 100;
+    const tn = t/100, In = i/100, fn = f/100;
+
+    let zoneName, zoneText, zoneColor;
+
+    if (tn >= 0.85 && In < 0.15 && fn < 0.15) {
+      zoneName = 'Conocimiento Saturado';
+      zoneText = 'T muy alto, I y F bajos, redundancia alta. La afirmación es un hecho consolidado del campo. Añadir más evidencia tiene valor marginal bajo. <strong>Regla del aula:</strong> calibrar la atención hacia zonas donde el trabajo aún esté por hacer.';
+      zoneColor = '#2d5b7a';
+    } else if (tn >= 0.40 && fn >= 0.40) {
+      zoneName = 'Contradicción';
+      zoneText = 'Evidencia sustancial a favor <em>y</em> sustancial en contra. El debate está vivo. <strong>Regla del aula:</strong> no sintetizar superficialmente — subir a un marco de segundo orden que caracterice la estructura del desacuerdo.';
+      zoneColor = '#7a3b8a';
+    } else if (In >= 0.30) {
+      zoneName = 'Ambigüedad';
+      zoneText = 'La indeterminación domina. La evidencia existe pero no decide. Suele ser semántica (el término clave admite múltiples definiciones) o estructural (la afirmación aplica bajo ciertas condiciones no especificadas). <strong>Regla del aula:</strong> no actuar antes de nombrar lo no resuelto.';
+      zoneColor = 'var(--i-color)';
+    } else if (tn >= 0.70 && In < 0.30 && fn < 0.30) {
+      zoneName = 'Claridad';
+      zoneText = 'La evidencia converge, las opiniones coinciden, no queda disputa relevante. <strong>Regla del aula:</strong> actuar con confianza, documentando la base evidencial. Es la zona donde la exposición y la evaluación convencionales funcionan.';
+      zoneColor = 'var(--t-color)';
+    } else if (sum < 0.6) {
+      zoneName = 'Ignorancia';
+      zoneText = 'T + I + F bajos. El sistema declara que no tiene información suficiente. <strong>Regla del aula:</strong> abstener hasta acumular evidencia, o rediseñar la pregunta hacia algo investigable. <em>No confundir con Contradicción:</em> ausencia de investigación ≠ presencia de investigación contradictoria.';
+      zoneColor = 'var(--ink-soft)';
+    } else {
+      zoneName = 'Zona limítrofe';
+      zoneText = 'La tripleta no encaja claramente en ninguna zona prototípica. Los umbrales son disciplinares — su comunidad de investigación define dónde cae exactamente esta afirmación.';
+      zoneColor = 'var(--rule-strong)';
+    }
+
+    document.getElementById('sim-zone-name').textContent = zoneName;
+    document.getElementById('sim-zone-text').innerHTML = zoneText;
+    document.getElementById('sim-zone').style.borderLeftColor = zoneColor;
+  }
+
+  document.getElementById('sim-t').addEventListener('input', updateSimulator);
+  document.getElementById('sim-i').addEventListener('input', updateSimulator);
+  document.getElementById('sim-f').addEventListener('input', updateSimulator);
+  updateSimulator();
+
+  // ============ CLASIFICADOR DE HIPÓTESIS ============
+  const hypotheses = [
+    {
+      text: '«El uso sostenido de tutores IA produce dependencia cognitiva medible a los cinco años.»',
+      correct: 'ignorancia',
+      common_mistake: 'contradiccion',
+      explain: 'Es <strong>Ignorancia I₁ (declarativa)</strong>. Los tutores IA tienen apenas tres años de uso público amplio — la evidencia longitudinal a cinco años <em>no puede existir todavía</em>. El error común es clasificarla como Contradicción, porque existe debate público. Pero debate público no es evidencia longitudinal.'
+    },
+    {
+      text: '«Las vacunas pediátricas del calendario oficial son seguras en niños sanos.»',
+      correct: 'saturado',
+      common_mistake: 'contradiccion',
+      explain: 'Es <strong>Conocimiento Saturado</strong>. Décadas de evidencia, meta-análisis, vigilancia post-comercialización. El ruido social no es evidencia científica. El error común es clasificarla como Contradicción por la existencia de movimientos antivacunas — pero la existencia de disenso público no produce indeterminación epistémica.'
+    },
+    {
+      text: '«El aula invertida mejora el rendimiento académico respecto a la clase tradicional.»',
+      correct: 'contradiccion',
+      common_mistake: 'claridad',
+      explain: 'Es <strong>Contradicción productiva</strong>. La meta-evidencia es genuinamente mixta: efectos positivos en STEM universitario, nulos o negativos en contextos secundarios masivos, fuertes efectos moderadores por contenido y nivel. El error común es clasificarla como Claridad porque «todos hablan bien del aula invertida» — la fluidez del discurso no es evidencia convergente.'
+    },
+    {
+      text: '«La práctica espaciada produce mejor retención a largo plazo que la práctica masiva equivalente.»',
+      correct: 'claridad',
+      common_mistake: 'saturado',
+      explain: 'Es <strong>Claridad</strong>. La evidencia converge desde Ebbinghaus (1885) hasta meta-análisis recientes (Cepeda et al. 2006 con 254 estudios; Latimier et al. 2021; Wisniewski et al. 2020). El efecto se ha replicado en cientos de estudios, dominios y poblaciones — con tamaños del efecto medio a grande. El error común es clasificarla como <strong>Conocimiento Saturado</strong>: pero no lo es, porque <em>sigue activamente investigándose</em> cómo varían los moderadores (intervalos óptimos en matemáticas vs lengua, edad del aprendiz, tipo de contenido). La diferencia es sutil pero importante: Saturado significa «añadir más evidencia tiene valor marginal bajo»; Claridad significa «la evidencia converge, pero el trabajo refinatorio aún es productivo».'
+    }
+  ];
+
+  let hypIdx = 0;
+
+  function renderHypothesis() {
+    const h = hypotheses[hypIdx];
+    document.getElementById('hyp-text').textContent = h.text;
+    document.getElementById('hyp-counter').textContent = `Hipótesis ${hypIdx + 1} de ${hypotheses.length}`;
+    document.getElementById('classifier-feedback').innerHTML = 'Seleccione la zona que mejor describe el estatus epistémico de esta hipótesis hoy.';
+    document.getElementById('classifier-next').style.display = 'none';
+    document.querySelectorAll('#zone-buttons .zone-btn').forEach(b => {
+      b.classList.remove('correct', 'wrong');
+      b.disabled = false;
+    });
+  }
+
+  function answerClassifier(key, btn) {
+    const h = hypotheses[hypIdx];
+    document.querySelectorAll('#zone-buttons .zone-btn').forEach(b => b.disabled = true);
+
+    if (key === h.correct) {
+      btn.classList.add('correct');
+      document.getElementById('classifier-feedback').innerHTML = `<strong style="color: var(--t-color);">Correcto.</strong> ${h.explain}`;
+    } else {
+      btn.classList.add('wrong');
+      // highlight correct
+      document.querySelectorAll('#zone-buttons .zone-btn').forEach(b => {
+        if (b.textContent.toLowerCase().includes(h.correct.substring(0,5))) {
+          b.classList.add('correct');
+        }
+      });
+      document.getElementById('classifier-feedback').innerHTML = `<strong style="color: var(--f-color);">No exactamente.</strong> ${h.explain}`;
+    }
+
+    document.getElementById('classifier-next').style.display = 'inline-block';
+    if (hypIdx === hypotheses.length - 1) {
+      document.getElementById('classifier-next').textContent = '↻ Reiniciar ejercicio';
+    } else {
+      document.getElementById('classifier-next').textContent = 'Siguiente hipótesis →';
+    }
+  }
+
+  function nextHypothesis() {
+    hypIdx = (hypIdx + 1) % hypotheses.length;
+    renderHypothesis();
+  }
+
+  renderHypothesis();
+
+  // ============ GENERADOR DE OBJETIVOS (Bloom, D, I) ============
+  function generateObjectives() {
+    const course = document.getElementById('course-input').value.trim();
+    const topic = document.getElementById('topic-input').value.trim();
+
+    if (!course || !topic) {
+      alert('Complete ambos campos para generar los objetivos.');
+      return;
+    }
+
+    const courseShort = course.length > 60 ? course.substring(0, 57) + '...' : course;
+    const topicShort = topic.length > 90 ? topic.substring(0, 87) + '...' : topic;
+    const tLower = (course + ' ' + topic).toLowerCase();
+
+    // Detectar naturaleza con regex (sin \b para evitar problemas con acentos)
+    const naturaleza = {
+      etico: /([ée]tic|moral|valores?|deontolog|integridad|responsabilidad)/i.test(tLower),
+      tecnologico: /(\bIA\b|inteligencia artificial|\bLLM\b|tecnolog|software|algoritm|machine learning|chatgpt|claude|gemini|digital|plataforma)/i.test(tLower),
+      metodologico: /(m[ée]todo|metodolog|t[ée]cnica|procedimiento|protocolo|herramienta|instrumento|dise[ñn]o de|enfoque cualitativ|enfoque cuantitativ|enfoque mixto)/i.test(tLower),
+      pedagogico: /(ense[ñn]anza|aprendizaje|did[áa]ctica|pedagog|curr[íi]cul|evaluaci[óo]n aut|estudiante|alumno|docente|aula|clase|gamificaci[óo]n|innovaci[óo]n educativa|aula invertida|flipped)/i.test(tLower),
+      empirico: /(estad[íi]stic|regres|factorial|cuantitativ|cualitativ|emp[íi]rico|experimento|encuesta|muestreo|variable|hip[óo]tesis|correlaci[óo]n|medici[óo]n)/i.test(tLower),
+      teorico: /(teor[íi]a|concepto|epistemolog|filosof|paradigma|marco te[óo]rico|fundamento|ontolog|hermen[ée]utic)/i.test(tLower)
+    };
+
+    // Detectar tipo de objeto del conocimiento (orden = prioridad)
+    let tipo;
+    if (naturaleza.etico) tipo = 'etico';
+    else if (naturaleza.tecnologico) tipo = 'tecnologico';
+    else if (naturaleza.metodologico) tipo = 'metodologico';
+    else if (naturaleza.empirico) tipo = 'empirico';
+    else if (naturaleza.teorico) tipo = 'teorico';
+    else if (naturaleza.pedagogico) tipo = 'pedagogico';
+    else tipo = 'general';
+
+    // ===== PLANTILLAS POR TIPO =====
+    // Cada tipo tiene 3 objetivos calibrados al nivel D (desarrollo) e I (indeterminación)
+    const plantillas = {
+      empirico: [
+        {
+          bloom: 'Analizar', d: 'D₂', i: 'I₁',
+          verb: 'auditar',
+          text: `<span class="verb">auditar</span> tres estudios empíricos contrastados sobre <em>${topicShort}</em>, localizando qué hallazgos están sólidamente replicados, cuáles dependen de moderadores específicos y cuáles permanecen genuinamente sin evidencia longitudinal.`
+        },
+        {
+          bloom: 'Evaluar', d: 'D₃', i: 'I₂',
+          verb: 'calibrar',
+          text: `<span class="verb">calibrar</span> la tripleta (T, I, F) de al menos cinco afirmaciones publicadas en su campo sobre <em>${topicShort}</em>, distinguiendo evidencia convergente de fluidez retórica disfrazada de consenso.`
+        },
+        {
+          bloom: 'Crear', d: 'D₅', i: 'I₃',
+          verb: 'diseñar',
+          text: `<span class="verb">diseñar</span> un estudio propio sobre <em>${topicShort}</em> que reporte explícitamente sus umbrales disciplinares, las preguntas que sus datos <em>no</em> podrán responder, y los moderadores cuyo efecto quedará como indeterminación productiva.`
+        }
+      ],
+      metodologico: [
+        {
+          bloom: 'Comprender', d: 'D₂', i: 'I₁',
+          verb: 'distinguir',
+          text: `<span class="verb">distinguir</span> en qué condiciones <em>${topicShort}</em> es la elección metodológica adecuada, en cuáles introduce sesgo, y en cuáles la literatura aún no ha establecido condiciones de aplicabilidad.`
+        },
+        {
+          bloom: 'Aplicar / Analizar', d: 'D₃', i: 'I₂',
+          verb: 'aplicar',
+          text: `<span class="verb">aplicar</span> <em>${topicShort}</em> a un caso de su propio campo y reportar no solo el resultado, sino el <strong>perfil de indeterminación</strong> del análisis: qué decisiones metodológicas son robustas y cuáles son convenciones.`
+        },
+        {
+          bloom: 'Evaluar', d: 'D₄', i: 'I₂',
+          verb: 'comparar',
+          text: `<span class="verb">comparar</span> <em>${topicShort}</em> con al menos otra alternativa metodológica para la misma pregunta de investigación, articulando bajo qué supuestos cada una sería preferible.`
+        }
+      ],
+      tecnologico: [
+        {
+          bloom: 'Analizar', d: 'D₂', i: 'I₁',
+          verb: 'auditar',
+          text: `<span class="verb">auditar</span> outputs concretos de <em>${topicShort}</em> aplicando la tripleta (T, I, F) — identificando alucinaciones, citas no verificables y zonas de indeterminación que el sistema no reconoce explícitamente.`
+        },
+        {
+          bloom: 'Evaluar', d: 'D₃', i: 'I₂',
+          verb: 'diagnosticar',
+          text: `<span class="verb">diagnosticar</span> en qué tareas del curso de <em>${courseShort}</em> el uso de <em>${topicShort}</em> amplifica el aprendizaje y en cuáles lo erosiona — distinguiendo externalización productiva de delegación cognitiva.`
+        },
+        {
+          bloom: 'Crear', d: 'D₅', i: 'I₃',
+          verb: 'diseñar',
+          text: `<span class="verb">diseñar</span> un protocolo de integración de <em>${topicShort}</em> para su aula que incorpore <strong>fricción productiva</strong>: condiciones que imposibilitan la delegación total y obligan al estudiante a auditar lo que la herramienta produce.`
+        }
+      ],
+      teorico: [
+        {
+          bloom: 'Comprender', d: 'D₂', i: 'I₁',
+          verb: 'mapear',
+          text: `<span class="verb">mapear</span> las posiciones contrastadas sobre <em>${topicShort}</em>, identificando qué compromisos epistemológicos cluster con cada lado del debate — no qué posición es correcta.`
+        },
+        {
+          bloom: 'Analizar', d: 'D₃', i: 'I₂',
+          verb: 'caracterizar',
+          text: `<span class="verb">caracterizar</span> el tipo de desacuerdo activo en torno a <em>${topicShort}</em>: ¿es ambigüedad semántica, contradicción metodológica, o ignorancia disfrazada de debate?`
+        },
+        {
+          bloom: 'Evaluar', d: 'D₄', i: 'I₃',
+          verb: 'formular',
+          text: `<span class="verb">formular</span> la pregunta de segundo orden adecuada para <em>${topicShort}</em>: qué condiciones tendrían que cumplirse para que el desacuerdo en torno a esta noción se resolviera —si es que puede resolverse.`
+        }
+      ],
+      etico: [
+        {
+          bloom: 'Analizar', d: 'D₃', i: 'I₂',
+          verb: 'distinguir',
+          text: `<span class="verb">distinguir</span> en torno a <em>${topicShort}</em> los desacuerdos genuinamente normativos de los desacuerdos empíricos disfrazados de normativos, y de los desacuerdos terminológicos disfrazados de normativos.`
+        },
+        {
+          bloom: 'Evaluar', d: 'D₄', i: 'I₃',
+          verb: 'fundamentar',
+          text: `<span class="verb">fundamentar</span> una posición propia sobre <em>${topicShort}</em> reconociendo explícitamente los puntos donde la indeterminación es irreducible y los compromisos disciplinares que esa posición exige.`
+        },
+        {
+          bloom: 'Crear', d: 'D₅', i: 'I₃',
+          verb: 'redactar',
+          text: `<span class="verb">redactar</span> una guía de práctica para su contexto institucional sobre <em>${topicShort}</em> que reporte sus zonas de claridad, sus zonas de ambigüedad legítima y los casos límite donde la guía explícitamente abstiene del juicio.`
+        }
+      ],
+      pedagogico: [
+        {
+          bloom: 'Analizar', d: 'D₂', i: 'I₁',
+          verb: 'auditar',
+          text: `<span class="verb">auditar</span> tres afirmaciones comunes sobre <em>${topicShort}</em> en la literatura de educación, identificando cuáles tienen evidencia convergente, cuáles dependen de moderadores no explicitados y cuáles son creencias profesionales sin base empírica.`
+        },
+        {
+          bloom: 'Aplicar / Evaluar', d: 'D₃', i: 'I₂',
+          verb: 'rediseñar',
+          text: `<span class="verb">rediseñar</span> una práctica habitual de su curso <em>${courseShort}</em> sobre <em>${topicShort}</em> incorporando un instrumento explícito de indeterminación: una pregunta, rúbrica o producto que el estudiante <em>no</em> puede responder con confianza si no ha hecho el trabajo epistémico.`
+        },
+        {
+          bloom: 'Crear', d: 'D₅', i: 'I₃',
+          verb: 'producir',
+          text: `<span class="verb">producir</span> una rúbrica de evaluación para <em>${topicShort}</em> que califique no solo la corrección del resultado, sino la capacidad del estudiante de identificar qué partes de su propio trabajo permanecen genuinamente indeterminadas.`
+        }
+      ],
+      general: [
+        {
+          bloom: 'Analizar', d: 'D₂', i: 'I₁',
+          verb: 'identificar',
+          text: `<span class="verb">identificar</span> en <em>${topicShort}</em> qué afirmaciones tienen base empírica robusta, cuáles son convenciones disciplinares y cuáles son hipótesis sin evidencia que circulan como si fueran consenso.`
+        },
+        {
+          bloom: 'Evaluar', d: 'D₃', i: 'I₂',
+          verb: 'caracterizar',
+          text: `<span class="verb">caracterizar</span> la zona pedagógica predominante de <em>${topicShort}</em> en su campo: Claridad, Ambigüedad, Contradicción, Ignorancia o Conocimiento Saturado — justificando con literatura específica.`
+        },
+        {
+          bloom: 'Crear', d: 'D₅', i: 'I₃',
+          verb: 'producir',
+          text: `<span class="verb">producir</span> un material de aprendizaje sobre <em>${topicShort}</em> que enseñe explícitamente la indeterminación del tema, no solo el contenido consolidado.`
+        }
+      ]
+    };
+
+    const objectives = plantillas[tipo];
+
+    // Etiqueta legible del tipo detectado
+    const tipoLabel = {
+      empirico: 'Tema empírico',
+      metodologico: 'Tema metodológico',
+      tecnologico: 'Tema tecnológico',
+      teorico: 'Tema teórico-conceptual',
+      etico: 'Tema normativo',
+      pedagogico: 'Tema pedagógico',
+      general: 'Tema general'
+    }[tipo];
+
+    const html = `
+      <p style="font-family: 'Helvetica Neue', sans-serif; font-size: clamp(11px, 1.2vw, 13px); color: var(--ink-soft); margin-bottom: 1.5vh;">
+        <strong>Naturaleza detectada:</strong> ${tipoLabel} ·
+        <strong>Curso:</strong> ${courseShort}
+      </p>
+    ` + objectives.map(o => `
+      <div class="objetivo">
+        <span class="tuple">Bloom: ${o.bloom}</span>
+        <span class="tuple">${o.d}</span>
+        <span class="tuple">${o.i}</span>
+        <p style="margin-top: 0.8vh;">El estudiante será capaz de ${o.text}</p>
+      </div>
+    `).join('');
+
+    document.getElementById('obj-list').innerHTML = html;
+    document.getElementById('obj-output').classList.add('visible');
+  }
+
+  // ============ REFLEXIÓN PERSONAL ============
+  function updateReflectionStats() {
+    const text = document.getElementById('reflection-input').value.trim();
+    const words = text.length === 0 ? 0 : text.split(/\s+/).length;
+    document.getElementById('reflection-count').textContent = `${words} palabra${words === 1 ? '' : 's'}`;
+  }
+
+  function suggestZone() {
+    const raw = document.getElementById('reflection-input').value.trim();
+    const text = raw.toLowerCase();
+
+    if (text.length < 10) {
+      alert('Escriba una afirmación más larga (mínimo 10 caracteres).');
+      return;
+    }
+
+    // ===== DETECTORES =====
+    // Cada detector devuelve true si encuentra el patrón
+    const detect = {
+      // Marcadores explícitos de evidencia/consenso (señal Claridad o Saturado)
+      hasEvidence: /\b(evidencia|estudios?|meta-?an[áa]lisis|investigaci[óo]n|datos?|investigaciones|hallazgos?|literatura)\b/i.test(text),
+      hasConsensus: /\b(consenso|demostrado|comprobado|establecido|reconocido)\b/i.test(text),
+      hasObvious: /\b(evidente|obvio|todos? sab|incuestionable|fundamental|sin duda|claramente)\b/i.test(text),
+
+      // Marcadores de duda o dependencia contextual (señal Ambigüedad)
+      hasDependency: /\b(depende|seg[úu]n|en (cierta|cierto|algunos?|algunas?) (medida|caso|contexto)|a veces|puede ser|podr[íi]a|tiende a|suele)\b/i.test(text),
+      hasUncertain: /\b(quiz[áa]s|tal vez|posiblemente|aparentemente|al parecer)\b/i.test(text),
+
+      // Marcadores de debate explícito (señal Contradicción)
+      hasDebate: /\b(debate|discusi[óo]n|controversia|controvertido|disputa|frente a|por (un|otro) lado|en cambio|mientras que|sin embargo|aunque)\b/i.test(text),
+      hasOppositeViews: /\b(algunos? (sostienen|argumentan|defienden|afirman)|otros? (sostienen|argumentan|defienden|afirman|cuestionan|critican))\b/i.test(text),
+
+      // Marcadores de ignorancia honesta (señal Ignorancia)
+      hasGap: /\b(no se sabe|falta(n)? (investigaci[óo]n|estudios?|evidencia|datos?)|a[úu]n no|todav[íi]a no|requiere (m[áa]s )?(estudio|investigaci[óo]n)|desconoci(do|da|dos|das)|no hay (datos|evidencia|estudios))\b/i.test(text),
+      hasOpenQuestion: /\b(pregunta abierta|cuesti[óo]n abierta|por determinar|sin resolver)\b/i.test(text),
+
+      // Cuantificadores absolutos (señal de fragilidad — probablemente no Claridad limpia)
+      hasAbsolute: /\b(siempre|nunca|todo|nada|ning[úu]n[oa]?|jam[áa]s|cualquier|cada)\b/i.test(text),
+
+      // Patrones sintácticos de AFIRMACIÓN DECLARATIVA SIMPLE
+      // Ej: "X mejora Y" / "X causa Y" / "X es Y" sin matización
+      isSimpleDeclarative: /\b(mejora(n)?|aumenta(n)?|reduce(n)?|causa(n)?|produce(n)?|genera(n)?|incrementa(n)?|disminuye(n)?|fomenta(n)?|previene(n)?|funciona(n)?)\b/i.test(text) &&
+                          !/\b(podr[íi]a|puede|tal vez|seg[úu]n|depende|a veces)\b/i.test(text),
+
+      // Patrón comparativo absoluto: "X es mejor/peor que Y"
+      isComparative: /\b(mejor|peor|m[áa]s (eficaz|efectivo|eficiente)|menos (eficaz|efectivo|eficiente)|superior|inferior) que\b/i.test(text),
+
+      // Patrón "X es Y" sin moderadores
+      isAssertion: /\b(es|son) (un[ao]?\s)?(fundamental|esencial|necesari[oa]|imprescindible|inevitable|natural|obvio|cierto|verdadero)\b/i.test(text)
+    };
+
+    // ===== INFERENCIA =====
+    let suggested = [];
+    let rationale = '';
+
+    if (detect.hasGap || detect.hasOpenQuestion) {
+      suggested = ['ignorancia'];
+      rationale = 'La afirmación reconoce explícitamente un vacío de investigación. Eso es valioso epistémicamente — distingue ignorancia honesta de contradicción simulada. Verifique si el vacío es real o si solo refleja desconocimiento personal de la literatura.';
+    }
+    else if (detect.hasDebate || detect.hasOppositeViews) {
+      suggested = ['contradiccion'];
+      rationale = 'La afirmación reconoce posiciones opuestas. Si ambas tienen evidencia sustancial, es Contradicción productiva. La salida no es sintetizar, sino subir a segundo orden: ¿qué tipo de desacuerdo es, qué compromisos cluster con cada lado?';
+    }
+    else if (detect.hasObvious || (detect.hasConsensus && detect.hasEvidence)) {
+      suggested = ['saturado', 'claridad'];
+      rationale = 'La afirmación usa lenguaje de obviedad o consenso establecido. Si la evidencia realmente está consolidada y replicada, es Conocimiento Saturado (añadir evidencia tiene valor marginal bajo). Si aún se refina, es Claridad. Verifique cuál de las dos aplica.';
+    }
+    else if (detect.hasEvidence && !detect.hasDependency) {
+      suggested = ['claridad', 'saturado'];
+      rationale = 'La afirmación apela a evidencia convergente. Si la convergencia es real y robusta, es Claridad. Pregúntese: ¿quién la mide, con qué instrumento, en qué población? Verifique si la convergencia es real o solo declarada.';
+    }
+    else if (detect.hasDependency || detect.hasUncertain) {
+      suggested = ['ambiguedad'];
+      rationale = 'La afirmación contiene marcadores de dependencia contextual ("depende", "según", "puede"). El término clave probablemente admite múltiples operacionalizaciones. La salida es nombrar explícitamente bajo qué definición se evalúa.';
+    }
+    else if (detect.isSimpleDeclarative || detect.isComparative || detect.isAssertion) {
+      // Afirmación declarativa sin marcadores de matización: típica de contextos académicos donde la confianza retórica oculta la indeterminación real
+      if (detect.hasAbsolute) {
+        suggested = ['contradiccion', 'ambiguedad'];
+        rationale = 'Afirmación declarativa con cuantificador absoluto ("siempre", "todo", "nunca"). En contextos académicos, este tipo de afirmación casi nunca corresponde a Claridad cuando se examina empíricamente: la evidencia suele revelar moderadores y excepciones. Lo más probable es Contradicción o Ambigüedad.';
+      } else {
+        suggested = ['ambiguedad', 'contradiccion'];
+        rationale = 'Afirmación declarativa categórica ("X mejora Y", "X es mejor que Y") sin moderadores ni matización. Estas son las afirmaciones más interesantes pedagógicamente: suenan a Claridad pero suelen ocultar Ambigüedad (¿qué se entiende exactamente por X? ¿en qué condiciones?) o Contradicción (¿hay evidencia opuesta que la afirmación no menciona?). Reescríbala especificando bajo qué definiciones y condiciones.';
+      }
+    }
+    else if (detect.hasAbsolute) {
+      suggested = ['contradiccion', 'ambiguedad'];
+      rationale = 'La afirmación usa cuantificadores absolutos ("siempre", "todo", "nada"). En contextos académicos rara vez corresponden a Claridad: la evidencia empírica suele revelar moderadores. Reformule especificando bajo qué condiciones aplica.';
+    }
+    else {
+      // Caso por defecto: afirmación neutra sin marcadores claros
+      suggested = ['ambiguedad'];
+      rationale = 'La afirmación no muestra marcadores lingüísticos fuertes (ni de evidencia, ni de duda, ni de debate). Eso suele indicar Ambigüedad: el contenido depende de cómo se operacionalicen los términos. ¿Qué se entiende exactamente por los conceptos clave de su afirmación?';
+    }
+
+    // ===== RENDER =====
+    const allZones = ['claridad', 'ambiguedad', 'contradiccion', 'ignorancia', 'saturado'];
+    const zoneLabels = {
+      claridad: 'Claridad',
+      ambiguedad: 'Ambigüedad',
+      contradiccion: 'Contradicción',
+      ignorancia: 'Ignorancia',
+      saturado: 'Conoc. Saturado'
+    };
+
+    const html = allZones.map(z => {
+      const isSuggested = suggested.includes(z);
+      return `<span class="zone-pill ${isSuggested ? 'suggested' : ''}">${zoneLabels[z]}</span>`;
+    }).join('');
+
+    document.getElementById('reflection-zones-list').innerHTML = html;
+    document.getElementById('reflection-rationale').textContent = rationale;
+    document.getElementById('reflection-suggest').classList.add('visible');
+  }
+</script>
+
+</body>
+</html>
