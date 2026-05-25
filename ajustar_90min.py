@@ -392,6 +392,14 @@ slides_guion = [
     ("n", "Pausa de 3 segundos. Deja que las imágenes respiren. Este es el momento más filosófico de la clase."),
 ]),
 
+("SLIDE 7f — NIETZSCHE Y LA NATURALEZA DE LA VERDAD", "2 min", KEEP, [
+    ("t", '"Antes de hablar de los tres marcos, necesito hacerles una pregunta que Nietzsche planteó en 1873 y que nadie ha respondido bien todavía."'),
+    ("t", '"El filósofo esconde algo detrás de un arbusto — una premisa, un valor, un deseo — luego sale a buscarlo en el mundo y lo encuentra. Y cree que acaba de descubrir la verdad. Lo que afirmamos que existe, lo buscamos en el mundo. Y lo vemos porque lo llevamos adentro."'),
+    ("t", '"La cita exacta, verificada: \'Las verdades son ilusiones de las que se ha olvidado que lo son — metáforas gastadas, sin poder sensorial; monedas que han perdido su imagen y ya solo cuentan como metal, no como monedas.\' Eso es de Sobre la verdad y la mentira en sentido extramoral, 1873."'),
+    ("t", '"Vemos el mundo como somos, no como es. La neutrosofía no escapa de esto — pero lo reconoce y lo puede medir. La I no es ruido: es la huella de Nietzsche en los datos."'),
+    ("n", "Pausa breve. Esta idea conecta directamente con el siguiente slide sobre cuál de los tres marcos es más fundamental."),
+]),
+
 ("SLIDE 7e — VERDAD vs PROBABILIDAD vs INDETERMINACIÓN", "3 min", KEEP, [
     ("t", '"Antes de mostrarles el marco formal, quiero hacerles una pregunta que los filósofos llevan treinta años sin responder bien: ¿qué es más fundamental — la verdad, la probabilidad o la indeterminación?"'),
     ("t", '"La respuesta estándar, la que daría la mayoría de los filósofos analíticos: la verdad. La probabilidad sería solo ignorancia — si supieras todo, no la necesitarías. Posición bayesiana clásica: la probabilidad es epistemológica, no ontológica."'),

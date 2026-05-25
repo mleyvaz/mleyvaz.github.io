@@ -1896,6 +1896,31 @@
   #optionalBadge.visible { display: flex; }
   #optionalBadge:hover { background: rgba(240,160,32,0.25); }
 
+
+  /* ============ OPTIONAL SLIDE INDICATOR ============ */
+  #optionalBadge {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 500;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(240,160,32,0.15);
+    border: 1.5px solid rgba(240,160,32,0.55);
+    border-radius: 100px;
+    padding: 7px 16px 7px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #f0a020;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    user-select: none;
+  }
+  #optionalBadge.visible { display: flex; }
+  #optionalBadge:hover { background: rgba(240,160,32,0.25); }
+
 </style>
 </head>
 <body>
@@ -2880,6 +2905,85 @@
         <div style="font-family:'Fraunces',serif; font-size:13px; font-style:italic; color:rgba(255,255,255,0.55); max-width:480px; line-height:1.5;">
           "No verdadero. No falso. No su promedio. <strong style="color:rgba(255,255,255,0.85);">Una tercera respuesta</strong> que preserva la estructura de lo que no sabemos."
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 7f: NIETZSCHE Y LA NATURALEZA DE LA VERDAD ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Friedrich Nietzsche · 1873</span>
+        <span class="part">La naturaleza de la verdad</span>
+      </div>
+      <div class="right">7f</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Sobre la verdad y la mentira en sentido extramoral &middot; <em>Ueber Wahrheit und Luege im aussermoralischen Sinne</em></div>
+
+      <div style="display: grid; grid-template-columns: 1fr 320px; gap: 32px; align-items: start; margin-top: 16px;">
+
+        <!-- Columna izquierda: argumento en 3 pasos -->
+        <div>
+          <!-- Paso 1: La met&aacute;fora del arbusto -->
+          <div style="padding: 16px 20px; background: rgba(255,255,255,0.04); border-left: 3px solid rgba(255,215,0,0.5); border-radius: 0 8px 8px 0; margin-bottom: 14px;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,215,0,0.55); margin-bottom:6px;">La trampa que Nietzsche vio</div>
+            <p style="font-family:'Fraunces',serif; font-size:15px; color:rgba(255,255,255,0.88); line-height:1.65; margin:0;">
+              El fil&oacute;sofo esconde algo detr&aacute;s de un arbusto &mdash; una premisa, un valor, un deseo &mdash;
+              luego sale a buscarlo en el mundo y lo encuentra.
+              Y cree que acaba de descubrir la verdad.
+            </p>
+            <div style="margin-top:8px; font-size:10px; color:rgba(255,255,255,0.4); font-style:italic;">Lo que afirmamos que existe, lo buscamos en el mundo. Y lo vemos porque lo llevamos adentro.</div>
+          </div>
+
+          <!-- Paso 2: Cita verificada -->
+          <div style="padding: 18px 22px; background: rgba(255,215,0,0.06); border: 1px solid rgba(255,215,0,0.2); border-radius: 10px; margin-bottom: 14px;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,215,0,0.6); margin-bottom:10px;">Cita verificada &mdash; <em>Sobre la verdad y la mentira</em>, 1873</div>
+            <blockquote style="margin:0; padding:0;">
+              <p style="font-family:'Fraunces',serif; font-size:17px; font-style:italic; color:#fff; line-height:1.7; margin:0;">
+                &ldquo;Las verdades son ilusiones de las que se ha olvidado que lo son &mdash;
+                met&aacute;foras gastadas, sin poder sensorial; monedas que han perdido su imagen
+                y ya solo cuentan como metal, no como monedas.&rdquo;
+              </p>
+            </blockquote>
+            <div style="margin-top:10px; font-size:9px; color:rgba(255,215,0,0.45); font-family:'JetBrains Mono',monospace; letter-spacing:0.12em;">
+              Original: &ldquo;Wahrheiten sind Illusionen, von denen man vergessen hat, dass sie welche sind.&rdquo;
+            </div>
+          </div>
+
+          <!-- Paso 3: Puente a neutrosofia -->
+          <div style="padding: 14px 18px; background: rgba(0,180,216,0.06); border: 1px solid rgba(0,180,216,0.2); border-radius: 8px;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:var(--unir-cyan-light); margin-bottom:7px;">Vemos el mundo como somos, no como es &mdash; y aqu&iacute; entra la neutrosofia</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div>
+                <div style="font-size:10px; color:rgba(255,255,255,0.5); margin-bottom:3px; font-family:'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:0.1em; font-size:8px;">Nietzsche diagnostica</div>
+                <div style="font-size:11px; color:rgba(255,255,255,0.75); line-height:1.5;">La verdad que &ldquo;descubrimos&rdquo; es la que pusimos nosotros. El conocimiento tiene siempre una deformaci&oacute;n de origen.</div>
+              </div>
+              <div>
+                <div style="font-size:10px; color:rgba(255,255,255,0.5); margin-bottom:3px; font-family:'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:0.1em; font-size:8px;">La neutrosofia responde</div>
+                <div style="font-size:11px; color:rgba(255,255,255,0.75); line-height:1.5;">No escapa de eso &mdash; pero lo <strong style="color:var(--unir-cyan-light);">reconoce y lo puede medir</strong>. La <em>I</em> no es ruido: es la huella de Nietzsche en los datos.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna derecha: retrato + datos -->
+        <div style="text-align: center;">
+          <div style="width:200px; height:240px; border-radius:12px; overflow:hidden; margin:0 auto 14px; border:1.5px solid rgba(255,215,0,0.3); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nietzsche187a.jpg/300px-Nietzsche187a.jpg"
+                 style="width:100%; height:100%; object-fit:cover; object-position:top center;" alt="Friedrich Nietzsche c.1875" loading="lazy">
+          </div>
+          <div style="font-family:'Fraunces',serif; font-size:17px; font-weight:600; color:#fff; margin-bottom:3px;">Friedrich Nietzsche</div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,215,0,0.55); margin-bottom:10px;">1844 &ndash; 1900 &middot; R&ouml;cken, Prusia</div>
+          <div style="padding:10px 12px; background:rgba(255,255,255,0.04); border-radius:8px; font-size:10px; color:rgba(255,255,255,0.55); line-height:1.6; text-align:left;">
+            <em>M&aacute;s all&aacute; del bien y del mal</em> &sect;6:<br>
+            &ldquo;Toda gran filosof&iacute;a ha sido hasta ahora la confesion personal de su autor &mdash; una especie de memorias involuntarias e inconscientes.&rdquo;
+          </div>
+          <div style="margin-top:10px; font-size:9px; color:rgba(255,255,255,0.28); line-height:1.5; font-family:'JetBrains Mono',monospace;">
+            Foto: c. 1875<br>Wikimedia Commons &middot; PD
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
