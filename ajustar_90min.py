@@ -409,6 +409,27 @@ slides_guion = [
     ("n", "Presionar Revelar conexión filosófica antes de pasar al siguiente slide."),
 ]),
 
+("SLIDE 7h — SESGO INSTITUCIONAL EN LLMs", "4 min", KEEP, [
+    ("t", '"Ahora voy a mostrarles algo que medimos nosotros. No es especulación filosófica — son 480 llamadas API con resultados reales."'),
+    ("i", "MOSTRAR: barras T1 vs T5, las dos columnas del slide. Dejar que los números hablen 5 segundos antes de explicar."),
+    ("t", '"Mismo CV. Mismo nombre. Misma lista de publicaciones. Única diferencia: Columbia University o Universidad de Guayaquil. Resultado: 7.63 vs 7.41. Delta de 0.22 puntos, consistente en los cuatro modelos."'),
+    ("t", '"Lo que hace que esto sea filosóficamente importante: el efecto nombre — Juan Carlos vs John — es menos 0.08, estadísticamente nulo. En dos modelos incluso favorece al nombre latino. Pero el efecto institución es más 0.22. Los modelos no discriminan por etnia. Discriminan por capital simbólico geográfico."'),
+    ("t", '"El hallazgo crítico: el efecto persiste en crédito bancario, en experiencia clínica — dominios donde el nombre de la institución no debería influir. El modelo aplica el prestigio institucional como proxy global de calidad, incluso donde es racionalmente inválido."'),
+    ("t", '"Y el NBI cuantifica lo que el modelo no declara: la componente F se multiplica por 12.8 al pasar de Columbia a Guayaquil. Eso no es ruido estadístico. Es la huella del sesgo oculto que la neutrosofia hace visible."'),
+    ("n", "Pausa breve después del número 12.8. Dejar que asiente antes de pasar al mapa filosófico."),
+]),
+
+("SLIDE 7i — POSICIONES FILOSÓFICAS SOBRE LA VERDAD", "3 min", KEEP, [
+    ("t", '"Antes del debate sobre cuál gana, quiero mostrarles el mapa completo. Hay cinco respuestas serias a qué es la verdad, y ninguna es suficiente sola."'),
+    ("i", "RECORRER el lado izquierdo brevemente: leer solo el nombre y el problema de cada posición. No más de 20 segundos por posición."),
+    ("t", '"Correspondencia: la del sentido común. Falla porque ningún agente accede a los hechos sin mediación. El slide anterior lo demuestra empíricamente con F por 12."'),
+    ("t", '"Coherencia: dos sistemas coherentes incompatibles son igualmente verdaderos. No resuelve — formaliza la disputa. Pragmatismo: funciona para quién. Deflacionismo: elegante pero vacío."'),
+    ("t", '"La posición más defendible: Lynch 2009 — pluralismo alético. La verdad es una propiedad funcional, no una esencia. Su naturaleza depende del dominio. La verdad matemática funciona distinto que la empírica, que la moral."'),
+    ("t", '"Y la neutrosofia operacionaliza exactamente eso: T captura lo que el marco ve correctamente, I la perspectiva irreducible de Nietzsche que no desaparece con más datos, F el sesgo sistemático no declarado."'),
+    ("t", '"La línea que quiero que se lleven: la objetividad no desaparece. Se convierte en la tarea de minimizar F y hacer explícita la I."'),
+    ("n", "Transición: este slide prepara el terreno para el debate del siguiente — cuál de los tres marcos es más fundamental."),
+]),
+
 ("SLIDE 7e — VERDAD vs PROBABILIDAD vs INDETERMINACIÓN", "3 min", KEEP, [
     ("t", '"Antes de mostrarles el marco formal, quiero hacerles una pregunta que los filósofos llevan treinta años sin responder bien: ¿qué es más fundamental — la verdad, la probabilidad o la indeterminación?"'),
     ("t", '"La respuesta estándar, la que daría la mayoría de los filósofos analíticos: la verdad. La probabilidad sería solo ignorancia — si supieras todo, no la necesitarías. Posición bayesiana clásica: la probabilidad es epistemológica, no ontológica."'),
