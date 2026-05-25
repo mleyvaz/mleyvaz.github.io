@@ -400,6 +400,15 @@ slides_guion = [
     ("n", "Pausa breve. Esta idea conecta directamente con el siguiente slide sobre cuál de los tres marcos es más fundamental."),
 ]),
 
+("SLIDE 7g — ILUSIÓN ÓPTICA INTERACTIVA", "3 min", KEEP, [
+    ("t", '"Antes de continuar con la filosofía, quiero que hagan algo: voten. Dos imágenes, sin trampa. Lo que vean primero."'),
+    ("i", "INTERACCIÓN: Proyectar slide. Pedir que todos voten en los botones — pato o conejo, azul/negro o blanco/dorado. Esperar 30-45 segundos a que todos voten. Luego mostrar los contadores."),
+    ("t", '"¿Ven los resultados? La sala se acaba de dividir ante los mismos datos. Sin debate, sin argumento — cada uno vio lo que su sistema perceptivo hizo visible."'),
+    ("t", '"Wittgenstein usó exactamente este dibujo en Investigaciones Filosóficas. Su argumento: ver como no es posterior a la percepción — es la percepción misma. No ves el pato y luego lo interpretas: ya lo ves-como-pato desde el primer instante."'),
+    ("t", '"Eso es exactamente lo que Nietzsche dijo sobre la verdad: la metáfora que ya llevamos adentro. Y es lo que le pasa al LLM cuando responde con T=0.95 — colapsa la división de la sala a una sola respuesta y llama a eso certeza."'),
+    ("n", "Presionar Revelar conexión filosófica antes de pasar al siguiente slide."),
+]),
+
 ("SLIDE 7e — VERDAD vs PROBABILIDAD vs INDETERMINACIÓN", "3 min", KEEP, [
     ("t", '"Antes de mostrarles el marco formal, quiero hacerles una pregunta que los filósofos llevan treinta años sin responder bien: ¿qué es más fundamental — la verdad, la probabilidad o la indeterminación?"'),
     ("t", '"La respuesta estándar, la que daría la mayoría de los filósofos analíticos: la verdad. La probabilidad sería solo ignorancia — si supieras todo, no la necesitarías. Posición bayesiana clásica: la probabilidad es epistemológica, no ontológica."'),
