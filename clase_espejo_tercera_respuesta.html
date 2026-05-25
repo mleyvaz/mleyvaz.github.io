@@ -1,0 +1,4112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La tercera respuesta en analítica de datos — Clase Espejo UNIR · UBE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* UNIR-inspired palette (cyan / dark) */
+    --bg-deep: #0a1628;
+    --bg-mid: #0f1e36;
+    --bg-light: #f6f7fb;
+    --ink: #0a1628;
+    --ink-soft: #2a3a52;
+    --ink-faded: #5a6c85;
+    --ink-light: #8b9bb4;
+
+    /* Brand */
+    --unir-cyan: #00b4d8;
+    --unir-cyan-deep: #0096b8;
+    --unir-cyan-light: #4ecdf0;
+
+    /* TIF semantic */
+    --T-color: #06a86c;       /* Truth — green */
+    --T-deep: #058050;
+    --I-color: #f0a020;       /* Indeterminacy — amber */
+    --I-deep: #c47d10;
+    --F-color: #e0413a;       /* Falsity — red */
+    --F-deep: #b32f29;
+
+    /* Surfaces */
+    --surface: rgba(255, 255, 255, 0.04);
+    --surface-strong: rgba(255, 255, 255, 0.08);
+    --rule: rgba(255, 255, 255, 0.12);
+    --rule-strong: rgba(255, 255, 255, 0.25);
+
+    /* Light surface (for light slides) */
+    --surface-light: rgba(10, 22, 40, 0.04);
+    --rule-light: rgba(10, 22, 40, 0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-deep);
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Decorative grid background */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(0, 180, 216, 0.08), transparent 50%),
+      radial-gradient(circle at 85% 80%, rgba(0, 180, 216, 0.05), transparent 50%);
+  }
+
+  .deck {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 3;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    padding: 64px 80px 96px;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.55s cubic-bezier(.4,0,.2,1), transform 0.55s cubic-bezier(.4,0,.2,1);
+    pointer-events: none;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; transform: translateX(0); pointer-events: auto; }
+  .slide.prev { transform: translateX(-40px); }
+
+  /* Light variant */
+  .slide.light {
+    background: var(--bg-light);
+    color: var(--ink);
+  }
+  .slide.light .eyebrow { color: var(--unir-cyan-deep); }
+
+  /* ============ HEADER / FOOTER ============ */
+  .slide-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+  }
+  .slide-header .left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .slide-header .badge {
+    padding: 5px 12px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 100px;
+    color: var(--unir-cyan-light);
+    background: rgba(0, 180, 216, 0.08);
+  }
+  .slide.light .slide-header .badge {
+    border-color: var(--unir-cyan-deep);
+    color: var(--unir-cyan-deep);
+    background: rgba(0, 180, 216, 0.08);
+  }
+  .slide-header .part {
+    color: var(--ink-light);
+  }
+  .slide.light .slide-header .part {
+    color: var(--ink-faded);
+  }
+  .slide-header .right {
+    color: var(--ink-light);
+  }
+  .slide.light .slide-header .right {
+    color: var(--ink-faded);
+  }
+
+  /* ============ PROGRESS BAR ============ */
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.06);
+    z-index: 200;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--unir-cyan), var(--unir-cyan-light));
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ============ FOOTER ============ */
+  .deck-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: linear-gradient(to top, var(--bg-deep) 60%, transparent);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--ink-light);
+    text-transform: uppercase;
+  }
+  .deck-footer.on-light {
+    background: linear-gradient(to top, var(--bg-light) 60%, transparent);
+    color: var(--ink-faded);
+  }
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .footer-brand .institutions {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: none;
+  }
+
+  /* ============ NAV ============ */
+  .nav-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .nav-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--rule);
+    color: rgba(255, 255, 255, 0.7);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .nav-btn:hover {
+    background: var(--unir-cyan);
+    border-color: var(--unir-cyan);
+    color: #fff;
+  }
+  .on-light .nav-btn {
+    background: rgba(10, 22, 40, 0.04);
+    border-color: var(--rule-light);
+    color: var(--ink-soft);
+  }
+  .on-light .nav-btn:hover {
+    background: var(--unir-cyan-deep);
+    border-color: var(--unir-cyan-deep);
+    color: #fff;
+  }
+  .nav-counter {
+    margin: 0 12px;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  /* ============ TYPOGRAPHY ============ */
+  h1, h2, h3, .display {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+  }
+
+  .display-xxl { font-size: clamp(56px, 9vw, 132px); font-weight: 400; }
+  .display-xl  { font-size: clamp(44px, 6.5vw, 96px); font-weight: 500; }
+  .display-l   { font-size: clamp(36px, 5vw, 72px); }
+  .display-m   { font-size: clamp(28px, 3.8vw, 52px); }
+  .display-s   { font-size: clamp(22px, 2.8vw, 36px); }
+
+  em.highlight {
+    font-style: italic;
+    color: var(--unir-cyan-light);
+    font-weight: 500;
+  }
+  .light em.highlight { color: var(--unir-cyan-deep); }
+
+  em.T { color: var(--T-color); font-style: italic; font-weight: 500; }
+  em.I { color: var(--I-color); font-style: italic; font-weight: 500; }
+  em.F { color: var(--F-color); font-style: italic; font-weight: 500; }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--unir-cyan-light);
+    margin-bottom: 24px;
+  }
+
+  blockquote {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(22px, 2.4vw, 34px);
+    line-height: 1.35;
+    color: rgba(255, 255, 255, 0.92);
+    max-width: 900px;
+  }
+  .light blockquote { color: var(--ink); }
+  blockquote cite {
+    display: block;
+    margin-top: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-style: normal;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--ink-light);
+    text-transform: uppercase;
+  }
+  .light blockquote cite { color: var(--ink-faded); }
+
+  p.lead {
+    font-size: 19px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.82);
+    max-width: 720px;
+  }
+  .light p.lead { color: var(--ink-soft); }
+
+  p.body {
+    font-size: 16px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.72);
+    max-width: 660px;
+  }
+  .light p.body { color: var(--ink-soft); }
+
+  /* ============ COVER ============ */
+  .cover {
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover-bg-deco {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .cover-bg-deco::before {
+    content: "";
+    position: absolute;
+    top: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 180, 216, 0.15), transparent 70%);
+  }
+  .cover-bg-deco::after {
+    content: "";
+    position: absolute;
+    bottom: -300px;
+    left: -200px;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 180, 216, 0.08), transparent 70%);
+  }
+
+  .cover-content {
+    position: relative;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 60px;
+    align-items: center;
+  }
+
+  .cover-meta-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .cover-tag {
+    padding: 8px 18px;
+    border: 1px solid var(--unir-cyan);
+    background: rgba(0, 180, 216, 0.12);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--unir-cyan-light);
+  }
+  .cover-tag .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--F-color);
+    margin-right: 8px;
+    vertical-align: middle;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  .cover-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(40px, 5.5vw, 84px);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+    color: #fff;
+  }
+  .cover-title em {
+    color: var(--unir-cyan-light);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .cover-subtitle {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(20px, 2.4vw, 30px);
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 48px;
+    max-width: 800px;
+    font-weight: 400;
+  }
+  .cover-speaker {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 24px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    max-width: 540px;
+  }
+  .cover-speaker-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--unir-cyan), var(--unir-cyan-deep));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .cover-speaker-info .role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--unir-cyan-light);
+    margin-bottom: 4px;
+  }
+  .cover-speaker-info .name {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .cover-speaker-info .affil {
+    font-size: 13px;
+    color: var(--ink-light);
+    margin-top: 4px;
+  }
+  .cover-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 32px;
+    max-width: 540px;
+  }
+  .cover-detail {
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 2px solid var(--unir-cyan);
+    border-radius: 0 6px 6px 0;
+  }
+  .cover-detail .lab {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 4px;
+  }
+  .cover-detail .val {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .cover-tif-visual {
+    width: 360px;
+    height: 360px;
+    position: relative;
+  }
+  .cover-tif-visual svg { width: 100%; height: 100%; }
+
+  /* ============ INSTITUTIONS LOGOS BAR ============ */
+  .logos-bar {
+    position: absolute;
+    top: 32px;
+    right: 80px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    z-index: 10;
+  }
+  .logo-pill {
+    padding: 10px 18px;
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.06);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: rgba(255, 255, 255, 0.85);
+    text-transform: uppercase;
+    backdrop-filter: blur(8px);
+  }
+  .logo-pill strong { color: var(--unir-cyan-light); font-weight: 600; }
+
+  /* ============ TWO COLUMN ============ */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    flex: 1;
+    align-items: center;
+  }
+  .two-col.weighted {
+    grid-template-columns: 1.2fr 1fr;
+  }
+
+  /* ============ STATS / BIG NUMBERS ============ */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    margin-top: 40px;
+  }
+  .stat {
+    border-top: 2px solid var(--unir-cyan);
+    padding-top: 18px;
+  }
+  .stat .num {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(48px, 5vw, 80px);
+    font-weight: 500;
+    line-height: 1;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+  .light .stat .num { color: var(--ink); }
+  .stat .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--unir-cyan-light);
+    margin-top: 10px;
+  }
+  .light .stat .label { color: var(--unir-cyan-deep); }
+  .stat .desc {
+    margin-top: 8px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.72);
+    line-height: 1.5;
+  }
+  .light .stat .desc { color: var(--ink-soft); }
+
+  /* ============ T-I-F CARDS ============ */
+  .tif-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 40px;
+  }
+  .tif-card {
+    padding: 32px 28px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .light .tif-card {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: var(--rule-light);
+    box-shadow: 0 4px 12px rgba(10, 22, 40, 0.04);
+  }
+  .tif-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--rule-strong);
+  }
+  .tif-card .glyph {
+    font-family: 'Fraunces', serif;
+    font-size: 72px;
+    font-weight: 500;
+    line-height: 1;
+    font-style: italic;
+    margin-bottom: 4px;
+  }
+  .tif-card.t .glyph { color: var(--T-color); }
+  .tif-card.i .glyph { color: var(--I-color); }
+  .tif-card.f .glyph { color: var(--F-color); }
+  .tif-card .qname {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin: 4px 0 18px;
+    color: var(--ink-light);
+  }
+  .light .tif-card .qname { color: var(--ink-faded); }
+  .tif-card .question {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 1.25;
+    margin-bottom: 18px;
+    color: #fff;
+  }
+  .light .tif-card .question { color: var(--ink); }
+  .tif-card ul {
+    list-style: none;
+    font-size: 13px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .light .tif-card ul { color: var(--ink-soft); }
+  .tif-card ul li {
+    padding-left: 18px;
+    position: relative;
+    margin-bottom: 4px;
+  }
+  .tif-card ul li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--ink-faded);
+  }
+
+  /* ============ ZONES ============ */
+  .zones-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 32px;
+  }
+  .zone {
+    padding: 24px 28px;
+    border-left: 5px solid;
+    background: var(--surface);
+    border-radius: 0 8px 8px 0;
+    transition: all 0.3s;
+  }
+  .light .zone { background: rgba(255, 255, 255, 0.6); box-shadow: 0 2px 8px rgba(10,22,40,0.04); }
+  .zone.consensus { border-color: var(--T-color); }
+  .zone.ambiguity { border-color: var(--I-color); }
+  .zone.contradiction { border-color: var(--F-color); }
+  .zone.ignorance { border-color: #666; }
+  .zone h3 {
+    font-size: 24px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+    color: #fff;
+  }
+  .light .zone h3 { color: var(--ink); }
+  .zone .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+  .zone.consensus .dot { background: var(--T-color); }
+  .zone.ambiguity .dot { background: var(--I-color); }
+  .zone.contradiction .dot { background: var(--F-color); }
+  .zone.ignorance .dot { background: #888; }
+  .zone .sig {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 10px;
+  }
+  .light .zone .sig { color: var(--ink-faded); }
+  .zone .action {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 19px;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .light .zone .action { color: var(--ink); }
+  .zone .example {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.5;
+  }
+  .light .zone .example { color: var(--ink-soft); }
+
+  /* ============ INTERACTIVE COMPASS ============ */
+  .compass-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    flex: 1;
+    align-items: center;
+  }
+  .compass-controls {
+    padding: 32px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+  }
+  .light .compass-controls { background: rgba(255, 255, 255, 0.7); border-color: var(--rule-light); }
+  .slider-row { margin-bottom: 28px; }
+  .slider-row:last-child { margin-bottom: 0; }
+  .slider-row .lbl {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+  .slider-row .lbl .name {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    font-style: italic;
+  }
+  .slider-row .lbl .val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .light .slider-row .lbl .val { color: var(--ink); }
+  .slider-row.t .name { color: var(--T-color); }
+  .slider-row.i .name { color: var(--I-color); }
+  .slider-row.f .name { color: var(--F-color); }
+  .slider-row .help {
+    font-size: 12px;
+    color: var(--ink-light);
+    margin-top: 6px;
+  }
+  .light .slider-row .help { color: var(--ink-faded); }
+
+  input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    height: 4px;
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+  .light input[type="range"] { background: rgba(10, 22, 40, 0.12); }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid var(--bg-deep);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .light input[type="range"]::-webkit-slider-thumb {
+    border-color: var(--bg-light);
+    box-shadow: 0 2px 8px rgba(10,22,40,0.15);
+  }
+  .t-range::-webkit-slider-thumb { background: var(--T-color); }
+  .i-range::-webkit-slider-thumb { background: var(--I-color); }
+  .f-range::-webkit-slider-thumb { background: var(--F-color); }
+
+  .compass-vis {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .compass-svg { width: 100%; max-width: 380px; }
+  .zone-readout {
+    margin-top: 24px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .zone-readout .zlabel {
+    font-family: 'Fraunces', serif;
+    font-size: 42px;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .zone-readout .zaction {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-top: 10px;
+    color: var(--ink-light);
+  }
+  .light .zone-readout .zaction { color: var(--ink-faded); }
+
+  /* ============ EXPERIMENT (PROMPT THE AI) ============ */
+  .experiment-container {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 28px;
+    margin-top: 24px;
+  }
+  .light .experiment-container { background: rgba(255, 255, 255, 0.7); border-color: var(--rule-light); }
+  .exp-prompt {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: rgba(0, 0, 0, 0.3);
+    color: #b4dfff;
+    padding: 16px 20px;
+    border-radius: 8px;
+    border-left: 3px solid var(--unir-cyan);
+    margin: 12px 0;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+  .light .exp-prompt {
+    background: var(--bg-deep);
+    color: #b4dfff;
+  }
+  .exp-output {
+    margin-top: 16px;
+    padding: 16px 20px;
+    background: rgba(224, 65, 58, 0.08);
+    border-left: 3px solid var(--F-color);
+    border-radius: 8px;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .light .exp-output { color: var(--ink); }
+  .exp-good {
+    margin-top: 16px;
+    padding: 16px 20px;
+    background: rgba(6, 168, 108, 0.08);
+    border-left: 3px solid var(--T-color);
+    border-radius: 8px;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .light .exp-good { color: var(--ink); }
+  .exp-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .exp-label.bad { color: var(--F-color); }
+  .exp-label.good { color: var(--T-color); }
+
+  /* ============ DATA POINT / CALLOUT ============ */
+  .callout {
+    padding: 24px 28px;
+    background: linear-gradient(135deg, rgba(0, 180, 216, 0.12), rgba(0, 180, 216, 0.04));
+    border: 1px solid var(--unir-cyan);
+    border-radius: 10px;
+    margin-top: 28px;
+    max-width: 880px;
+  }
+  .callout .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--unir-cyan-light);
+    margin-bottom: 10px;
+  }
+  .light .callout .label { color: var(--unir-cyan-deep); }
+  .callout .text {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 22px;
+    line-height: 1.4;
+    color: #fff;
+  }
+  .light .callout .text { color: var(--ink); }
+
+  /* ============ TIMELINE ============ */
+  .timeline {
+    margin-top: 32px;
+    position: relative;
+  }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--unir-cyan), transparent);
+  }
+  .tl-item {
+    position: relative;
+    padding-left: 60px;
+    margin-bottom: 24px;
+  }
+  .tl-item::before {
+    content: "";
+    position: absolute;
+    left: 12px;
+    top: 4px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--bg-deep);
+    border: 3px solid var(--unir-cyan);
+  }
+  .light .tl-item::before { background: var(--bg-light); }
+  .tl-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--unir-cyan-light);
+    margin-bottom: 4px;
+  }
+  .light .tl-date { color: var(--unir-cyan-deep); }
+  .tl-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .light .tl-title { color: var(--ink); }
+  .tl-desc {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+    max-width: 720px;
+  }
+  .light .tl-desc { color: var(--ink-soft); }
+
+  /* ============ CONFUSION MATRIX VIS ============ */
+  .matrix-vis {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 480px;
+    margin-top: 32px;
+  }
+  .matrix-cell {
+    padding: 24px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .matrix-cell .val {
+    font-family: 'Fraunces', serif;
+    font-size: 36px;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .matrix-cell .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 8px;
+    opacity: 0.8;
+  }
+  .matrix-cell.tp { background: rgba(6, 168, 108, 0.15); color: var(--T-color); border: 1px solid rgba(6, 168, 108, 0.3); }
+  .matrix-cell.tn { background: rgba(6, 168, 108, 0.08); color: var(--T-color); border: 1px solid rgba(6, 168, 108, 0.2); }
+  .matrix-cell.fp { background: rgba(224, 65, 58, 0.15); color: var(--F-color); border: 1px solid rgba(224, 65, 58, 0.3); }
+  .matrix-cell.fn { background: rgba(224, 65, 58, 0.15); color: var(--F-color); border: 1px solid rgba(224, 65, 58, 0.3); }
+  .matrix-cell.unk { background: rgba(240, 160, 32, 0.15); color: var(--I-color); border: 1px solid rgba(240, 160, 32, 0.3); }
+
+  /* ============ DECISION FLOW ============ */
+  .decision-flow {
+    margin-top: 36px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    position: relative;
+  }
+  .flow-step {
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+  }
+  .light .flow-step { background: rgba(255, 255, 255, 0.7); border-color: var(--rule-light); }
+  .flow-step .num {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--unir-cyan-light);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .light .flow-step .num { color: var(--unir-cyan-deep); }
+  .flow-step .ttl {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .light .flow-step .ttl { color: var(--ink); }
+  .flow-step .dsc {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.4;
+  }
+  .light .flow-step .dsc { color: var(--ink-faded); }
+  .flow-step:not(:last-child)::after {
+    content: "→";
+    position: absolute;
+    right: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--unir-cyan-light);
+    font-size: 20px;
+    z-index: 5;
+  }
+  .light .flow-step:not(:last-child)::after { color: var(--unir-cyan-deep); }
+
+  /* ============ CHECKLIST ============ */
+  .checklist {
+    margin-top: 32px;
+    display: grid;
+    gap: 12px;
+    max-width: 880px;
+  }
+  .check-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    align-items: flex-start;
+  }
+  .light .check-item { background: rgba(255, 255, 255, 0.6); border-color: var(--rule-light); }
+  .check-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--unir-cyan);
+    color: var(--bg-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .check-item .content h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 2px;
+    color: #fff;
+  }
+  .light .check-item .content h4 { color: var(--ink); }
+  .check-item .content p {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.5;
+  }
+  .light .check-item .content p { color: var(--ink-soft); }
+
+  /* ============ POLL / LIVE EXPERIMENT ============ */
+  .poll-container {
+    margin-top: 32px;
+    padding: 28px;
+    background: linear-gradient(135deg, rgba(0, 180, 216, 0.08), transparent);
+    border: 1px solid var(--unir-cyan);
+    border-radius: 12px;
+  }
+  .poll-question {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-style: italic;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  .light .poll-question { color: var(--ink); }
+  .poll-options {
+    display: grid;
+    gap: 10px;
+  }
+  .poll-option {
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+  .light .poll-option { background: rgba(255, 255, 255, 0.6); border-color: var(--rule-light); }
+  .poll-option:hover {
+    border-color: var(--unir-cyan);
+    background: rgba(0, 180, 216, 0.08);
+  }
+  .poll-option.selected {
+    border-color: var(--unir-cyan);
+    background: rgba(0, 180, 216, 0.12);
+  }
+  .poll-option .opt-label {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    color: #fff;
+  }
+  .light .poll-option .opt-label { color: var(--ink); }
+  .poll-option .opt-bar {
+    width: 60px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .light .poll-option .opt-bar { background: rgba(10,22,40,0.08); }
+  .poll-option .opt-bar-fill {
+    height: 100%;
+    background: var(--unir-cyan);
+    width: 0%;
+    transition: width 0.4s;
+  }
+
+  /* ============ FINAL CTA ============ */
+  .final-cta {
+    text-align: center;
+    margin: auto 0;
+    max-width: 900px;
+  }
+  .final-cta .display-xl em.highlight {
+    font-style: italic;
+    color: var(--unir-cyan-light);
+  }
+
+  /* ============ ORNAMENT ============ */
+  .ornament {
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    color: var(--ink-light);
+    margin: 28px 0;
+    font-size: 24px;
+    letter-spacing: 0.4em;
+  }
+
+  /* ============ KBD HINT ============ */
+  .kbd-hint {
+    position: fixed;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--ink-light);
+    text-transform: uppercase;
+    z-index: 101;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .kbd-hint kbd {
+    display: inline-block;
+    padding: 2px 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    margin: 0 3px;
+  }
+
+  /* Scrollbar */
+  .slide::-webkit-scrollbar { width: 6px; }
+  .slide::-webkit-scrollbar-track { background: transparent; }
+  .slide::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+
+  /* ============ SPEAKER / CLOSING ============ */
+  .speaker-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 32px;
+    align-items: center;
+    padding: 36px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 16px;
+    margin-top: 24px;
+  }
+  .light .speaker-card { background: rgba(255, 255, 255, 0.7); border-color: var(--rule-light); }
+  .speaker-avatar-lg {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--unir-cyan), var(--unir-cyan-deep));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Fraunces', serif;
+    font-size: 44px;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  /* ============ DASHBOARD WIDGET ============ */
+  .dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .dash-card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .light .dash-card { background: #fff; border-color: var(--rule-light); box-shadow: 0 2px 12px rgba(10,22,40,0.06); }
+  .dash-card .kpi-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 8px;
+  }
+  .light .dash-card .kpi-label { color: var(--ink-faded); }
+  .dash-card .kpi-value {
+    font-family: 'Fraunces', serif;
+    font-size: 40px;
+    font-weight: 500;
+    line-height: 1;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+  .light .dash-card .kpi-value { color: var(--ink); }
+  .dash-card .kpi-trend {
+    font-size: 12px;
+    color: var(--ink-light);
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .light .dash-card .kpi-trend { color: var(--ink-faded); }
+  .dash-card .tif-bars {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--rule);
+    display: grid;
+    gap: 6px;
+  }
+  .light .dash-card .tif-bars { border-color: var(--rule-light); }
+  .tif-bar {
+    display: grid;
+    grid-template-columns: 18px 1fr 36px;
+    gap: 10px;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+  }
+  .tif-bar .lab {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .tif-bar.t .lab { color: var(--T-color); }
+  .tif-bar.i .lab { color: var(--I-color); }
+  .tif-bar.f .lab { color: var(--F-color); }
+  .tif-bar .bar-bg {
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .light .tif-bar .bar-bg { background: rgba(10,22,40,0.08); }
+  .tif-bar .bar-fg { height: 100%; border-radius: 3px; transition: width 0.6s; }
+  .tif-bar.t .bar-fg { background: var(--T-color); }
+  .tif-bar.i .bar-fg { background: var(--I-color); }
+  .tif-bar.f .bar-fg { background: var(--F-color); }
+  .tif-bar .val { color: rgba(255,255,255,0.7); text-align: right; }
+  .light .tif-bar .val { color: var(--ink-soft); }
+
+  .dash-card .zone-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 12px;
+    font-weight: 600;
+  }
+  .zone-tag.consensus { background: rgba(6,168,108,0.15); color: var(--T-color); border: 1px solid rgba(6,168,108,0.3); }
+  .zone-tag.ambiguity { background: rgba(240,160,32,0.15); color: var(--I-color); border: 1px solid rgba(240,160,32,0.3); }
+  .zone-tag.contradiction { background: rgba(224,65,58,0.15); color: var(--F-color); border: 1px solid rgba(224,65,58,0.3); }
+  .zone-tag.ignorance { background: rgba(136,136,136,0.15); color: #999; border: 1px solid rgba(136,136,136,0.3); }
+
+  .dash-card.alert {
+    border-color: var(--F-color);
+    background: linear-gradient(135deg, rgba(224,65,58,0.06), var(--surface));
+  }
+  .light .dash-card.alert { background: linear-gradient(135deg, rgba(224,65,58,0.04), #fff); border-color: var(--F-color); }
+  .dash-card.warning {
+    border-color: var(--I-color);
+    background: linear-gradient(135deg, rgba(240,160,32,0.06), var(--surface));
+  }
+  .light .dash-card.warning { background: linear-gradient(135deg, rgba(240,160,32,0.04), #fff); border-color: var(--I-color); }
+  .dash-card.ok {
+    border-color: var(--T-color);
+    background: linear-gradient(135deg, rgba(6,168,108,0.06), var(--surface));
+  }
+  .light .dash-card.ok { background: linear-gradient(135deg, rgba(6,168,108,0.04), #fff); border-color: var(--T-color); }
+
+  /* Dashboard toggle */
+  .dash-toggle {
+    display: inline-flex;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    padding: 4px;
+    margin-top: 16px;
+  }
+  .light .dash-toggle { background: rgba(255,255,255,0.7); border-color: var(--rule-light); }
+  .dash-toggle button {
+    padding: 8px 18px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 100px;
+    transition: all 0.25s;
+  }
+  .light .dash-toggle button { color: var(--ink-faded); }
+  .dash-toggle button.active {
+    background: var(--unir-cyan);
+    color: #fff;
+  }
+
+  /* Mini-poll widget (multiple integrated polls) */
+  .mini-poll {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 24px;
+  }
+  .light .mini-poll { background: rgba(255,255,255,0.7); border-color: var(--rule-light); }
+  .mini-poll-q {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-style: italic;
+    color: #fff;
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+  .light .mini-poll-q { color: var(--ink); }
+  .scale-buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .scale-btn {
+    padding: 14px 8px;
+    background: var(--surface-strong);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    color: rgba(255,255,255,0.7);
+    user-select: none;
+  }
+  .light .scale-btn { background: rgba(255,255,255,0.9); border-color: var(--rule-light); color: var(--ink-soft); }
+  .scale-btn:hover { border-color: var(--unir-cyan); transform: translateY(-2px); }
+  .scale-btn.selected {
+    background: var(--unir-cyan);
+    color: #fff;
+    border-color: var(--unir-cyan);
+  }
+  .scale-btn .num {
+    font-size: 20px;
+    font-weight: 600;
+    display: block;
+  }
+  .scale-btn .lbl {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 4px;
+    opacity: 0.7;
+  }
+
+  .poll-result {
+    margin-top: 14px;
+    padding: 12px 16px;
+    background: rgba(0, 180, 216, 0.08);
+    border-left: 3px solid var(--unir-cyan);
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    display: none;
+  }
+  .light .poll-result { color: var(--ink); }
+  .poll-result.show { display: block; animation: slideIn 0.4s; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Live distribution visualization */
+  .dist-bars {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 16px;
+    height: 80px;
+    align-items: end;
+  }
+  .dist-bar {
+    background: var(--surface);
+    border-radius: 4px 4px 0 0;
+    position: relative;
+    transition: height 0.5s cubic-bezier(.4,0,.2,1);
+    min-height: 4px;
+  }
+  .dist-bar .pct {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: rgba(255,255,255,0.6);
+  }
+  .light .dist-bar .pct { color: var(--ink-faded); }
+  .dist-labels {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-light);
+    text-align: center;
+    letter-spacing: 0.1em;
+  }
+
+  /* AI Query lab */
+  .ai-lab {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 28px;
+    margin-top: 24px;
+  }
+  .light .ai-lab { background: #fff; border-color: var(--rule-light); }
+  .ai-lab-input {
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+  }
+  .light .ai-lab-input { background: #fafbfc; border-color: var(--rule-light); color: var(--ink); }
+  .ai-lab-input:focus { border-color: var(--unir-cyan); }
+  .ai-lab-btn {
+    padding: 12px 24px;
+    background: var(--unir-cyan);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 12px;
+    transition: all 0.2s;
+    font-weight: 600;
+  }
+  .ai-lab-btn:hover {
+    background: var(--unir-cyan-deep);
+    transform: translateY(-1px);
+  }
+  .ai-lab-diagnosis {
+    margin-top: 18px;
+    padding: 16px 20px;
+    background: var(--surface-strong);
+    border-left: 3px solid var(--unir-cyan);
+    border-radius: 0 8px 8px 0;
+    display: none;
+  }
+  .light .ai-lab-diagnosis { background: rgba(0,180,216,0.06); }
+  .ai-lab-diagnosis.show { display: block; animation: slideIn 0.4s; }
+  .ai-lab-diagnosis h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+  .light .ai-lab-diagnosis h4 { color: var(--ink); }
+  .ai-lab-diagnosis .diag-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .diag-cell {
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+  }
+  .diag-cell.t { background: rgba(6,168,108,0.12); border: 1px solid rgba(6,168,108,0.3); }
+  .diag-cell.i { background: rgba(240,160,32,0.12); border: 1px solid rgba(240,160,32,0.3); }
+  .diag-cell.f { background: rgba(224,65,58,0.12); border: 1px solid rgba(224,65,58,0.3); }
+  .diag-cell .lab {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .diag-cell.t .lab { color: var(--T-color); }
+  .diag-cell.i .lab { color: var(--I-color); }
+  .diag-cell.f .lab { color: var(--F-color); }
+  .diag-cell .v {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.8);
+    margin-top: 4px;
+  }
+  .light .diag-cell .v { color: var(--ink-soft); }
+
+  /* Discussion prompts */
+  .discussion-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .discussion-card {
+    padding: 20px 24px;
+    background: var(--surface);
+    border-left: 4px solid var(--unir-cyan);
+    border-radius: 0 10px 10px 0;
+  }
+  .light .discussion-card { background: rgba(255,255,255,0.7); }
+  .discussion-card .grp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--unir-cyan-light);
+    margin-bottom: 8px;
+  }
+  .light .discussion-card .grp { color: var(--unir-cyan-deep); }
+  .discussion-card .q {
+    font-family: 'Fraunces', serif;
+    font-size: 19px;
+    font-style: italic;
+    color: #fff;
+    line-height: 1.45;
+  }
+  .light .discussion-card .q { color: var(--ink); }
+  .discussion-card .time {
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--ink-light);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .light .discussion-card .time { color: var(--ink-faded); }
+
+  /* Calibration exercise */
+  .calib-exercise {
+    margin-top: 24px;
+    padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+  }
+  .light .calib-exercise { background: rgba(255,255,255,0.7); border-color: var(--rule-light); }
+  .calib-question {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .calib-question:last-child { border-bottom: none; }
+  .light .calib-question { border-color: var(--rule-light); }
+  .calib-q-text {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    color: #fff;
+  }
+  .light .calib-q-text { color: var(--ink); }
+  .calib-confidence {
+    display: flex;
+    gap: 6px;
+  }
+  .conf-pill {
+    padding: 6px 10px;
+    background: var(--surface-strong);
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: rgba(255,255,255,0.6);
+    user-select: none;
+  }
+  .light .conf-pill { background: rgba(255,255,255,0.9); border-color: var(--rule-light); color: var(--ink-faded); }
+  .conf-pill:hover { border-color: var(--unir-cyan); }
+  .conf-pill.selected { background: var(--unir-cyan); color: #fff; border-color: var(--unir-cyan); }
+  .conf-pill.correct { background: var(--T-color); color: #fff; border-color: var(--T-color); }
+  .conf-pill.wrong { background: var(--F-color); color: #fff; border-color: var(--F-color); }
+
+  /* Worksheet style sections */
+  .worksheet-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 18px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: start;
+  }
+  .light .worksheet-row { border-color: var(--rule-light); }
+  .worksheet-row:last-child { border-bottom: none; }
+  .ws-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--unir-cyan);
+    color: var(--bg-deep);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    flex-shrink: 0;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px) {
+    .slide { padding: 48px 32px 80px; }
+    .logos-bar { right: 32px; gap: 12px; }
+    .logo-pill { padding: 8px 12px; font-size: 9px; }
+    .two-col, .compass-layout { grid-template-columns: 1fr; gap: 32px; }
+    .tif-grid { grid-template-columns: 1fr; }
+    .zones-grid { grid-template-columns: 1fr; }
+    .stat-row { grid-template-columns: 1fr; }
+    .cover-content { grid-template-columns: 1fr; }
+    .cover-tif-visual { display: none; }
+    .decision-flow { grid-template-columns: 1fr 1fr; }
+    .dashboard { grid-template-columns: 1fr; }
+    .discussion-grid { grid-template-columns: 1fr; }
+    .scale-buttons { grid-template-columns: repeat(5, 1fr); gap: 4px; }
+    .scale-btn { padding: 10px 4px; }
+    .scale-btn .num { font-size: 16px; }
+    .ai-lab-diagnosis .diag-grid { grid-template-columns: 1fr; }
+    .calib-question { grid-template-columns: 1fr; gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="deck" id="deck">
+
+  <!-- ============ SLIDE 1: COVER ============ -->
+  <section class="slide cover active">
+    <div class="cover-bg-deco"></div>
+    <div class="logos-bar">
+      <div class="logo-pill"><strong>UNIR</strong> · La Rioja</div>
+      <div class="logo-pill"><strong>UBE</strong> · Ecuador</div>
+    </div>
+    <div class="cover-content">
+      <div>
+        <div class="cover-meta-top">
+          <div class="cover-tag"><span class="dot"></span>Clase Espejo · En Vivo</div>
+        </div>
+        <h1 class="cover-title">
+          La tercera respuesta<br>
+          en <em>analítica de datos</em>
+        </h1>
+        <p class="cover-subtitle">
+          Por qué tu modelo de IA confía en lo que no sabe —<br>
+          y cómo enseñarle a decir "no lo sé".
+        </p>
+        <div class="cover-speaker">
+          <div class="cover-speaker-avatar">M</div>
+          <div class="cover-speaker-info">
+            <div class="role">Ponente</div>
+            <div class="name">Dr. Maikel Yelandi Leyva Vázquez</div>
+            <div class="affil">Coordinador Académico de Posgrado · UBE Ecuador</div>
+          </div>
+        </div>
+        <div class="cover-details">
+          <div class="cover-detail">
+            <div class="lab">Fecha</div>
+            <div class="val">25 de mayo · 20:00</div>
+          </div>
+          <div class="cover-detail">
+            <div class="lab">Modalidad</div>
+            <div class="val">Virtual · Certificable</div>
+          </div>
+        </div>
+      </div>
+      <div class="cover-tif-visual">
+        <svg viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="glowT" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#06a86c" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#06a86c" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="glowI" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#f0a020" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#f0a020" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="glowF" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#e0413a" stop-opacity="0.4"/>
+              <stop offset="100%" stop-color="#e0413a" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- Glows -->
+          <circle cx="180" cy="70" r="70" fill="url(#glowT)"/>
+          <circle cx="70" cy="270" r="70" fill="url(#glowI)"/>
+          <circle cx="290" cy="270" r="70" fill="url(#glowF)"/>
+          <!-- Connecting lines -->
+          <line x1="180" y1="70" x2="70" y2="270" stroke="#00b4d8" stroke-width="0.8" opacity="0.3" stroke-dasharray="4,4"/>
+          <line x1="180" y1="70" x2="290" y2="270" stroke="#00b4d8" stroke-width="0.8" opacity="0.3" stroke-dasharray="4,4"/>
+          <line x1="70" y1="270" x2="290" y2="270" stroke="#00b4d8" stroke-width="0.8" opacity="0.3" stroke-dasharray="4,4"/>
+          <!-- Vertex circles -->
+          <circle cx="180" cy="70" r="42" fill="none" stroke="#06a86c" stroke-width="2"/>
+          <circle cx="70" cy="270" r="42" fill="none" stroke="#f0a020" stroke-width="2"/>
+          <circle cx="290" cy="270" r="42" fill="none" stroke="#e0413a" stroke-width="2"/>
+          <!-- Letters -->
+          <text x="180" y="86" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="48" font-weight="500" fill="#06a86c">T</text>
+          <text x="70" y="286" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="48" font-weight="500" fill="#f0a020">I</text>
+          <text x="290" y="286" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="48" font-weight="500" fill="#e0413a">F</text>
+          <!-- Central data points -->
+          <circle cx="180" cy="200" r="3" fill="#00b4d8"/>
+          <circle cx="160" cy="180" r="2" fill="#00b4d8" opacity="0.6"/>
+          <circle cx="200" cy="220" r="2" fill="#00b4d8" opacity="0.6"/>
+          <circle cx="150" cy="220" r="2" fill="#00b4d8" opacity="0.4"/>
+          <circle cx="210" cy="180" r="2" fill="#00b4d8" opacity="0.4"/>
+          <text x="180" y="208" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="56" font-weight="400" fill="#fff" opacity="0.9">?</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 2: AGENDA ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Sesión 02 / 42</span>
+        <span class="part">Apertura · Agenda</span>
+      </div>
+      <div class="right">90 min charla · 30 min Q&amp;A</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Cinco bloques temáticos · ocho actividades prácticas</div>
+      <h2 class="display-l">Agenda de la <em class="highlight">clase espejo</em>.</h2>
+      <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-top: 40px;">
+        <div class="flow-step">
+          <div class="num">01</div>
+          <div class="ttl">El problema</div>
+          <div class="dsc">Por qué la IA <em>nunca</em> dice "no lo sé"</div>
+        </div>
+        <div class="flow-step">
+          <div class="num">02</div>
+          <div class="ttl">UQ moderno</div>
+          <div class="dsc">Bayes · Conformal · Bootstrap · Dempster · Fuzzy</div>
+        </div>
+        <div class="flow-step">
+          <div class="num">03</div>
+          <div class="ttl">Causalidad</div>
+          <div class="dsc">Pearl, DAGs, do-calculus, contrafactuales</div>
+        </div>
+        <div class="flow-step">
+          <div class="num">04</div>
+          <div class="ttl">Operacional</div>
+          <div class="dsc">Dashboards · OOD · gates de abstención</div>
+        </div>
+        <div class="flow-step">
+          <div class="num">05</div>
+          <div class="ttl">Síntesis</div>
+          <div class="dsc">Kit completo + discusión + cierre</div>
+        </div>
+      </div>
+      <div style="margin-top: 36px; padding: 24px 28px; background: var(--surface); border: 1px solid var(--unir-cyan); border-radius: 10px;">
+        <div class="eyebrow" style="margin-bottom: 14px;">⚡ Actividades prácticas que harás esta noche</div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; font-size: 13px; color: rgba(255,255,255,0.85);">
+          <div><strong style="color: var(--unir-cyan-light);">01</strong> · Termómetro inicial</div>
+          <div><strong style="color: var(--unir-cyan-light);">02</strong> · Test del autor inexistente</div>
+          <div><strong style="color: var(--unir-cyan-light);">03</strong> · Brújula T-I-F en vivo</div>
+          <div><strong style="color: var(--unir-cyan-light);">04</strong> · Lab de diagnóstico</div>
+          <div><strong style="color: var(--unir-cyan-light);">05</strong> · Auto-calibración</div>
+          <div><strong style="color: var(--unir-cyan-light);">06</strong> · Dashboard clásico vs UQ</div>
+          <div><strong style="color: var(--unir-cyan-light);">07</strong> · Discusión en breakouts</div>
+          <div><strong style="color: var(--unir-cyan-light);">08</strong> · Termómetro final</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 3-NEW: WARM-UP POLL (CONFIDENCE THERMOMETER) ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge" style="background: rgba(0,180,216,0.12); border-color: var(--unir-cyan-deep); color: var(--unir-cyan-deep);">⚡ Actividad 01 · Termómetro</span>
+        <span class="part">Antes de empezar · 90 segundos</span>
+      </div>
+      <div class="right">03 / 36</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Calibremos al grupo · Sin respuestas correctas todavía</div>
+      <h2 class="display-m">¿Cuánto <em class="highlight">confías</em> hoy en lo que te dice la IA?</h2>
+      <div class="mini-poll">
+        <div class="mini-poll-q">
+          Cuando usas un LLM (ChatGPT, Claude, Gemini…) para una decisión profesional importante:
+          ¿cuál es tu nivel de confianza en su respuesta? <em>Vota con tu intuición.</em>
+        </div>
+        <div class="scale-buttons" data-poll="trust-thermometer">
+          <div class="scale-btn" data-value="1"><span class="num">1</span><span class="lbl">Cero</span></div>
+          <div class="scale-btn" data-value="2"><span class="num">2</span><span class="lbl">Poca</span></div>
+          <div class="scale-btn" data-value="3"><span class="num">3</span><span class="lbl">Media</span></div>
+          <div class="scale-btn" data-value="4"><span class="num">4</span><span class="lbl">Alta</span></div>
+          <div class="scale-btn" data-value="5"><span class="num">5</span><span class="lbl">Total</span></div>
+        </div>
+        <div class="dist-bars" id="distBars-thermometer">
+          <div class="dist-bar" style="height: 20%"><span class="pct">8%</span></div>
+          <div class="dist-bar" style="height: 55%"><span class="pct">22%</span></div>
+          <div class="dist-bar" style="height: 85%"><span class="pct">34%</span></div>
+          <div class="dist-bar" style="height: 75%"><span class="pct">28%</span></div>
+          <div class="dist-bar" style="height: 25%"><span class="pct">8%</span></div>
+        </div>
+        <div class="dist-labels"><span>CERO</span><span>POCA</span><span>MEDIA</span><span>ALTA</span><span>TOTAL</span></div>
+        <div class="poll-result show">
+          <strong>Lectura típica del grupo</strong>: la mayoría se ubica en confianza media-alta.
+          Al final de la sesión repetiremos esta misma pregunta — y veremos cómo cambia.
+          <em>Tu confianza inicial es el dato que vamos a interrogar.</em>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 3: HOOK ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Parte I</span>
+        <span class="part">El Problema</span>
+      </div>
+      <div class="right">03 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Empecemos con una verdad incómoda</div>
+      <h1 class="display-xl" style="max-width: 1100px;">
+        Tu modelo de IA<br>
+        no te miente.<br>
+        <em class="F">Pero tampoco sabe</em><br>
+        <em class="F">cuándo está equivocado.</em>
+      </h1>
+      <p class="lead" style="margin-top: 40px;">
+        Y eso — para cualquiera que tome decisiones con datos — es <em class="highlight">peor</em> que mentir.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 4: SCHWARTZ CASE ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Caso real</span>
+        <span class="part">Mata v. Avianca · S.D.N.Y. 2023</span>
+      </div>
+      <div class="right">04 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">El día en que ChatGPT inventó seis precedentes legales</div>
+      <h2 class="display-l" style="max-width: 1000px;">
+        Seis citas perfectamente formateadas.<br>
+        <em class="F">Cero existían en la realidad.</em>
+      </h2>
+      <div class="two-col weighted" style="margin-top: 48px;">
+        <div>
+          <p class="lead">
+            Steven Schwartz, abogado con 30 años de experiencia, pidió a ChatGPT que buscara
+            jurisprudencia. Le entregó seis casos con números de expediente, citas y resúmenes
+            coherentes.
+          </p>
+          <p class="lead" style="margin-top: 20px;">
+            Le preguntó <strong>dos veces</strong> si eran reales. La IA confirmó dos veces.
+            Le pidió el texto completo de una opinión. La IA generó páginas enteras — con juez ficticio,
+            razonamiento ficticio, citaciones ficticias — <em>todo internamente consistente</em>.
+          </p>
+          <div class="callout" style="margin-top: 24px;">
+            <div class="label">El punto clave</div>
+            <div class="text">
+              El error no fue confiar en la IA. Fue asumir que un sistema capaz de
+              respuestas confiadas también es capaz de reconocer cuándo esas respuestas no lo son.
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-family: 'Fraunces', serif; font-size: 280px; line-height: 0.9; color: var(--F-color); opacity: 0.25; font-style: italic;">"</div>
+          <div style="margin-top: -100px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-faded);">USD 5 000 de multa · Carrera arruinada</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 5: DATA ANALYTICS PARALLEL ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Pregunta</span>
+        <span class="part">¿Esto solo le pasa a los abogados?</span>
+      </div>
+      <div class="right">05 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Pensemos en analítica de datos</div>
+      <h2 class="display-l" style="max-width: 1100px;">
+        Schwartz le pidió <em class="F">precedentes</em>.<br>
+        Tú le pides al modelo<br>
+        <em class="highlight">predicciones, segmentos, scoring.</em>
+      </h2>
+      <p class="lead" style="margin-top: 32px; max-width: 820px;">
+        El mismo sistema — el que inventa citaciones legales con confianza absoluta — es el que
+        produce: previsiones de demanda, clasificaciones de riesgo crediticio, recomendaciones
+        clínicas, detección de fraude, churn scoring.
+      </p>
+      <div class="stat-row">
+        <div class="stat">
+          <div class="num">~95%</div>
+          <div class="label">Confianza típica</div>
+          <div class="desc">Con la que un LLM responde, sin importar si conoce el dato.</div>
+        </div>
+        <div class="stat">
+          <div class="num">0</div>
+          <div class="label">Calibración nativa</div>
+          <div class="desc">Probabilidad reportada ≠ probabilidad real de acierto.</div>
+        </div>
+        <div class="stat">
+          <div class="num">∞</div>
+          <div class="label">Decisiones diarias</div>
+          <div class="desc">Que profesionales toman confiando en estos outputs.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 6: EXPERIMENT 1 — HALLUCINATION ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge" style="background: rgba(224, 65, 58, 0.12); border-color: var(--F-color); color: var(--F-deep);">⚡ Experimento en vivo · 01</span>
+        <span class="part">Pídele lo imposible</span>
+      </div>
+      <div class="right">06 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Vamos a hacerlo ahora mismo · Abre tu LLM favorito</div>
+      <h2 class="display-m">El test del autor inexistente.</h2>
+      <p class="body" style="margin-top: 16px;">
+        Pídele a ChatGPT, Gemini o Claude que te cite 3 artículos académicos de un autor que
+        <em>tú sabes</em> que no existe. Por ejemplo:
+      </p>
+      <div class="experiment-container">
+        <div class="exp-label good">PROMPT</div>
+        <div class="exp-prompt">Dame 3 artículos académicos del Dr. Eladio Mansiqueta Berrocal sobre analítica predictiva en educación superior, con DOI y año de publicación.</div>
+        <div class="exp-label bad" style="margin-top: 20px;">RESULTADO TÍPICO (FABRICADO)</div>
+        <div class="exp-output">
+          "Aquí están tres artículos del Dr. Eladio Mansiqueta Berrocal:<br>
+          1. <em>'Predictive Analytics in Higher Education Dropout'</em> (2021) — DOI: 10.1080/...<br>
+          2. <em>'Machine Learning for Student Retention'</em> (2022) — DOI: 10.1145/...<br>
+          3. <em>'Big Data en Universidades Iberoamericanas'</em> (2023) — DOI: 10.3390/..."
+        </div>
+        <p class="body" style="margin-top: 16px; max-width: 100%;">
+          Los DOIs <em>parecen</em> reales. Los títulos son plausibles. <strong>Nada de eso existe</strong>.
+          La IA no tenía cómo decir "no encuentro a este autor". Su arquitectura no le permite
+          <em class="highlight">abstenerse</em>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 7: THE ARCHITECTURE PROBLEM ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Diagnóstico técnico</span>
+        <span class="part">¿Por qué pasa esto?</span>
+      </div>
+      <div class="right">07 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">El problema no es un bug. Es la arquitectura.</div>
+      <h2 class="display-l" style="max-width: 1100px;">
+        Un LLM <em class="highlight">no busca verdad</em>.<br>
+        Busca el <em class="F">siguiente token más probable</em>.
+      </h2>
+      <p class="lead" style="margin-top: 32px;">
+        Predice palabra por palabra qué texto continúa de forma estadísticamente plausible dado
+        el contexto. <em>No tiene un módulo</em> que distinga "esto lo sé" de "esto lo estoy inventando
+        porque suena bien".
+      </p>
+      <div class="two-col" style="margin-top: 40px;">
+        <div style="padding: 24px; background: var(--surface); border-left: 4px solid var(--F-color); border-radius: 0 8px 8px 0;">
+          <div class="exp-label bad">Lo que la IA hace</div>
+          <p style="margin-top: 8px; font-family: 'Fraunces', serif; font-size: 22px; line-height: 1.4; color: #fff;">
+            Genera el texto que <em class="F">suena</em> verdadero dado todo lo que ha leído.
+          </p>
+        </div>
+        <div style="padding: 24px; background: var(--surface); border-left: 4px solid var(--T-color); border-radius: 0 8px 8px 0;">
+          <div class="exp-label good">Lo que tú necesitas</div>
+          <p style="margin-top: 8px; font-family: 'Fraunces', serif; font-size: 22px; line-height: 1.4; color: #fff;">
+            Una señal de cuánto <em class="T">sabe</em> versus cuánto está <em class="F">adivinando</em>.
+          </p>
+        </div>
+      </div>
+      <p class="body" style="margin-top: 28px;">
+        La lógica binaria — verdadero/falso — que heredamos de Aristóteles hace <strong>2 400 años</strong>,
+        no contempla un valor intermedio para "indeterminación". Y los LLMs viven sobre esa lógica.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 8: THE THIRD ANSWER ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Parte II</span>
+        <span class="part">El Diagnóstico</span>
+      </div>
+      <div class="right">08 / 30</div>
+    </div>
+    <div class="final-cta" style="text-align: left;">
+      <div class="eyebrow">La hipótesis central de esta charla</div>
+      <h1 class="display-xxl">
+        Existe una<br>
+        <em class="highlight">tercera respuesta.</em>
+      </h1>
+      <p class="lead" style="margin-top: 40px; font-size: 22px;">
+        No es <em class="T">verdadero</em>. No es <em class="F">falso</em>.<br>
+        Es la <em class="I">estructura formal</em> de lo que no sabemos —<br>
+        lo indeterminado, lo contradictorio, lo que exige abstención.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 9: FAMILY OF UNCERTAINTY FRAMEWORKS ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Estado del arte</span>
+        <span class="part">Cuantificación de la incertidumbre — UQ</span>
+      </div>
+      <div class="right">09 / 36</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">No existe una sola herramienta · existe una caja de herramientas</div>
+      <h2 class="display-l" style="max-width: 1100px;">
+        Cinco familias de marcos para<br>
+        <em class="highlight">cuantificar lo que el modelo no sabe.</em>
+      </h2>
+      <p class="body" style="margin-top: 24px;">
+        Decir "este modelo está incierto" no basta. La incertidumbre tiene <em>tipos</em>, y cada uno
+        exige una herramienta distinta. Esta es la caja de herramientas moderna:
+      </p>
+      <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-top: 32px;">
+        <div style="padding: 18px 16px; background: #fff; border-radius: 10px; border-top: 4px solid #4a7c3a; box-shadow: 0 2px 8px rgba(10,22,40,0.06);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faded); margin-bottom: 8px;">01 · Probabilística</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 6px; line-height: 1.2;">Bayes &amp; IC</div>
+          <p style="font-size: 12px; color: var(--ink-soft); line-height: 1.45;">P(A|B), posteriors, intervalos de credibilidad. Útil cuando la incertidumbre es aleatoria.</p>
+        </div>
+        <div style="padding: 18px 16px; background: #fff; border-radius: 10px; border-top: 4px solid var(--unir-cyan); box-shadow: 0 2px 8px rgba(10,22,40,0.06);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faded); margin-bottom: 8px;">02 · Distribution-free</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 6px; line-height: 1.2;">Conformal Prediction</div>
+          <p style="font-size: 12px; color: var(--ink-soft); line-height: 1.45;">Garantías de cobertura sin asumir distribución. La técnica del momento en ML.</p>
+        </div>
+        <div style="padding: 18px 16px; background: #fff; border-radius: 10px; border-top: 4px solid var(--I-color); box-shadow: 0 2px 8px rgba(10,22,40,0.06);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faded); margin-bottom: 8px;">03 · Resampling</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 6px; line-height: 1.2;">Bootstrap &amp; Ensembles</div>
+          <p style="font-size: 12px; color: var(--ink-soft); line-height: 1.45;">Cuantificación empírica vía remuestreo. Robusta a la forma del modelo.</p>
+        </div>
+        <div style="padding: 18px 16px; background: #fff; border-radius: 10px; border-top: 4px solid #8a6420; box-shadow: 0 2px 8px rgba(10,22,40,0.06);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faded); margin-bottom: 8px;">04 · Evidencial</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 6px; line-height: 1.2;">Dempster-Shafer</div>
+          <p style="font-size: 12px; color: var(--ink-soft); line-height: 1.45;">Belief, plausibility e ignorancia explícita. La incertidumbre tiene un canal propio.</p>
+        </div>
+        <div style="padding: 18px 16px; background: #fff; border-radius: 10px; border-top: 4px solid var(--F-color); box-shadow: 0 2px 8px rgba(10,22,40,0.06);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-faded); margin-bottom: 8px;">05 · Lógica vaga</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 6px; line-height: 1.2;">Fuzzy &amp; Neutrosophic</div>
+          <p style="font-size: 12px; color: var(--ink-soft); line-height: 1.45;">Verdad graduada (Zadeh '65) y triple ⟨T,I,F⟩ independiente (Smarandache '95).</p>
+        </div>
+      </div>
+      <div class="callout" style="margin-top: 32px;">
+        <div class="label">Decisión ingenieril</div>
+        <div class="text">
+          Si solo conoces una herramienta, todo problema parece un clavo. La tesis de esta charla:
+          <em>cada salida de IA exige un perfil de incertidumbre — no un solo número de confianza.</em>
+          Veremos las 5 en acción.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE NEW: ALEATORIC vs EPISTEMIC UNCERTAINTY ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Distinción fundamental</span>
+        <span class="part">Tipos de incertidumbre</span>
+      </div>
+      <div class="right">10 / 36</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">El error más caro en analítica es confundir estos dos tipos</div>
+      <h2 class="display-l" style="max-width: 1100px;">
+        Aleatoria vs. <em class="highlight">epistémica.</em><br>
+        Una se mide. La otra exige <em class="I">humildad.</em>
+      </h2>
+      <div class="two-col" style="margin-top: 40px;">
+        <div style="padding: 28px; background: var(--surface); border-left: 4px solid var(--unir-cyan); border-radius: 0 10px 10px 0;">
+          <div class="eyebrow" style="color: var(--unir-cyan-light); margin-bottom: 14px;">Aleatoria · Irreducible</div>
+          <h3 style="font-size: 26px; font-weight: 500; color: #fff; margin-bottom: 14px;">El ruido del mundo.</h3>
+          <p style="font-size: 15px; color: rgba(255,255,255,0.78); line-height: 1.6;">
+            Lanzo un dado: hay 1/6 de probabilidad de sacar un 4. Más datos <em>no</em> reducen esta incertidumbre.
+            Es estructural al fenómeno.
+          </p>
+          <div style="margin-top: 18px; padding: 14px; background: rgba(0,180,216,0.08); border-radius: 6px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--unir-cyan-light); margin-bottom: 4px;">EJEMPLOS</div>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.5;">Tiempo de espera en un call center · variación de retornos de mercado · errores de medición de un sensor.</p>
+          </div>
+        </div>
+        <div style="padding: 28px; background: var(--surface); border-left: 4px solid var(--I-color); border-radius: 0 10px 10px 0;">
+          <div class="eyebrow" style="color: var(--I-color); margin-bottom: 14px;">Epistémica · Reducible</div>
+          <h3 style="font-size: 26px; font-weight: 500; color: #fff; margin-bottom: 14px;">Lo que no sabemos.</h3>
+          <p style="font-size: 15px; color: rgba(255,255,255,0.78); line-height: 1.6;">
+            El modelo no conoce este tipo de paciente. Más datos <em>sí</em> reducen esta incertidumbre.
+            Es ignorancia, no aleatoriedad.
+          </p>
+          <div style="margin-top: 18px; padding: 14px; background: rgba(240,160,32,0.08); border-radius: 6px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--I-color); margin-bottom: 4px;">EJEMPLOS</div>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.5;">Caso fuera de distribución (OOD) · segmento poblacional sub-representado · pregunta posterior al cut-off del LLM.</p>
+          </div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top: 32px;">
+        <div class="label">La trampa de los LLMs</div>
+        <div class="text">
+          Los modelos reportan un solo número de "confianza" que <em>mezcla ambos tipos</em>. Resultado:
+          un LLM dice 0.92 con la misma cara cuando recita la capital de Francia (aleatoria mínima)
+          que cuando inventa una citación científica (epistémica máxima). <em>Misma cifra. Decisiones opuestas.</em>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE NEW: NEUTROSOPHIC AS ONE TOOL ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Una herramienta más</span>
+        <span class="part">Lógica neutrosófica · Smarandache 1995</span>
+      </div>
+      <div class="right">11 / 36</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Una herramienta útil cuando la incertidumbre es estructuralmente epistémica</div>
+      <h2 class="display-l" style="max-width: 1100px;">
+        Tres canales <em class="highlight">independientes.</em>
+      </h2>
+      <p class="body" style="margin-top: 24px;">
+        La neutrosofía añade lo que la probabilidad clásica no puede: una <em>tercera dimensión</em> para
+        la indeterminación. Útil cuando el problema requiere separar lo que apoyas, lo que contradice
+        y lo que simplemente no sabes — sin forzarlos a sumar 1.
+      </p>
+      <div class="tif-grid" style="margin-top: 28px;">
+        <div class="tif-card t">
+          <div class="glyph">T</div>
+          <div class="qname">Truth · Verdad</div>
+          <div class="question">¿Qué <em>apoya</em> esto?</div>
+        </div>
+        <div class="tif-card i">
+          <div class="glyph">I</div>
+          <div class="qname">Indeterminación</div>
+          <div class="question">¿Qué <em>desconocemos</em>?</div>
+        </div>
+        <div class="tif-card f">
+          <div class="glyph">F</div>
+          <div class="qname">Falsity · Falsedad</div>
+          <div class="question">¿Qué <em>contradice</em>?</div>
+        </div>
+      </div>
+      <p class="body" style="margin-top: 24px; font-style: italic;">
+        Esta charla la usa como <em>lente diagnóstica</em> — no porque sea la única respuesta. La combinaremos con
+        conformal prediction, inferencia causal y métodos de OOD según lo que el problema exija.
+      </p>
+    </div>
+  </section>
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Comparación</span>
+        <span class="part">Neutrosofía vs. Probabilidad</span>
+      </div>
+      <div class="right">10 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">"¿Pero esto no lo resuelve la probabilidad?"</div>
+      <h2 class="display-m">No. Y aquí está por qué.</h2>
+      <div class="two-col" style="margin-top: 40px;">
+        <div>
+          <div class="eyebrow" style="color: var(--F-color);">Probabilidad clásica</div>
+          <h3 style="font-size: 28px; margin-bottom: 12px; color: #fff;">P(A) + P(¬A) = 1</h3>
+          <p class="body">
+            Si la probabilidad de que llueva es 70%, la probabilidad de que no llueva es 30%.
+            Suman 1. La "duda" se reparte entre los dos lados.
+          </p>
+          <p class="body" style="margin-top: 16px; color: var(--F-color);">
+            <em>Problema:</em> no hay espacio para "no tengo idea". Si no sé nada del clima, mi
+            probabilidad sigue forzada a sumar 1.
+          </p>
+        </div>
+        <div>
+          <div class="eyebrow" style="color: var(--T-color);">Lógica Neutrosófica</div>
+          <h3 style="font-size: 28px; margin-bottom: 12px; color: #fff;">⟨T, I, F⟩ — sin restricción</h3>
+          <p class="body">
+            T = 0.4 (algunas evidencias apoyan).<br>
+            F = 0.3 (algunas evidencias contradicen).<br>
+            I = 0.6 (gran parte de los datos no se han analizado).
+          </p>
+          <p class="body" style="margin-top: 16px; color: var(--T-color);">
+            <em>Ventaja:</em> la ignorancia tiene un canal propio. Puedes <em class="highlight">cuantificar lo que no sabes</em> sin distorsionar lo que sí.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 11: THE FOUR ZONES ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Parte III</span>
+        <span class="part">La Brújula T-I-F</span>
+      </div>
+      <div class="right">11 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">El marco operacional para analítica de datos</div>
+      <h2 class="display-l">Cuatro zonas. <em class="highlight">Cuatro acciones.</em></h2>
+      <div class="zones-grid">
+        <div class="zone consensus">
+          <h3><span class="dot"></span>Consenso</h3>
+          <div class="sig">T alto · I bajo · F bajo</div>
+          <div class="action">→ Confía. Actúa.</div>
+          <div class="example">Cálculos estándar, KPIs replicados, queries con respuesta única.</div>
+        </div>
+        <div class="zone ambiguity">
+          <h3><span class="dot"></span>Ambigüedad</h3>
+          <div class="sig">I alto (sin importar T y F)</div>
+          <div class="action">→ Investiga. Aún no actúes.</div>
+          <div class="example">Población poco estudiada, contexto novedoso, datos recientes.</div>
+        </div>
+        <div class="zone contradiction">
+          <h3><span class="dot"></span>Contradicción</h3>
+          <div class="sig">T alto Y F alto · Paraconsistente</div>
+          <div class="action">→ Mapea el desacuerdo. Investiga ambos lados.</div>
+          <div class="example">Política con ganadores y perdedores, intervención clínica disputada.</div>
+        </div>
+        <div class="zone ignorance">
+          <h3><span class="dot"></span>Ignorancia</h3>
+          <div class="sig">Todos bajos, o I dominante</div>
+          <div class="action">→ Abstente. El modelo está adivinando.</div>
+          <div class="example">Predicción sin precedente, dato fuera del rango de entrenamiento.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 12: INTERACTIVE COMPASS ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge" style="background: rgba(0, 180, 216, 0.12); border-color: var(--unir-cyan); color: var(--unir-cyan-light);">⚡ Interactivo · Prueba en vivo</span>
+        <span class="part">La brújula T-I-F</span>
+      </div>
+      <div class="right">12 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Mueve los controles · El punto se ubica en la zona</div>
+      <h2 class="display-m">¿En qué zona está tu salida de IA?</h2>
+      <div class="compass-layout" style="margin-top: 24px;">
+        <div class="compass-controls">
+          <div class="slider-row t">
+            <div class="lbl"><span class="name">T &nbsp;Verdad</span><span class="val" id="tVal">0.70</span></div>
+            <input type="range" id="tRange" class="t-range" min="0" max="100" value="70">
+            <div class="help">¿Cuánta evidencia sólida e independiente apoya esta afirmación?</div>
+          </div>
+          <div class="slider-row i">
+            <div class="lbl"><span class="name">I &nbsp;Indeterminación</span><span class="val" id="iVal">0.20</span></div>
+            <input type="range" id="iRange" class="i-range" min="0" max="100" value="20">
+            <div class="help">¿Cuántos supuestos están sin declarar? ¿Cuántos datos faltan?</div>
+          </div>
+          <div class="slider-row f">
+            <div class="lbl"><span class="name">F &nbsp;Falsedad</span><span class="val" id="fVal">0.10</span></div>
+            <input type="range" id="fRange" class="f-range" min="0" max="100" value="10">
+            <div class="help">¿Qué fuentes o contraejemplos contradicen la afirmación?</div>
+          </div>
+        </div>
+        <div class="compass-vis">
+          <svg class="compass-svg" viewBox="0 0 380 380" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="triGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#06a86c" stop-opacity="0.15"/>
+                <stop offset="50%" stop-color="#f0a020" stop-opacity="0.1"/>
+                <stop offset="100%" stop-color="#e0413a" stop-opacity="0.15"/>
+              </linearGradient>
+            </defs>
+            <polygon points="190,50 60,310 320,310" fill="url(#triGrad)" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+            <polygon points="190,130 115,275 265,275" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.8" stroke-dasharray="3,3"/>
+            <!-- Vertex circles + labels -->
+            <circle cx="190" cy="50" r="8" fill="#06a86c"/>
+            <circle cx="60" cy="310" r="8" fill="#f0a020"/>
+            <circle cx="320" cy="310" r="8" fill="#e0413a"/>
+            <text x="190" y="32" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="28" font-weight="500" fill="#06a86c">T</text>
+            <text x="42" y="332" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="28" font-weight="500" fill="#f0a020">I</text>
+            <text x="338" y="332" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="28" font-weight="500" fill="#e0413a">F</text>
+            <!-- Zone labels -->
+            <text x="190" y="100" text-anchor="middle" font-family="JetBrains Mono" font-size="9" letter-spacing="2" fill="rgba(255,255,255,0.4)">CONSENSO</text>
+            <text x="125" y="295" text-anchor="middle" font-family="JetBrains Mono" font-size="9" letter-spacing="2" fill="rgba(255,255,255,0.4)">AMBIG.</text>
+            <text x="255" y="295" text-anchor="middle" font-family="JetBrains Mono" font-size="9" letter-spacing="2" fill="rgba(255,255,255,0.4)">CONTRAD.</text>
+            <circle id="compassDot" cx="190" cy="190" r="12" fill="#00b4d8" stroke="#0a1628" stroke-width="3" style="transition: all 0.4s cubic-bezier(.4,0,.2,1);"/>
+          </svg>
+          <div class="zone-readout">
+            <div class="zlabel" id="zoneLabel">Consenso</div>
+            <div class="zaction" id="zoneAction">Confía · Actúa</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 13: APPLIED CASE 1 — CHURN ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Caso aplicado · 01</span>
+        <span class="part">Churn Scoring</span>
+      </div>
+      <div class="right">13 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Cómo se ve esto en analítica empresarial</div>
+      <h2 class="display-m" style="max-width: 1000px;">
+        Tu modelo predice que <em class="F">la cliente Ana se va</em><br>
+        con 92% de probabilidad.
+      </h2>
+      <p class="body" style="margin-top: 24px;">Aplica las tres preguntas:</p>
+      <div class="tif-grid" style="margin-top: 20px;">
+        <div class="tif-card t">
+          <div class="glyph">T</div>
+          <div class="qname">Lo que apoya</div>
+          <ul style="font-size: 14px; line-height: 1.7;">
+            <li>Ana no ha entrado en 60 días</li>
+            <li>Sus llamadas a soporte aumentaron</li>
+            <li>Suscripción mensual vence pronto</li>
+          </ul>
+          <div style="margin-top: 16px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--T-deep);">T ≈ 0.75</div>
+        </div>
+        <div class="tif-card i">
+          <div class="glyph">I</div>
+          <div class="qname">Lo que no sabemos</div>
+          <ul style="font-size: 14px; line-height: 1.7;">
+            <li>Si cambió de móvil (datos no llegan)</li>
+            <li>Si está de viaje</li>
+            <li>El modelo no fue entrenado con su segmento</li>
+          </ul>
+          <div style="margin-top: 16px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--I-deep);">I ≈ 0.60</div>
+        </div>
+        <div class="tif-card f">
+          <div class="glyph">F</div>
+          <div class="qname">Lo que contradice</div>
+          <ul style="font-size: 14px; line-height: 1.7;">
+            <li>Acaba de renovar su tarjeta</li>
+            <li>Sigue siguiendo la marca en redes</li>
+            <li>NPS de su último ticket: 9</li>
+          </ul>
+          <div style="margin-top: 16px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--F-deep);">F ≈ 0.35</div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top: 28px;">
+        <div class="label">Zona resultante</div>
+        <div class="text">
+          🟡 <strong>Ambigüedad</strong> — I alto. <em>No envíes la oferta de retención agresiva todavía.</em>
+          Primero verifica si los datos están llegando. El modelo "92%" estaba escondiendo un 60% de indeterminación.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE NEW: AI QUERY LAB ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge" style="background: rgba(0,180,216,0.12); border-color: var(--unir-cyan); color: var(--unir-cyan-light);">⚡ Actividad 04 · Lab T-I-F</span>
+        <span class="part">Tu turno · Diagnostica una pregunta</span>
+      </div>
+      <div class="right">15 / 36</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Ingresa una pregunta que <em>te gustaría hacerle</em> a una IA</div>
+      <h2 class="display-m">El laboratorio de diagnóstico T-I-F.</h2>
+      <p class="body" style="margin-top: 12px;">
+        Escribe abajo una pregunta real que harías a un LLM en tu trabajo. El sistema te dará
+        una estimación inicial T-I-F antes de que la respondas con la IA real.
+      </p>
+      <div class="ai-lab">
+        <div class="eyebrow" style="margin-bottom: 8px;">Tu pregunta para la IA</div>
+        <textarea id="aiLabInput" class="ai-lab-input" placeholder="Ejemplo: '¿Cuál fue el GDP de Ecuador en 2024 y qué proyección hay para 2026?' &#10;O: 'Resume las tres principales tesis sobre fairness en credit scoring del último año.'"></textarea>
+        <button id="aiLabBtn" class="ai-lab-btn">Diagnosticar T-I-F →</button>
+        <div id="aiLabDiagnosis" class="ai-lab-diagnosis">
+          <h4 id="aiLabZoneTitle">Zona estimada</h4>
+          <div style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 12px;" id="aiLabExplain"></div>
+          <div class="diag-grid">
+            <div class="diag-cell t">
+              <div class="lab">T</div>
+              <div class="v" id="aiLabT">—</div>
+            </div>
+            <div class="diag-cell i">
+              <div class="lab">I</div>
+              <div class="v" id="aiLabI">—</div>
+            </div>
+            <div class="diag-cell f">
+              <div class="lab">F</div>
+              <div class="v" id="aiLabF">—</div>
+            </div>
+          </div>
+          <p style="margin-top: 14px; font-size: 12px; color: rgba(255,255,255,0.6); font-style: italic;" id="aiLabAction"></p>
+        </div>
+      </div>
+      <p style="margin-top: 18px; font-size: 12px; color: var(--ink-light); font-style: italic;">
+        ⚠ El diagnóstico es una heurística basada en señales léxicas (fechas, especificidad, dominio).
+        En producción se reemplaza por un detector entrenado sobre tu corpus. La idea es <em>el principio</em>:
+        cada pregunta merece su huella T-I-F.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 14 (was 14): EXPERIMENT 2 — TRUST CALIBRATION ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge" style="background: rgba(224, 65, 58, 0.12); border-color: var(--F-color); color: var(--F-color);">⚡ Experimento en vivo · 02</span>
+        <span class="part">¿Tu IA está calibrada?</span>
+      </div>
+      <div class="right">14 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Lo que voy a hacer ahora, hazlo tú también</div>
+      <h2 class="display-m">El test de calibración de confianza.</h2>
+      <p class="body" style="margin-top: 16px;">
+        Voy a pedirle a un LLM diez preguntas factuales <em>donde conozco la respuesta correcta</em>,
+        y le pediré que estime su propia confianza en cada una. Veremos si la IA está
+        <em class="highlight">epistémicamente calibrada</em>.
+      </p>
+      <div class="experiment-container">
+        <div class="exp-label good">PROMPT</div>
+        <div class="exp-prompt">Voy a hacerte 10 preguntas factuales. Para cada respuesta, además del contenido, dame:
+- Un valor T (verdad) de 0 a 1: ¿qué tan apoyada está tu respuesta?
+- Un valor I (indeterminación) de 0 a 1: ¿qué tan inseguro estás?
+- Un valor F (falsedad) de 0 a 1: ¿hay evidencia que la contradiga?
+Sé brutalmente honesto. Si no sabes, dilo.</div>
+        <p class="body" style="margin-top: 18px;">
+          <strong>Resultado típico:</strong> el modelo asigna T ≈ 0.9 a casi todo, sin importar si acertó.
+          Su autoevaluación <em>no correlaciona</em> con su exactitud real. Es como un piloto que siempre
+          se siente seguro de aterrizar — incluso cuando se está estrellando.
+        </p>
+      </div>
+      <div class="callout" style="margin-top: 24px;">
+        <div class="label">Lección operativa</div>
+        <div class="text">No confíes en la auto-confianza del modelo. Construye tu propia capa T-I-F encima de cualquier output que toque una decisión real.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE NEW: SELF-CALIBRATION EXERCISE ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge" style="background: rgba(240,160,32,0.12); border-color: var(--I-deep); color: var(--I-deep);">⚡ Actividad 05 · Auto-calibración</span>
+        <span class="part">¿Tú estás calibrado?</span>
+      </div>
+      <div class="right">17 / 36</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Antes de exigirle calibración a la IA · revisa la tuya</div>
+      <h2 class="display-m">5 preguntas. <em class="highlight">Estima tu confianza antes</em> de ver la respuesta.</h2>
+      <div class="calib-exercise">
+        <div class="calib-question">
+          <div class="calib-q-text">
+            <strong>1.</strong> ¿En qué año se publicó el primer artículo de Smarandache sobre neutrosofía?
+          </div>
+          <div class="calib-confidence" data-correct="1995">
+            <span class="conf-pill" data-q="q1" data-answer="1992">1992</span>
+            <span class="conf-pill" data-q="q1" data-answer="1995">1995</span>
+            <span class="conf-pill" data-q="q1" data-answer="1998">1998</span>
+            <span class="conf-pill" data-q="q1" data-answer="2001">2001</span>
+          </div>
+        </div>
+        <div class="calib-question">
+          <div class="calib-q-text">
+            <strong>2.</strong> ¿Cuántos parámetros tiene aproximadamente GPT-4 (estimación pública)?
+          </div>
+          <div class="calib-confidence" data-correct="1.7T">
+            <span class="conf-pill" data-q="q2" data-answer="175B">175 B</span>
+            <span class="conf-pill" data-q="q2" data-answer="540B">540 B</span>
+            <span class="conf-pill" data-q="q2" data-answer="1.7T">~1.7 T</span>
+            <span class="conf-pill" data-q="q2" data-answer="10T">10 T</span>
+          </div>
+        </div>
+        <div class="calib-question">
+          <div class="calib-q-text">
+            <strong>3.</strong> ¿Cuál es la tasa típica de alucinación de LLMs en tareas factuales sin RAG?
+          </div>
+          <div class="calib-confidence" data-correct="15-27%">
+            <span class="conf-pill" data-q="q3" data-answer="2-5%">2–5 %</span>
+            <span class="conf-pill" data-q="q3" data-answer="15-27%">15–27 %</span>
+            <span class="conf-pill" data-q="q3" data-answer="40-50%">40–50 %</span>
+            <span class="conf-pill" data-q="q3" data-answer="70%+">&gt; 70 %</span>
+          </div>
+        </div>
+        <div class="calib-question">
+          <div class="calib-q-text">
+            <strong>4.</strong> En la Puerta del Sol (Tiwanaku), ¿qué dos eventos solares se codifican?
+          </div>
+          <div class="calib-confidence" data-correct="dawn-dusk">
+            <span class="conf-pill" data-q="q4" data-answer="solsticios">Los 2 solsticios</span>
+            <span class="conf-pill" data-q="q4" data-answer="dawn-dusk">Amanecer y atardecer</span>
+            <span class="conf-pill" data-q="q4" data-answer="eclipses">Dos eclipses</span>
+            <span class="conf-pill" data-q="q4" data-answer="equinoccios">Los 2 equinoccios</span>
+          </div>
+        </div>
+        <div class="calib-question">
+          <div class="calib-q-text">
+            <strong>5.</strong> En lógica neutrosófica clásica, ¿T + I + F debe sumar 1?
+          </div>
+          <div class="calib-confidence" data-correct="no">
+            <span class="conf-pill" data-q="q5" data-answer="si">Sí, siempre</span>
+            <span class="conf-pill" data-q="q5" data-answer="no">No, son independientes</span>
+            <span class="conf-pill" data-q="q5" data-answer="varia">Depende del dominio</span>
+          </div>
+        </div>
+        <div style="margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--rule-light); display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div class="eyebrow" style="margin-bottom: 4px;">Tu acierto</div>
+            <div style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; color: var(--ink);">
+              <span id="calibScore">0</span> <span style="font-size: 18px; color: var(--ink-faded);">/ 5 correctas</span>
+            </div>
+          </div>
+          <button id="calibReveal" class="ai-lab-btn">Revelar respuestas →</button>
+        </div>
+        <div id="calibResult" style="display: none; margin-top: 16px; padding: 16px 20px; background: rgba(0,180,216,0.08); border-left: 3px solid var(--unir-cyan); border-radius: 0 6px 6px 0; font-size: 13px; color: var(--ink);"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 15 (was 15): PARACONSISTENCY ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Insight</span>
+        <span class="part">Paraconsistencia productiva</span>
+      </div>
+      <div class="right">15 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">El descubrimiento contraintuitivo del marco</div>
+      <h2 class="display-l" style="max-width: 1100px;">
+        T alto <em class="highlight">Y</em> F alto<br>
+        <em class="F">no es</em> un error.<br>
+        Es la <em class="T">señal más valiosa.</em>
+      </h2>
+      <p class="lead" style="margin-top: 32px;">
+        En lógica clásica, una proposición no puede ser verdadera y falsa a la vez.
+        En la realidad — clínica, financiera, política, ética — sí puede.
+      </p>
+      <div class="two-col" style="margin-top: 36px;">
+        <div style="padding: 24px; background: rgba(224, 65, 58, 0.06); border-left: 4px solid var(--F-color); border-radius: 0 8px 8px 0;">
+          <div class="exp-label bad">Respuesta colapsada (peligrosa)</div>
+          <p style="margin-top: 8px; font-family: 'Fraunces', serif; font-size: 20px; font-style: italic; line-height: 1.4; color: var(--ink);">
+            "El medicamento es efectivo."
+          </p>
+        </div>
+        <div style="padding: 24px; background: rgba(6, 168, 108, 0.06); border-left: 4px solid var(--T-color); border-radius: 0 8px 8px 0;">
+          <div class="exp-label good">Respuesta paraconsistente (honesta)</div>
+          <p style="margin-top: 8px; font-family: 'Fraunces', serif; font-size: 20px; font-style: italic; line-height: 1.4; color: var(--ink);">
+            "Tres ensayos lo apoyan; dos muestran daño en mujeres mayores de 65. La evidencia se divide."
+          </p>
+        </div>
+      </div>
+      <p class="body" style="margin-top: 28px;">
+        Colapsar T y F en un solo número <em>destruye la información más relevante</em>: la existencia
+        del desacuerdo. La paraconsistencia lo conserva.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 16: ABSTENTION ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Principio operativo</span>
+        <span class="part">Cuándo no decidir</span>
+      </div>
+      <div class="right">16 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">La decisión más inteligente, a veces</div>
+      <h2 class="display-l" style="max-width: 1000px;">
+        A veces la mejor decisión es<br>
+        <em class="I">no decidir todavía.</em>
+      </h2>
+      <p class="lead" style="margin-top: 28px; max-width: 820px;">
+        El umbral de abstención: <strong>si I &gt; máx(T, F)</strong> y las consecuencias son severas,
+        <em class="highlight">no actúes</em>. Investiga, recolecta más datos, y vuelve a correr la brújula.
+      </p>
+      <p class="body" style="margin-top: 18px;">
+        No es indecisión. Es <strong>cautela epistémica activa</strong>: acotada en el tiempo, dirigida a
+        un objetivo, con criterios de salida explícitos.
+      </p>
+      <div style="margin-top: 40px; padding: 28px 32px; background: linear-gradient(135deg, rgba(0,180,216,0.15), rgba(0,180,216,0.04)); border: 1px solid var(--unir-cyan); border-radius: 12px;">
+        <div class="eyebrow" style="margin-bottom: 16px;">Escala según las apuestas</div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+          <div>
+            <div style="font-family: 'Fraunces', serif; font-size: 36px; font-weight: 500; color: #fff;">2 seg</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px;">Consulta de bajo riesgo. Reversible.</div>
+          </div>
+          <div>
+            <div style="font-family: 'Fraunces', serif; font-size: 36px; font-weight: 500; color: #fff;">5 min</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px;">Riesgo medio. Decisión significativa.</div>
+          </div>
+          <div>
+            <div style="font-family: 'Fraunces', serif; font-size: 36px; font-weight: 500; color: #fff;">30 min</div>
+            <div style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px;">Alto impacto. Carreras, comunidades, organizaciones.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 17: APPLIED CASE 2 — FRAUD ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Caso aplicado · 02</span>
+        <span class="part">Detección de fraude</span>
+      </div>
+      <div class="right">17 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Cuando el modelo encuentra una transacción sospechosa</div>
+      <h2 class="display-m" style="max-width: 1000px;">
+        El sistema marca: <em class="F">"99% probabilidad de fraude".</em>
+      </h2>
+      <p class="body" style="margin-top: 20px;">
+        Pero el cliente nunca había hecho una transacción de ese tipo. El modelo nunca había visto
+        ese patrón. La "99% probabilidad" es la confianza del clasificador en una <em>clase nueva</em>.
+      </p>
+      <div class="matrix-vis">
+        <div class="matrix-cell tp">
+          <div class="val">87%</div>
+          <div class="label">T · Verdadero positivo histórico</div>
+        </div>
+        <div class="matrix-cell fp">
+          <div class="val">13%</div>
+          <div class="label">F · Falso positivo en patrones similares</div>
+        </div>
+        <div class="matrix-cell unk" style="grid-column: span 2;">
+          <div class="val">+ ?</div>
+          <div class="label">I · Patrón nunca antes visto · OOD</div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top: 32px;">
+        <div class="label">Decisión calibrada</div>
+        <div class="text">
+          <strong>No bloquees la tarjeta.</strong> Acción intermedia: envía SMS de verificación,
+          o ralentiza la transacción para revisión humana. La <em>indeterminación</em> exige una respuesta
+          graduada, no binaria.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 18: TRAJECTORY (COMPASS TO GPS) ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Marco dinámico</span>
+        <span class="part">De brújula a GPS</span>
+      </div>
+      <div class="right">18 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">El siguiente nivel: trayectoria epistémica</div>
+      <h2 class="display-l" style="max-width: 1000px;">
+        Una sola foto del modelo no basta.<br>
+        Necesitas <em class="highlight">la película.</em>
+      </h2>
+      <p class="lead" style="margin-top: 28px;">
+        Las decisiones reales son secuencias: consultas múltiples, fuentes nuevas, datos que llegan.
+        Tu estado epistémico se mueve sobre el triángulo T-I-F a lo largo del tiempo.
+      </p>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-date">T1 · 09:00</div>
+          <div class="tl-title">Primera consulta al modelo</div>
+          <div class="tl-desc">⟨T=0.4, I=0.7, F=0.2⟩ — Mucha indeterminación. <em>Zona ambigüedad.</em></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">T2 · 11:30</div>
+          <div class="tl-title">Consulta a base de datos interna</div>
+          <div class="tl-desc">⟨T=0.7, I=0.3, F=0.2⟩ — I baja. Convergencia hacia consenso.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">T3 · 15:00</div>
+          <div class="tl-title">Aparece reporte externo con datos contradictorios</div>
+          <div class="tl-desc">⟨T=0.7, I=0.3, F=0.7⟩ — <em>Zona contradicción.</em> No convergí: divergí.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">T4 · Decisión</div>
+          <div class="tl-title">Mapear el desacuerdo, no resolverlo</div>
+          <div class="tl-desc">Presenta ambas posiciones al stakeholder. La paraconsistencia es la respuesta.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 19: LIVE POLL ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge" style="background: rgba(0, 180, 216, 0.12); border-color: var(--unir-cyan); color: var(--unir-cyan-light);">⚡ Encuesta en vivo · 03</span>
+        <span class="part">Tu turno</span>
+      </div>
+      <div class="right">19 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Caso para discutir · 60 segundos</div>
+      <h2 class="display-m">Decide. Y explica por qué.</h2>
+      <div class="poll-container">
+        <div class="poll-question">
+          Un modelo de IA recomienda <em>denegar</em> un crédito a un cliente con score 0.78.
+          El cliente proviene de un segmento poblacional con <strong>solo 47 ejemplos</strong> en el dataset de entrenamiento.
+          ¿Qué haces?
+        </div>
+        <div class="poll-options" id="pollA">
+          <div class="poll-option" data-vote="a">
+            <span class="opt-label"><strong>A.</strong> &nbsp;Confío en el modelo. Score &gt; 0.7, deniego.</span>
+            <div class="opt-bar"><div class="opt-bar-fill" data-fill="12"></div></div>
+          </div>
+          <div class="poll-option" data-vote="b">
+            <span class="opt-label"><strong>B.</strong> &nbsp;Apruebo igualmente. El modelo no es confiable en este segmento.</span>
+            <div class="opt-bar"><div class="opt-bar-fill" data-fill="18"></div></div>
+          </div>
+          <div class="poll-option" data-vote="c">
+            <span class="opt-label"><strong>C.</strong> &nbsp;Lo escalo a revisión humana con la nota: "I alta — segmento subrepresentado".</span>
+            <div class="opt-bar"><div class="opt-bar-fill" data-fill="58"></div></div>
+          </div>
+          <div class="poll-option" data-vote="d">
+            <span class="opt-label"><strong>D.</strong> &nbsp;Pido al modelo que recalcule con un intervalo de confianza.</span>
+            <div class="opt-bar"><div class="opt-bar-fill" data-fill="12"></div></div>
+          </div>
+        </div>
+        <p style="margin-top: 20px; font-size: 13px; color: var(--ink-light); font-style: italic;">
+          La respuesta correcta es <strong>C</strong>: reconocer la indeterminación es la
+          decisión. La opción B también puede ser defendible si tu organización tiene política de fairness.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE NEW: CONFORMAL PREDICTION ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Técnica clave · UQ moderna</span>
+        <span class="part">Conformal Prediction</span>
+      </div>
+      <div class="right">20 / 36</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">La técnica que está cambiando ML aplicado · Vovk, Shafer, Romano 2005–2024</div>
+      <h2 class="display-l" style="max-width: 1100px;">
+        En lugar de <em class="F">un número</em>,<br>
+        un <em class="highlight">intervalo con garantía matemática.</em>
+      </h2>
+      <p class="lead" style="margin-top: 28px;">
+        Un modelo clásico predice "churn = 0.83". <em>Conformal prediction</em> predice
+        "churn ∈ {sí, no} con cobertura ≥ 90%" — y matemáticamente garantiza que en el 90% de los
+        casos la respuesta correcta estará en el conjunto. Sin asumir distribución.
+      </p>
+      <div class="two-col" style="margin-top: 36px;">
+        <div style="padding: 24px; background: var(--surface); border-left: 4px solid var(--F-color); border-radius: 0 8px 8px 0;">
+          <div class="eyebrow" style="color: var(--F-color); margin-bottom: 10px;">Predicción puntual (clásica)</div>
+          <p style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.7;">
+            Diagnóstico: <strong>melanoma</strong><br>
+            Probabilidad: 0.81<br>
+            <span style="color: var(--ink-light);">→ acción binaria forzada</span>
+          </p>
+        </div>
+        <div style="padding: 24px; background: var(--surface); border-left: 4px solid var(--T-color); border-radius: 0 8px 8px 0;">
+          <div class="eyebrow" style="color: var(--T-color); margin-bottom: 10px;">Predicción conformal</div>
+          <p style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.7;">
+            Conjunto: <strong>{melanoma, nevus displásico}</strong><br>
+            Cobertura: 95% &nbsp;|&nbsp; tamaño: 2<br>
+            <span style="color: var(--T-color);">→ ambigüedad explícita → segunda opinión</span>
+          </p>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 32px;">
+        <div style="padding: 18px; background: var(--surface); border-radius: 10px; border-top: 3px solid var(--unir-cyan);">
+          <div style="font-family: 'Fraunces', serif; font-size: 22px; font-weight: 500; color: #fff;">Distribution-free</div>
+          <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 6px; line-height: 1.5;">No asume gaussianidad, ni linealidad, ni nada sobre los datos.</p>
+        </div>
+        <div style="padding: 18px; background: var(--surface); border-radius: 10px; border-top: 3px solid var(--unir-cyan);">
+          <div style="font-family: 'Fraunces', serif; font-size: 22px; font-weight: 500; color: #fff;">Model-agnostic</div>
+          <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 6px; line-height: 1.5;">Funciona sobre random forest, XGBoost, redes neuronales, LLMs, lo que tengas.</p>
+        </div>
+        <div style="padding: 18px; background: var(--surface); border-radius: 10px; border-top: 3px solid var(--unir-cyan);">
+          <div style="font-family: 'Fraunces', serif; font-size: 22px; font-weight: 500; color: #fff;">Finite-sample</div>
+          <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 6px; line-height: 1.5;">Garantía válida desde el primer dato. No requiere muestras infinitas.</p>
+        </div>
+      </div>
+      <p class="body" style="margin-top: 28px; font-style: italic;">
+        Librería en Python: <code style="background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">mapie</code> ·
+        <code style="background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 13px;">crepes</code>.
+        Puedes envolver cualquier modelo en producción con &lt; 20 líneas de código.
+      </p>
+    </div>
+  </section>
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Herramienta · Plantilla</span>
+        <span class="part">Prompt T-I-F</span>
+      </div>
+      <div class="right">20 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Llévatelo · Cópialo · Úsalo mañana</div>
+      <h2 class="display-m">Prompt template para extraer la tercera respuesta.</h2>
+      <div class="experiment-container">
+        <div class="exp-label good">PLANTILLA UNIVERSAL</div>
+        <div class="exp-prompt">[Tu pregunta original]
+
+Antes de responder, estructura tu respuesta así:
+
+1. T (TRUTH): ¿Qué evidencia sólida apoya tu respuesta?
+   Lista al menos 2 fuentes o líneas de razonamiento independientes.
+
+2. I (INDETERMINACY): ¿Qué NO sabes?
+   - ¿Qué supuestos estás haciendo?
+   - ¿Qué datos no tienes?
+   - ¿Cuál es la novedad de la situación respecto a tus datos de entrenamiento?
+
+3. F (FALSITY): ¿Qué contradice tu respuesta?
+   - ¿Hay fuentes que digan lo contrario?
+   - ¿Contraejemplos?
+   - ¿Inconsistencias en tu propio razonamiento?
+
+4. ZONA: Clasifica como CONSENSO, AMBIGÜEDAD, CONTRADICCIÓN o IGNORANCIA.
+
+5. RECOMENDACIÓN: Si estás en AMBIGÜEDAD o IGNORANCIA, dime qué información necesitaría
+   para mover la respuesta a CONSENSO.</div>
+        <p class="body" style="margin-top: 20px;">
+          Funciona con ChatGPT, Claude, Gemini, DeepSeek. Es una capa epistémica que tú
+          impones sobre el modelo. Tu propio "filtro neutrosófico".
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE NEW: CAUSALITY — PEARL'S LADDER ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Parte IV · La otra dimensión olvidada</span>
+        <span class="part">Inferencia causal</span>
+      </div>
+      <div class="right">22 / 36</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Judea Pearl · The Book of Why · 2018</div>
+      <h2 class="display-l" style="max-width: 1100px;">
+        Los LLMs viven en el <em class="F">primer peldaño.</em><br>
+        Las decisiones serias viven en el <em class="highlight">tercero.</em>
+      </h2>
+      <p class="lead" style="margin-top: 24px;">
+        La <em>escalera de la causalidad</em> de Pearl distingue tres niveles cognitivos. Saber en
+        cuál opera tu modelo es saber qué tipo de pregunta puedes hacerle.
+      </p>
+      <div style="margin-top: 36px;">
+        <div style="display: grid; grid-template-columns: 80px 1fr; gap: 24px; padding: 24px; background: rgba(10,22,40,0.04); border-radius: 12px; margin-bottom: 14px; align-items: center;">
+          <div style="font-family: 'Fraunces', serif; font-size: 64px; font-weight: 500; color: var(--F-color); text-align: center; line-height: 1;">1</div>
+          <div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--F-color); margin-bottom: 4px;">ASOCIACIÓN · P(Y | X)</div>
+            <div style="font-family: 'Fraunces', serif; font-size: 22px; font-weight: 500; color: var(--ink); margin-bottom: 6px;">"¿Qué viene junto con qué?"</div>
+            <p style="font-size: 13px; color: var(--ink-soft); line-height: 1.5;">Aquí viven la <strong>correlación, ML estándar, recomendadores, LLMs</strong>. Útil para describir patrones — incapaz de predecir intervenciones.</p>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 80px 1fr; gap: 24px; padding: 24px; background: rgba(10,22,40,0.04); border-radius: 12px; margin-bottom: 14px; align-items: center;">
+          <div style="font-family: 'Fraunces', serif; font-size: 64px; font-weight: 500; color: var(--I-color); text-align: center; line-height: 1;">2</div>
+          <div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--I-color); margin-bottom: 4px;">INTERVENCIÓN · P(Y | do(X))</div>
+            <div style="font-family: 'Fraunces', serif; font-size: 22px; font-weight: 500; color: var(--ink); margin-bottom: 6px;">"¿Qué pasa si hago X?"</div>
+            <p style="font-size: 13px; color: var(--ink-soft); line-height: 1.5;">Aquí viven los <strong>A/B tests, ensayos clínicos, políticas públicas, do-calculus de Pearl</strong>. Para saber si una acción cambia un resultado, no basta con observar.</p>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 80px 1fr; gap: 24px; padding: 24px; background: rgba(10,22,40,0.04); border-radius: 12px; align-items: center;">
+          <div style="font-family: 'Fraunces', serif; font-size: 64px; font-weight: 500; color: var(--T-color); text-align: center; line-height: 1;">3</div>
+          <div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--T-color); margin-bottom: 4px;">CONTRAFACTUAL · P(Y_x | X', Y')</div>
+            <div style="font-family: 'Fraunces', serif; font-size: 22px; font-weight: 500; color: var(--ink); margin-bottom: 6px;">"¿Qué habría pasado si en cambio…?"</div>
+            <p style="font-size: 13px; color: var(--ink-soft); line-height: 1.5;">Aquí viven la <strong>responsabilidad, explicabilidad, atribución</strong>. "Si el modelo no hubiera denegado este crédito, ¿el cliente habría pagado?". El estándar de oro epistémico.</p>
+          </div>
+        </div>
+      </div>
+      <p class="body" style="margin-top: 28px; font-style: italic;">
+        Cuando un LLM responde "esta política reducirá la deserción universitaria", está extrapolando
+        un patrón del peldaño 1 a una pregunta del peldaño 2. Es un <em>salto epistémico injustificado</em>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE NEW: CAUSALITY APPLIED ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Caso causal</span>
+        <span class="part">Correlación ≠ causación</span>
+      </div>
+      <div class="right">23 / 36</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Por qué tu modelo predictivo puede ser <em>preciso y perjudicial</em> a la vez</div>
+      <h2 class="display-l" style="max-width: 1100px;">
+        Un modelo de deserción universitaria<br>
+        descubre que <em class="F">los estudiantes que asisten</em><br>
+        <em class="F">a tutorías académicas desertan más.</em>
+      </h2>
+      <div class="two-col" style="margin-top: 36px;">
+        <div>
+          <div class="eyebrow" style="color: var(--F-color); margin-bottom: 10px;">Lectura ingenua (Peldaño 1)</div>
+          <p class="body" style="margin-bottom: 20px;">
+            La correlación es real y fuerte: r = 0.42. Acción propuesta por el dashboard:
+            <em>"Reduce el presupuesto de tutorías — no funcionan."</em>
+          </p>
+          <div class="eyebrow" style="color: var(--T-color); margin-bottom: 10px;">Lectura causal (Peldaño 2)</div>
+          <p class="body">
+            ¿Cuál es la <em>variable confusora</em>? Los estudiantes que asisten a tutorías son justamente
+            los que <em>ya estaban en riesgo</em> de desertar. La tutoría no causa deserción — la deserción
+            causa asistencia a tutorías. <strong>La dirección de la flecha está invertida.</strong>
+          </p>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 380 320" xmlns="http://www.w3.org/2000/svg" style="max-width: 380px; width: 100%;">
+            <!-- DAG ingenuo -->
+            <text x="190" y="22" text-anchor="middle" font-family="JetBrains Mono" font-size="10" letter-spacing="2" fill="rgba(255,255,255,0.5)">MODELO INGENUO</text>
+            <circle cx="80" cy="60" r="34" fill="rgba(224,65,58,0.15)" stroke="#e0413a" stroke-width="2"/>
+            <text x="80" y="65" text-anchor="middle" font-family="Fraunces" font-size="13" fill="#fff">Tutoría</text>
+            <circle cx="300" cy="60" r="34" fill="rgba(224,65,58,0.15)" stroke="#e0413a" stroke-width="2"/>
+            <text x="300" y="65" text-anchor="middle" font-family="Fraunces" font-size="13" fill="#fff">Deserción</text>
+            <line x1="115" y1="60" x2="265" y2="60" stroke="#e0413a" stroke-width="2" marker-end="url(#arr1)"/>
+            <defs>
+              <marker id="arr1" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L9,3 z" fill="#e0413a"/>
+              </marker>
+              <marker id="arr2" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L9,3 z" fill="#06a86c"/>
+              </marker>
+            </defs>
+            <!-- DAG real -->
+            <text x="190" y="170" text-anchor="middle" font-family="JetBrains Mono" font-size="10" letter-spacing="2" fill="rgba(255,255,255,0.5)">MODELO REAL · CONFUSOR</text>
+            <circle cx="190" cy="205" r="34" fill="rgba(240,160,32,0.15)" stroke="#f0a020" stroke-width="2"/>
+            <text x="190" y="202" text-anchor="middle" font-family="Fraunces" font-size="11" fill="#fff">Riesgo</text>
+            <text x="190" y="216" text-anchor="middle" font-family="Fraunces" font-size="11" fill="#fff">previo</text>
+            <circle cx="80" cy="290" r="30" fill="rgba(6,168,108,0.15)" stroke="#06a86c" stroke-width="2"/>
+            <text x="80" y="294" text-anchor="middle" font-family="Fraunces" font-size="12" fill="#fff">Tutoría</text>
+            <circle cx="300" cy="290" r="32" fill="rgba(6,168,108,0.15)" stroke="#06a86c" stroke-width="2"/>
+            <text x="300" y="294" text-anchor="middle" font-family="Fraunces" font-size="12" fill="#fff">Deserción</text>
+            <line x1="170" y1="232" x2="105" y2="265" stroke="#06a86c" stroke-width="2" marker-end="url(#arr2)"/>
+            <line x1="210" y1="232" x2="275" y2="265" stroke="#06a86c" stroke-width="2" marker-end="url(#arr2)"/>
+          </svg>
+        </div>
+      </div>
+      <div class="callout" style="margin-top: 28px;">
+        <div class="label">La conclusión que te puede costar el presupuesto</div>
+        <div class="text">
+          Sin un <em>DAG causal</em> explícito, un modelo predictivo puede sugerir intervenciones
+          <em>iatrogénicas</em> — políticas que empeoran exactamente lo que intentan resolver.
+          La precisión predictiva no implica corrección causal.
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Anclaje epistémico</span>
+        <span class="part">Esto no es nuevo</span>
+      </div>
+      <div class="right">21 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">La idea de la tercera respuesta tiene cinco siglos</div>
+      <h2 class="display-l" style="max-width: 1000px;">
+        Civilizaciones enteras decidieron bajo<br>
+        incertidumbre <em class="highlight">mucho antes</em><br>
+        de que existieran los modelos de IA.
+      </h2>
+      <div class="tif-grid" style="margin-top: 40px;">
+        <div class="tif-card t" style="border-color: rgba(0, 180, 216, 0.4);">
+          <div class="glyph" style="color: var(--unir-cyan-light); font-size: 38px; line-height: 1.3;">Yanantin</div>
+          <div class="qname">Quechua · Andes</div>
+          <div class="question" style="font-size: 17px;">Unidad complementaria de opuestos.</div>
+          <p style="font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5;">
+            Verdad y contradicción coexisten sin resolverse. La estructura formal de T+F &gt; 1.
+          </p>
+        </div>
+        <div class="tif-card i" style="border-color: rgba(0, 180, 216, 0.4);">
+          <div class="glyph" style="color: var(--unir-cyan-light); font-size: 38px; line-height: 1.3;">Ch'ixi</div>
+          <div class="qname">Aymara · Bolivia</div>
+          <div class="question" style="font-size: 17px;">Coexistencia irreductible.</div>
+          <p style="font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5;">
+            Ni mestizaje ni pureza: ambas identidades, a la vez. La paraconsistencia hecha cosmovisión.
+          </p>
+        </div>
+        <div class="tif-card f" style="border-color: rgba(0, 180, 216, 0.4);">
+          <div class="glyph" style="color: var(--unir-cyan-light); font-size: 38px; line-height: 1.3;">Sumak Kawsay</div>
+          <div class="qname">Quechua · Buen Vivir</div>
+          <div class="question" style="font-size: 17px;">Equilibrio entre opuestos.</div>
+          <p style="font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5;">
+            Una ética de decisión bajo incertidumbre como práctica civilizatoria.
+          </p>
+        </div>
+      </div>
+      <p class="body" style="margin-top: 28px; font-style: italic;">
+        Smarandache (1995) formalizó matemáticamente lo que la <em>coincidentia oppositorum</em> de Nicolás
+        de Cusa y las cosmovisiones andinas habían practicado durante siglos.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 22: APPLIED CASE 3 — MEDICAL ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Caso aplicado · 03</span>
+        <span class="part">Diagnóstico clínico asistido por IA</span>
+      </div>
+      <div class="right">22 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Donde los stakes son altos · Decisiones irreversibles</div>
+      <h2 class="display-m" style="max-width: 1000px;">
+        El modelo dice: <em class="F">"melanoma, 81% probabilidad".</em>
+      </h2>
+      <p class="body" style="margin-top: 20px;">
+        Pero el dermatólogo nota algo. La imagen fue tomada con luz no estandarizada. El paciente
+        tiene un fototipo poco representado en el dataset de entrenamiento. ¿Qué dice T-I-F?
+      </p>
+      <div class="checklist" style="margin-top: 24px;">
+        <div class="check-item">
+          <div class="check-icon" style="background: var(--T-color);">T</div>
+          <div class="content">
+            <h4>Lo que apoya el diagnóstico</h4>
+            <p>Asimetría visible · borde irregular · color heterogéneo · score CNN entrenado con &gt;100K imágenes.</p>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-icon" style="background: var(--I-color);">I</div>
+          <div class="content">
+            <h4>Lo que no sabemos</h4>
+            <p>Iluminación no estandarizada · fototipo VI con &lt;3% representación en training · paciente fuera del rango de edad típico.</p>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-icon" style="background: var(--F-color);">F</div>
+          <div class="content">
+            <h4>Lo que contradice</h4>
+            <p>No hay historia familiar · ningún cambio reportado en 2 años · dermoscopía manual no muestra patrones malignos típicos.</p>
+          </div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top: 28px;">
+        <div class="label">Decisión calibrada</div>
+        <div class="text">
+          No biopsiar inmediatamente <em>ni</em> ignorar. Repetir imagen con protocolo estandarizado.
+          Segunda opinión humana. La I exige <em>recolectar más datos antes</em> de cualquier decisión irreversible.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 23: FROM DASHBOARD TO COMPASS ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Implicación para BI / Analytics</span>
+        <span class="part">Tu dashboard tiene que cambiar</span>
+      </div>
+      <div class="right">23 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Lo que tu equipo de BI puede empezar a hacer mañana</div>
+      <h2 class="display-l" style="max-width: 1100px;">
+        Cada KPI necesita su<br>
+        <em class="highlight">huella T-I-F.</em>
+      </h2>
+      <p class="lead" style="margin-top: 32px;">
+        Hoy, tus tableros muestran un número. "Conversión: 4.7%". "Churn: 8.3%". <em>Pero no muestran
+        cuánto de ese número está apoyado, cuánto es indeterminación, y qué lo contradice.</em>
+      </p>
+      <div class="decision-flow" style="margin-top: 36px;">
+        <div class="flow-step">
+          <div class="num">→</div>
+          <div class="ttl">KPI desnudo</div>
+          <div class="dsc">Conversión: 4.7%</div>
+        </div>
+        <div class="flow-step" style="border-color: var(--T-color);">
+          <div class="num" style="color: var(--T-color);">T</div>
+          <div class="ttl">N efectivo</div>
+          <div class="dsc">12 400 sesiones · IC 95%: 4.3–5.1%</div>
+        </div>
+        <div class="flow-step" style="border-color: var(--I-color);">
+          <div class="num" style="color: var(--I-color);">I</div>
+          <div class="ttl">Datos faltantes</div>
+          <div class="dsc">18% sin tracking · móvil iOS undercounted</div>
+        </div>
+        <div class="flow-step" style="border-color: var(--F-color);">
+          <div class="num" style="color: var(--F-color);">F</div>
+          <div class="ttl">Señal contraria</div>
+          <div class="dsc">Stripe reporta 5.3% para mismo período</div>
+        </div>
+      </div>
+      <p class="body" style="margin-top: 32px;">
+        Esto es <em class="highlight">analítica neutrosófica aplicada</em>. Cada métrica viaja con su
+        envoltura epistémica.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 24-NEW: INTERACTIVE BI DASHBOARD ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge" style="background: rgba(0,180,216,0.12); border-color: var(--unir-cyan-deep); color: var(--unir-cyan-deep);">⚡ Actividad 06 · Dashboard en vivo</span>
+        <span class="part">Diseño de un BI neutrosófico</span>
+      </div>
+      <div class="right">24 / 36</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Observa cómo cambia un dashboard cuando incorpora T-I-F</div>
+      <h2 class="display-m">Dashboard ejecutivo · <em class="highlight">Retail Q2 2026</em></h2>
+      <div class="dash-toggle" id="dashToggle">
+        <button class="active" data-view="classic">Vista clásica</button>
+        <button data-view="tif">Vista T-I-F</button>
+      </div>
+      <div class="dashboard" id="dashboard-classic">
+        <div class="dash-card">
+          <div class="kpi-label">Ingresos mensuales</div>
+          <div class="kpi-value">$ 2.84 M</div>
+          <div class="kpi-trend">▲ +12.4% vs mes anterior</div>
+        </div>
+        <div class="dash-card">
+          <div class="kpi-label">Tasa de conversión</div>
+          <div class="kpi-value">4.71 %</div>
+          <div class="kpi-trend">▲ +0.3pp vs trimestre</div>
+        </div>
+        <div class="dash-card">
+          <div class="kpi-label">Churn predicho · IA</div>
+          <div class="kpi-value">8.30 %</div>
+          <div class="kpi-trend">▼ -1.1pp · modelo v3.2</div>
+        </div>
+        <div class="dash-card">
+          <div class="kpi-label">Score de fraude · IA</div>
+          <div class="kpi-value">1 423</div>
+          <div class="kpi-trend">casos marcados este mes</div>
+        </div>
+        <div class="dash-card">
+          <div class="kpi-label">NPS estimado</div>
+          <div class="kpi-value">+47</div>
+          <div class="kpi-trend">▲ +3 puntos vs Q1</div>
+        </div>
+        <div class="dash-card">
+          <div class="kpi-label">Demanda próximo trimestre</div>
+          <div class="kpi-value">18 200 u</div>
+          <div class="kpi-trend">Modelo forecast · v2.1</div>
+        </div>
+      </div>
+      <div class="dashboard" id="dashboard-tif" style="display: none;">
+        <div class="dash-card ok">
+          <div class="kpi-label">Ingresos mensuales</div>
+          <div class="kpi-value">$ 2.84 M</div>
+          <div class="kpi-trend">▲ +12.4% · 47 fuentes · IC ±1.2%</div>
+          <div class="tif-bars">
+            <div class="tif-bar t"><span class="lab">T</span><div class="bar-bg"><div class="bar-fg" style="width: 92%"></div></div><span class="val">0.92</span></div>
+            <div class="tif-bar i"><span class="lab">I</span><div class="bar-bg"><div class="bar-fg" style="width: 12%"></div></div><span class="val">0.12</span></div>
+            <div class="tif-bar f"><span class="lab">F</span><div class="bar-bg"><div class="bar-fg" style="width: 8%"></div></div><span class="val">0.08</span></div>
+          </div>
+          <span class="zone-tag consensus">● Consenso · Actúa</span>
+        </div>
+        <div class="dash-card warning">
+          <div class="kpi-label">Tasa de conversión</div>
+          <div class="kpi-value">4.71 %</div>
+          <div class="kpi-trend">⚠ 18% sesiones sin tracking iOS</div>
+          <div class="tif-bars">
+            <div class="tif-bar t"><span class="lab">T</span><div class="bar-bg"><div class="bar-fg" style="width: 65%"></div></div><span class="val">0.65</span></div>
+            <div class="tif-bar i"><span class="lab">I</span><div class="bar-bg"><div class="bar-fg" style="width: 55%"></div></div><span class="val">0.55</span></div>
+            <div class="tif-bar f"><span class="lab">F</span><div class="bar-bg"><div class="bar-fg" style="width: 25%"></div></div><span class="val">0.25</span></div>
+          </div>
+          <span class="zone-tag ambiguity">● Ambigüedad · Investiga</span>
+        </div>
+        <div class="dash-card alert">
+          <div class="kpi-label">Churn predicho · IA</div>
+          <div class="kpi-value">8.30 %</div>
+          <div class="kpi-trend">⚠ Discrepancia con Stripe (5.3%)</div>
+          <div class="tif-bars">
+            <div class="tif-bar t"><span class="lab">T</span><div class="bar-bg"><div class="bar-fg" style="width: 70%"></div></div><span class="val">0.70</span></div>
+            <div class="tif-bar i"><span class="lab">I</span><div class="bar-bg"><div class="bar-fg" style="width: 30%"></div></div><span class="val">0.30</span></div>
+            <div class="tif-bar f"><span class="lab">F</span><div class="bar-bg"><div class="bar-fg" style="width: 68%"></div></div><span class="val">0.68</span></div>
+          </div>
+          <span class="zone-tag contradiction">● Contradicción · Mapea</span>
+        </div>
+        <div class="dash-card warning">
+          <div class="kpi-label">Score de fraude · IA</div>
+          <div class="kpi-value">1 423</div>
+          <div class="kpi-trend">⚠ 312 casos en segmentos OOD</div>
+          <div class="tif-bars">
+            <div class="tif-bar t"><span class="lab">T</span><div class="bar-bg"><div class="bar-fg" style="width: 58%"></div></div><span class="val">0.58</span></div>
+            <div class="tif-bar i"><span class="lab">I</span><div class="bar-bg"><div class="bar-fg" style="width: 62%"></div></div><span class="val">0.62</span></div>
+            <div class="tif-bar f"><span class="lab">F</span><div class="bar-bg"><div class="bar-fg" style="width: 22%"></div></div><span class="val">0.22</span></div>
+          </div>
+          <span class="zone-tag ambiguity">● Ambigüedad · Revisión humana</span>
+        </div>
+        <div class="dash-card ok">
+          <div class="kpi-label">NPS estimado</div>
+          <div class="kpi-value">+47</div>
+          <div class="kpi-trend">▲ N=2 340 · 3 canales independientes</div>
+          <div class="tif-bars">
+            <div class="tif-bar t"><span class="lab">T</span><div class="bar-bg"><div class="bar-fg" style="width: 88%"></div></div><span class="val">0.88</span></div>
+            <div class="tif-bar i"><span class="lab">I</span><div class="bar-bg"><div class="bar-fg" style="width: 15%"></div></div><span class="val">0.15</span></div>
+            <div class="tif-bar f"><span class="lab">F</span><div class="bar-bg"><div class="bar-fg" style="width: 10%"></div></div><span class="val">0.10</span></div>
+          </div>
+          <span class="zone-tag consensus">● Consenso · Actúa</span>
+        </div>
+        <div class="dash-card" style="border-color: #888; background: linear-gradient(135deg, rgba(136,136,136,0.06), #fff);">
+          <div class="kpi-label">Demanda próximo trimestre</div>
+          <div class="kpi-value">? &nbsp;<span style="font-size: 16px; color: var(--ink-faded);">(18.2k ± ?)</span></div>
+          <div class="kpi-trend">⚫ Nuevo SKU · sin histórico</div>
+          <div class="tif-bars">
+            <div class="tif-bar t"><span class="lab">T</span><div class="bar-bg"><div class="bar-fg" style="width: 22%"></div></div><span class="val">0.22</span></div>
+            <div class="tif-bar i"><span class="lab">I</span><div class="bar-bg"><div class="bar-fg" style="width: 82%"></div></div><span class="val">0.82</span></div>
+            <div class="tif-bar f"><span class="lab">F</span><div class="bar-bg"><div class="bar-fg" style="width: 18%"></div></div><span class="val">0.18</span></div>
+          </div>
+          <span class="zone-tag ignorance">● Ignorancia · Abstente</span>
+        </div>
+      </div>
+      <div class="callout" style="margin-top: 28px;">
+        <div class="label">Lectura del cambio</div>
+        <div class="text">
+          La <strong>vista clásica</strong> muestra 6 KPIs limpios. La <strong>vista T-I-F</strong> revela
+          que <em>3 de los 6</em> exigen acciones distintas a las que su número sugiere. Mismo dato.
+          Decisiones radicalmente diferentes.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 25 (was 24): WHAT TO BUILD ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Implementación</span>
+        <span class="part">Cómo empezar el lunes</span>
+      </div>
+      <div class="right">24 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Tres pasos concretos para tu equipo de analytics</div>
+      <h2 class="display-m">El kit T-I-F operativo.</h2>
+      <div class="checklist">
+        <div class="check-item">
+          <div class="check-icon">1</div>
+          <div class="content">
+            <h4>Audita el último modelo en producción</h4>
+            <p>Toma una salida real, aplícale las tres preguntas, clasifícala en una de las cuatro zonas.
+            ¿Qué zona? ¿Coincide con la acción que el negocio está tomando?</p>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-icon">2</div>
+          <div class="content">
+            <h4>Implementa un "indicador de abstención"</h4>
+            <p>Añade a tu pipeline una bandera que se active cuando I &gt; umbral. En vez de devolver
+            score, el modelo devuelve "necesito más datos" + sugerencia de qué datos faltan.</p>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-icon">3</div>
+          <div class="content">
+            <h4>Cambia tu dashboard ejecutivo</h4>
+            <p>Cada KPI lleva un par de banderas: nivel de evidencia (T), nivel de indeterminación (I).
+            Los stakeholders aprenden a leer no solo el número, sino su <em>confiabilidad estructural</em>.</p>
+          </div>
+        </div>
+        <div class="check-item">
+          <div class="check-icon">4</div>
+          <div class="content">
+            <h4>Documenta los casos donde abstenerse mejoró la decisión</h4>
+            <p>El mejor argumento para implementar T-I-F no es teórico — es mostrar a la dirección
+            las veces en que <em>no actuar a tiempo</em> evitó un costo real.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 25: WHAT THIS IS NOT ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Aclaraciones</span>
+        <span class="part">Lo que T-I-F NO es</span>
+      </div>
+      <div class="right">25 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Para evitar malentendidos comunes</div>
+      <h2 class="display-m">Tres cosas que esto no propone.</h2>
+      <div class="zones-grid" style="margin-top: 32px;">
+        <div class="zone" style="border-color: var(--F-color);">
+          <h3 style="color: #fff;">No es "no uses IA"</h3>
+          <div class="example" style="color: rgba(255,255,255,0.75);">
+            La IA es una herramienta extraordinariamente útil. La propuesta es <em>aumentar</em>
+            su uso con una capa epistémica explícita, no abandonarla.
+          </div>
+        </div>
+        <div class="zone" style="border-color: var(--F-color);">
+          <h3 style="color: #fff;">No es relativismo</h3>
+          <div class="example" style="color: rgba(255,255,255,0.75);">
+            "Todo es indeterminado" no es la conclusión. La indeterminación se <em>mide</em>,
+            se <em>cuantifica</em>, y se <em>reduce</em> con más información.
+          </div>
+        </div>
+        <div class="zone" style="border-color: var(--F-color);">
+          <h3 style="color: #fff;">No es solo filosofía</h3>
+          <div class="example" style="color: rgba(255,255,255,0.75);">
+            Existe matemática formal (Smarandache, 1995–2025), librerías de Python para implementarla,
+            y casos publicados en medicina, finanzas y educación.
+          </div>
+        </div>
+        <div class="zone" style="border-color: var(--F-color);">
+          <h3 style="color: #fff;">No reemplaza la estadística</h3>
+          <div class="example" style="color: rgba(255,255,255,0.75);">
+            La complementa. La estadística cuantifica la varianza dentro de un modelo;
+            T-I-F cuantifica la confianza en el modelo mismo.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 26: PRACTICAL TOOLKIT ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Recursos · Stack completo</span>
+        <span class="part">Llévate esto a casa</span>
+      </div>
+      <div class="right">31 / 36</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Kit de campo · cinco capas para una analítica honesta</div>
+      <h2 class="display-m">El stack moderno de <em class="highlight">analítica con incertidumbre.</em></h2>
+      <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-top: 36px;">
+        <div style="padding: 20px 16px; background: #fff; border-radius: 10px; border-top: 4px solid var(--T-color); box-shadow: 0 2px 12px rgba(10,22,40,0.06);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faded); margin-bottom: 8px;">Capa 1</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 8px;">Diagnóstico T-I-F</div>
+          <p style="font-size: 12px; color: var(--ink-soft); line-height: 1.5;">3 preguntas · 4 zonas. La brújula para clasificar cualquier salida de IA.</p>
+        </div>
+        <div style="padding: 20px 16px; background: #fff; border-radius: 10px; border-top: 4px solid var(--unir-cyan); box-shadow: 0 2px 12px rgba(10,22,40,0.06);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faded); margin-bottom: 8px;">Capa 2</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 8px;">Conformal Prediction</div>
+          <p style="font-size: 12px; color: var(--ink-soft); line-height: 1.5;"><code style="font-size: 11px; background: #f0f3f7; padding: 1px 5px; border-radius: 3px;">mapie</code> envuelve cualquier modelo y devuelve intervalos con garantía.</p>
+        </div>
+        <div style="padding: 20px 16px; background: #fff; border-radius: 10px; border-top: 4px solid var(--I-color); box-shadow: 0 2px 12px rgba(10,22,40,0.06);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faded); margin-bottom: 8px;">Capa 3</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 8px;">Detección OOD</div>
+          <p style="font-size: 12px; color: var(--ink-soft); line-height: 1.5;">Mahalanobis, ensembles o energy-based para alertar cuando el caso es nuevo.</p>
+        </div>
+        <div style="padding: 20px 16px; background: #fff; border-radius: 10px; border-top: 4px solid #8a6420; box-shadow: 0 2px 12px rgba(10,22,40,0.06);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faded); margin-bottom: 8px;">Capa 4</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 8px;">DAG causal</div>
+          <p style="font-size: 12px; color: var(--ink-soft); line-height: 1.5;"><code style="font-size: 11px; background: #f0f3f7; padding: 1px 5px; border-radius: 3px;">DoWhy</code> y <code style="font-size: 11px; background: #f0f3f7; padding: 1px 5px; border-radius: 3px;">EconML</code> para separar correlación de causa.</p>
+        </div>
+        <div style="padding: 20px 16px; background: #fff; border-radius: 10px; border-top: 4px solid var(--F-color); box-shadow: 0 2px 12px rgba(10,22,40,0.06);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faded); margin-bottom: 8px;">Capa 5</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 8px;">Abstención</div>
+          <p style="font-size: 12px; color: var(--ink-soft); line-height: 1.5;">Política explícita: "no responder" es una decisión válida. Mejor que adivinar.</p>
+        </div>
+      </div>
+      <div class="callout" style="margin-top: 32px;">
+        <div class="label">La regla</div>
+        <div class="text">
+          Ninguna de estas técnicas, por sí sola, resuelve el problema. La <em>combinación</em>
+          —diagnóstico cualitativo (T-I-F) + cuantitativo (conformal) + estructural (OOD, causal)
+          + política (abstención)— sí. Esto es analítica de datos del 2026.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 27: BIG IDEA RECAP ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Síntesis</span>
+        <span class="part">Lo que se llevan esta noche</span>
+      </div>
+      <div class="right">27 / 30</div>
+    </div>
+    <div class="final-cta">
+      <div class="eyebrow">Una sola idea, en una sola frase</div>
+      <h1 class="display-xl" style="text-align: left;">
+        El verdadero riesgo de la IA<br>
+        no es que se <em class="F">equivoque</em>.<br>
+        <br>
+        Es que se equivoque<br>
+        con <em class="highlight">total confianza</em><br>
+        y nadie lo note.
+      </h1>
+      <p class="lead" style="margin-top: 48px; text-align: left;">
+        Tu trabajo — como profesional de la analítica de datos — es ser
+        <em class="highlight">la persona en la sala que conoce la diferencia</em> entre confianza y
+        conocimiento. Entre fluidez y verdad. Entre una respuesta limpia y una respuesta honesta.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE NEW: OOD DETECTION ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Técnica · Out-of-Distribution</span>
+        <span class="part">Detección de novedad</span>
+      </div>
+      <div class="right">24 / 36</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">El modelo no sabe lo que no ha visto · y nadie le avisa</div>
+      <h2 class="display-l" style="max-width: 1100px;">
+        OOD Detection · <em class="highlight">la línea roja del dominio.</em>
+      </h2>
+      <p class="lead" style="margin-top: 24px;">
+        Tu modelo fue entrenado con datos hasta cierto rango — geografías, demografías,
+        condiciones operativas. Cuando recibe un caso fuera de ese rango, <em>no se da cuenta</em>.
+        Sigue prediciendo con la misma confianza, sobre territorio desconocido.
+      </p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 36px;">
+        <div style="padding: 28px; background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(10,22,40,0.06);">
+          <div class="eyebrow" style="color: var(--unir-cyan-deep); margin-bottom: 14px;">Métodos clásicos</div>
+          <ul style="list-style: none; padding: 0;">
+            <li style="padding: 10px 0; border-bottom: 1px dashed var(--rule-light); display: flex; align-items: start; gap: 12px;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--unir-cyan-deep); font-weight: 600; margin-top: 4px;">→</span>
+              <div>
+                <strong style="color: var(--ink);">Mahalanobis distance</strong>
+                <p style="font-size: 12px; color: var(--ink-soft); margin-top: 2px;">Distancia estadística al centroide de cada clase entrenada.</p>
+              </div>
+            </li>
+            <li style="padding: 10px 0; border-bottom: 1px dashed var(--rule-light); display: flex; align-items: start; gap: 12px;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--unir-cyan-deep); font-weight: 600; margin-top: 4px;">→</span>
+              <div>
+                <strong style="color: var(--ink);">Energy-based scoring</strong>
+                <p style="font-size: 12px; color: var(--ink-soft); margin-top: 2px;">Mide cuánto "encaja" un input en la distribución aprendida.</p>
+              </div>
+            </li>
+            <li style="padding: 10px 0; display: flex; align-items: start; gap: 12px;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--unir-cyan-deep); font-weight: 600; margin-top: 4px;">→</span>
+              <div>
+                <strong style="color: var(--ink);">Deep ensembles</strong>
+                <p style="font-size: 12px; color: var(--ink-soft); margin-top: 2px;">Si N modelos entrenados discrepan mucho, probable OOD.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div style="padding: 28px; background: #fff; border-radius: 12px; box-shadow: 0 4px 16px rgba(10,22,40,0.06);">
+          <div class="eyebrow" style="color: var(--F-color); margin-bottom: 14px;">Lo que falla en producción</div>
+          <ul style="list-style: none; padding: 0;">
+            <li style="padding: 10px 0; border-bottom: 1px dashed var(--rule-light); display: flex; align-items: start; gap: 12px;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--F-color); font-weight: 600; margin-top: 4px;">⚠</span>
+              <div>
+                <strong style="color: var(--ink);">Data drift silencioso</strong>
+                <p style="font-size: 12px; color: var(--ink-soft); margin-top: 2px;">La distribución de entrada cambia lentamente sin alertas.</p>
+              </div>
+            </li>
+            <li style="padding: 10px 0; border-bottom: 1px dashed var(--rule-light); display: flex; align-items: start; gap: 12px;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--F-color); font-weight: 600; margin-top: 4px;">⚠</span>
+              <div>
+                <strong style="color: var(--ink);">Concept drift</strong>
+                <p style="font-size: 12px; color: var(--ink-soft); margin-top: 2px;">La relación X→Y cambia (post-pandemia, post-regulación).</p>
+              </div>
+            </li>
+            <li style="padding: 10px 0; display: flex; align-items: start; gap: 12px;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--F-color); font-weight: 600; margin-top: 4px;">⚠</span>
+              <div>
+                <strong style="color: var(--ink);">Sub-grupos minoritarios</strong>
+                <p style="font-size: 12px; color: var(--ink-soft); margin-top: 2px;">Caso visto, pero rara vez — el modelo finge confianza.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout" style="margin-top: 28px;">
+        <div class="label">Regla operativa</div>
+        <div class="text">
+          Toda salida de IA en producción debería pasar por un <em>gate OOD</em> antes de llegar al usuario.
+          Si el score OOD supera el umbral, no se devuelve la predicción — se devuelve "este caso requiere
+          revisión humana". Esto <em>es</em> indeterminación epistémica operacionalizada.
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge" style="background: rgba(0,180,216,0.12); border-color: var(--unir-cyan); color: var(--unir-cyan-light);">⚡ Actividad 07 · Discusión guiada</span>
+        <span class="part">Trabajo en breakout · 8 minutos</span>
+      </div>
+      <div class="right">31 / 36</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Tres grupos · Tres preguntas · Una conclusión por grupo</div>
+      <h2 class="display-m">¿Cómo aplicarías T-I-F en <em class="highlight">tu contexto real</em>?</h2>
+      <p class="body" style="margin-top: 12px;">
+        Divídanse en tres grupos por afinidad disciplinar. Cada grupo discute su pregunta durante
+        8 minutos y prepara una respuesta breve (máx 60 segundos) para compartir.
+      </p>
+      <div class="discussion-grid">
+        <div class="discussion-card" style="border-color: var(--T-color);">
+          <div class="grp" style="color: var(--T-color);">Grupo 01 · Educación &amp; UQ</div>
+          <p class="q">Un modelo de IA predice deserción de un estudiante con 87% de probabilidad. ¿Qué necesitarías saber sobre la <em>confianza epistémica</em> del modelo antes de intervenir con ese estudiante?</p>
+          <div class="time">⏱ 8 min discusión · 60 s síntesis</div>
+        </div>
+        <div class="discussion-card" style="border-color: var(--I-color);">
+          <div class="grp" style="color: var(--I-color);">Grupo 02 · Causalidad aplicada</div>
+          <p class="q">Tu dashboard muestra que las regiones con más cajeros automáticos tienen mayor tasa de robos. ¿Recomendarías reducir cajeros? ¿Qué <em>confusores</em> podrían estar inflando esta correlación?</p>
+          <div class="time">⏱ 8 min discusión · 60 s síntesis</div>
+        </div>
+        <div class="discussion-card" style="border-color: var(--F-color);">
+          <div class="grp" style="color: var(--F-color);">Grupo 03 · Sector público / salud</div>
+          <p class="q">En decisiones de asignación de recursos públicos (becas, subsidios, prioridades clínicas), ¿qué consecuencias éticas tiene <em>no</em> reportar la indeterminación ni los supuestos causales del modelo?</p>
+          <div class="time">⏱ 8 min discusión · 60 s síntesis</div>
+        </div>
+        <div class="discussion-card" style="border-color: var(--unir-cyan);">
+          <div class="grp" style="color: var(--unir-cyan-light);">Pregunta transversal</div>
+          <p class="q">¿En qué casos NO conviene exponer la incertidumbre y la complejidad causal a los usuarios finales? ¿Cuándo simplificar es responsable, y cuándo es negligencia?</p>
+          <div class="time">⏱ Pregunta de cierre · Todos los grupos</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 28 (was 28): QUESTIONS / Q&A ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge" style="background: rgba(0, 180, 216, 0.12); border-color: var(--unir-cyan-deep); color: var(--unir-cyan-deep);">Q&amp;A</span>
+        <span class="part">30 minutos de diálogo</span>
+      </div>
+      <div class="right">28 / 30</div>
+    </div>
+    <div class="final-cta" style="text-align: left;">
+      <div class="eyebrow">Ahora es tu turno</div>
+      <h1 class="display-xl">
+        Preguntas,<br>
+        <em class="highlight">contradicciones, dudas.</em>
+      </h1>
+      <p class="lead" style="margin-top: 32px;">
+        En el espíritu de esta charla: si <em>no</em> tienes ninguna pregunta,
+        eso también es una señal. Probablemente sea I alta.
+      </p>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px;">
+        <div style="padding: 20px; border-left: 3px solid var(--T-color); background: rgba(6, 168, 108, 0.04);">
+          <div class="eyebrow" style="color: var(--T-deep); margin-bottom: 8px;">Pregunta T</div>
+          <p style="font-family: 'Fraunces', serif; font-size: 17px; font-style: italic; color: var(--ink);">
+            "¿Qué evidencia tienes de que esto realmente funciona?"
+          </p>
+        </div>
+        <div style="padding: 20px; border-left: 3px solid var(--I-color); background: rgba(240, 160, 32, 0.04);">
+          <div class="eyebrow" style="color: var(--I-deep); margin-bottom: 8px;">Pregunta I</div>
+          <p style="font-family: 'Fraunces', serif; font-size: 17px; font-style: italic; color: var(--ink);">
+            "¿En qué condiciones esto fallaría?"
+          </p>
+        </div>
+        <div style="padding: 20px; border-left: 3px solid var(--F-color); background: rgba(224, 65, 58, 0.04);">
+          <div class="eyebrow" style="color: var(--F-deep); margin-bottom: 8px;">Pregunta F</div>
+          <p style="font-family: 'Fraunces', serif; font-size: 17px; font-style: italic; color: var(--ink);">
+            "¿Quién está diciendo lo contrario, y por qué?"
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE NEW: CLOSING POLL (BEFORE vs AFTER) ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge" style="background: rgba(0,180,216,0.12); border-color: var(--unir-cyan-deep); color: var(--unir-cyan-deep);">⚡ Actividad 08 · Termómetro final</span>
+        <span class="part">¿Cambió algo?</span>
+      </div>
+      <div class="right">33 / 36</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">La misma pregunta del inicio — ahora con más información</div>
+      <h2 class="display-m">Después de esta sesión: <em class="highlight">¿cuánto confías</em> en lo que te dice la IA?</h2>
+      <div class="mini-poll">
+        <div class="mini-poll-q">
+          Misma escala que al inicio. Sin comparar con tu voto anterior — vota honestamente
+          según cómo te sientes <strong>ahora</strong>.
+        </div>
+        <div class="scale-buttons" data-poll="trust-thermometer-final">
+          <div class="scale-btn" data-value="1"><span class="num">1</span><span class="lbl">Cero</span></div>
+          <div class="scale-btn" data-value="2"><span class="num">2</span><span class="lbl">Poca</span></div>
+          <div class="scale-btn" data-value="3"><span class="num">3</span><span class="lbl">Media</span></div>
+          <div class="scale-btn" data-value="4"><span class="num">4</span><span class="lbl">Alta</span></div>
+          <div class="scale-btn" data-value="5"><span class="num">5</span><span class="lbl">Total</span></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
+          <div>
+            <div class="eyebrow" style="color: var(--ink-faded); margin-bottom: 10px;">Inicio de sesión</div>
+            <div class="dist-bars">
+              <div class="dist-bar" style="height: 20%; background: rgba(10,22,40,0.15);"><span class="pct">8%</span></div>
+              <div class="dist-bar" style="height: 55%; background: rgba(10,22,40,0.15);"><span class="pct">22%</span></div>
+              <div class="dist-bar" style="height: 85%; background: rgba(10,22,40,0.15);"><span class="pct">34%</span></div>
+              <div class="dist-bar" style="height: 75%; background: rgba(10,22,40,0.15);"><span class="pct">28%</span></div>
+              <div class="dist-bar" style="height: 25%; background: rgba(10,22,40,0.15);"><span class="pct">8%</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="eyebrow" style="color: var(--unir-cyan-deep); margin-bottom: 10px;">Ahora</div>
+            <div class="dist-bars">
+              <div class="dist-bar" style="height: 35%; background: rgba(0,180,216,0.3);"><span class="pct">14%</span></div>
+              <div class="dist-bar" style="height: 85%; background: rgba(0,180,216,0.4);"><span class="pct">34%</span></div>
+              <div class="dist-bar" style="height: 80%; background: rgba(0,180,216,0.4);"><span class="pct">32%</span></div>
+              <div class="dist-bar" style="height: 40%; background: rgba(0,180,216,0.3);"><span class="pct">16%</span></div>
+              <div class="dist-bar" style="height: 12%; background: rgba(0,180,216,0.2);"><span class="pct">4%</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="dist-labels"><span>CERO</span><span>POCA</span><span>MEDIA</span><span>ALTA</span><span>TOTAL</span></div>
+        <div class="poll-result show" style="background: rgba(0,180,216,0.06);">
+          <strong>Hipótesis</strong>: la distribución suele desplazarse <em>hacia el centro-izquierda</em> —
+          no porque la IA deje de ser útil, sino porque pasaste de "confiar o no" a
+          <em>"confiar con T-I-F"</em>. Esa es la calibración que buscábamos.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 29 (was 29): SPEAKER / CONTACT ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Contacto</span>
+        <span class="part">Sobre el ponente</span>
+      </div>
+      <div class="right">29 / 30</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Para seguir conversando</div>
+      <div class="speaker-card">
+        <div class="speaker-avatar-lg">M</div>
+        <div>
+          <h2 style="font-size: 32px; font-weight: 500; margin-bottom: 6px;">Dr. Maikel Yelandi Leyva Vázquez</h2>
+          <p style="color: var(--unir-cyan-light); font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 16px;">
+            PhD · Coordinador Académico de Posgrado · UBE
+          </p>
+          <p class="body" style="margin-bottom: 16px;">
+            290+ publicaciones · 9 000+ citas · h-index 23. Editor-in-Chief de Neutrosophic Computing
+            and Machine Learning. Director de la Asociación Latinoamericana de Ciencias Neutrosóficas.
+            Colaborador del Prof. Florentin Smarandache (University of New Mexico).
+          </p>
+          <div style="display: flex; gap: 24px; margin-top: 18px; flex-wrap: wrap;">
+            <div>
+              <div class="eyebrow" style="margin-bottom: 4px;">ORCID</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">0000-0002-9486-5093</div>
+            </div>
+            <div>
+              <div class="eyebrow" style="margin-bottom: 4px;">Institución</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">myleyvav@ube.edu.ec</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top: 32px;">
+        <div class="label">Próximos pasos</div>
+        <div class="text">
+          ¿Quieres explorar la implementación de T-I-F en tu organización o programa de posgrado?
+          Estamos abriendo una línea de investigación aplicada a través de la UBE Ecuador.
+          Escríbeme — la conversación continúa después de esta clase.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 30: CLOSING / CREDITS ============ -->
+  <section class="slide light cover">
+    <div class="cover-bg-deco"></div>
+    <div class="final-cta">
+      <div class="ornament" style="color: var(--unir-cyan-deep);">⸺ &nbsp; ⸺ &nbsp; ⸺</div>
+      <h1 class="display-xl" style="text-align: center;">
+        Gracias.
+      </h1>
+      <p style="margin-top: 32px; font-family: 'Fraunces', serif; font-size: 28px; font-style: italic; color: var(--ink); max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.4;">
+        La máquina no te dirá cuándo está adivinando.<br>
+        Pero ahora sabes <em class="highlight">cómo averiguarlo</em>.
+      </p>
+      <div class="ornament" style="color: var(--unir-cyan-deep); margin-top: 40px;">❦</div>
+      <div style="margin-top: 48px; display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;">
+        <div style="text-align: center;">
+          <div class="eyebrow" style="margin-bottom: 8px;">Organizan</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 22px; color: var(--ink);">
+            <strong>UNIR</strong> · La Rioja<br>
+            <strong>UBE</strong> · Ecuador
+          </div>
+        </div>
+        <div style="text-align: center;">
+          <div class="eyebrow" style="margin-bottom: 8px;">Sesión</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 22px; color: var(--ink);">
+            Clase Espejo<br>
+            25 de mayo · 20:00
+          </div>
+        </div>
+        <div style="text-align: center;">
+          <div class="eyebrow" style="margin-bottom: 8px;">Certificación</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 22px; color: var(--ink);">
+            Evento<br>
+            certificable
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="deck-footer" id="deckFooter">
+  <div class="footer-brand">
+    <span class="institutions">UNIR · UBE</span>
+    <span>Clase Espejo · 25 mayo 2026</span>
+  </div>
+  <div class="nav-controls">
+    <button class="nav-btn" id="prevBtn" aria-label="Anterior">‹</button>
+    <span class="nav-counter" id="counter">01 / 30</span>
+    <button class="nav-btn" id="nextBtn" aria-label="Siguiente">›</button>
+  </div>
+</div>
+
+<div class="kbd-hint">
+  Navega con <kbd>←</kbd> <kbd>→</kbd> · <kbd>Home</kbd> al inicio · <kbd>End</kbd> al final
+</div>
+
+<script>
+  // ===== SLIDE NAVIGATION =====
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progressFill');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const deckFooter = document.getElementById('deckFooter');
+
+  function goTo(index) {
+    if (index < 0 || index >= total) return;
+    slides[current].classList.remove('active');
+    if (index < current) {
+      slides[current].classList.add('prev');
+    } else {
+      slides[current].classList.remove('prev');
+    }
+    current = index;
+    setTimeout(() => {
+      slides.forEach((s, i) => { if (i !== current) s.classList.remove('prev'); });
+    }, 600);
+    slides[current].classList.add('active');
+    slides[current].classList.remove('prev');
+    slides[current].scrollTop = 0;
+    updateUI();
+  }
+
+  function updateUI() {
+    counter.textContent = String(current + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+    progress.style.width = ((current + 1) / total * 100) + '%';
+    // Toggle footer style for light slides
+    if (slides[current].classList.contains('light')) {
+      deckFooter.classList.add('on-light');
+      document.body.style.background = 'var(--bg-light)';
+    } else {
+      deckFooter.classList.remove('on-light');
+      document.body.style.background = 'var(--bg-deep)';
+    }
+  }
+
+  prevBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => goTo(current + 1));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+      e.preventDefault();
+      goTo(current + 1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault();
+      goTo(current - 1);
+    } else if (e.key === 'Home') {
+      goTo(0);
+    } else if (e.key === 'End') {
+      goTo(total - 1);
+    }
+  });
+
+  updateUI();
+
+  // ===== INTERACTIVE COMPASS =====
+  const tRange = document.getElementById('tRange');
+  const iRange = document.getElementById('iRange');
+  const fRange = document.getElementById('fRange');
+  const tVal = document.getElementById('tVal');
+  const iVal = document.getElementById('iVal');
+  const fVal = document.getElementById('fVal');
+  const dot = document.getElementById('compassDot');
+  const zoneLabel = document.getElementById('zoneLabel');
+  const zoneAction = document.getElementById('zoneAction');
+
+  function updateCompass() {
+    const t = parseInt(tRange.value) / 100;
+    const i = parseInt(iRange.value) / 100;
+    const f = parseInt(fRange.value) / 100;
+
+    tVal.textContent = t.toFixed(2);
+    iVal.textContent = i.toFixed(2);
+    fVal.textContent = f.toFixed(2);
+
+    const sum = t + i + f;
+    let nT = sum > 0 ? t / sum : 1/3;
+    let nI = sum > 0 ? i / sum : 1/3;
+    let nF = sum > 0 ? f / sum : 1/3;
+
+    const x = nT * 190 + nI * 60 + nF * 320;
+    const y = nT * 50 + nI * 310 + nF * 310;
+
+    dot.setAttribute('cx', x);
+    dot.setAttribute('cy', y);
+
+    let zone, action, color;
+    if (i > t && i > f && i > 0.4) {
+      if (t < 0.3 && f < 0.3) {
+        zone = 'Ignorancia';
+        action = 'Abstente · El modelo está adivinando';
+        color = '#888';
+      } else {
+        zone = 'Ambigüedad';
+        action = 'Investiga · No actúes aún';
+        color = '#f0a020';
+      }
+    } else if (t > 0.5 && f > 0.5) {
+      zone = 'Contradicción';
+      action = 'Mapea el desacuerdo · Ambos lados';
+      color = '#e0413a';
+    } else if (t > 0.6 && i < 0.3 && f < 0.3) {
+      zone = 'Consenso';
+      action = 'Confía · Actúa';
+      color = '#06a86c';
+    } else if (t < 0.3 && i < 0.3 && f < 0.3) {
+      zone = 'Ignorancia';
+      action = 'Abstente · Datos insuficientes';
+      color = '#888';
+    } else {
+      zone = 'Ambigüedad';
+      action = 'Investiga · No actúes aún';
+      color = '#f0a020';
+    }
+
+    zoneLabel.textContent = zone;
+    zoneLabel.style.color = color;
+    zoneAction.textContent = action;
+    dot.setAttribute('fill', color);
+  }
+
+  [tRange, iRange, fRange].forEach(r => r.addEventListener('input', updateCompass));
+  updateCompass();
+
+  // ===== LIVE POLL =====
+  document.querySelectorAll('.poll-option').forEach(opt => {
+    opt.addEventListener('click', function() {
+      const parent = this.parentElement;
+      parent.querySelectorAll('.poll-option').forEach(o => o.classList.remove('selected'));
+      this.classList.add('selected');
+      parent.querySelectorAll('.opt-bar-fill').forEach(bar => {
+        const fill = bar.getAttribute('data-fill');
+        bar.style.width = fill + '%';
+      });
+    });
+  });
+
+  // ===== SCALE BUTTON POLLS (thermometers) =====
+  document.querySelectorAll('.scale-buttons').forEach(group => {
+    group.querySelectorAll('.scale-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        group.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+      });
+    });
+  });
+
+  // ===== DASHBOARD TOGGLE =====
+  const dashToggle = document.getElementById('dashToggle');
+  if (dashToggle) {
+    dashToggle.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        dashToggle.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const view = this.getAttribute('data-view');
+        document.getElementById('dashboard-classic').style.display = view === 'classic' ? 'grid' : 'none';
+        document.getElementById('dashboard-tif').style.display = view === 'tif' ? 'grid' : 'none';
+      });
+    });
+  }
+
+  // ===== AI LAB DIAGNOSIS =====
+  const aiLabBtn = document.getElementById('aiLabBtn');
+  if (aiLabBtn) {
+    aiLabBtn.addEventListener('click', function() {
+      const text = document.getElementById('aiLabInput').value.trim();
+      if (!text) {
+        document.getElementById('aiLabInput').placeholder = '↓ Escribe una pregunta primero';
+        return;
+      }
+      const diagnosis = diagnoseTIF(text);
+      const diagBox = document.getElementById('aiLabDiagnosis');
+      document.getElementById('aiLabZoneTitle').textContent = 'Zona estimada: ' + diagnosis.zone;
+      document.getElementById('aiLabZoneTitle').style.color = diagnosis.color;
+      document.getElementById('aiLabExplain').textContent = diagnosis.reason;
+      document.getElementById('aiLabT').textContent = diagnosis.T.toFixed(2);
+      document.getElementById('aiLabI').textContent = diagnosis.I.toFixed(2);
+      document.getElementById('aiLabF').textContent = diagnosis.F.toFixed(2);
+      document.getElementById('aiLabAction').textContent = '→ ' + diagnosis.action;
+      diagBox.classList.add('show');
+    });
+  }
+
+  function diagnoseTIF(text) {
+    const t = text.toLowerCase();
+    let T = 0.5, I = 0.3, F = 0.15;
+    let reasons = [];
+
+    // Recency signals — boost I
+    const recencyTerms = ['actual', '2026', '2025', 'reciente', 'última', 'último', 'hoy', 'esta semana', 'ahora', 'currently'];
+    if (recencyTerms.some(w => t.includes(w))) { I += 0.25; reasons.push('contiene marcadores temporales recientes'); }
+
+    // Specificity signals — boost T
+    const factTerms = ['cuándo', 'cuanto', 'cuál fue', 'definición', 'fórmula', 'qué es', 'cuántos'];
+    if (factTerms.some(w => t.includes(w))) { T += 0.2; reasons.push('busca un hecho concreto'); }
+
+    // Prediction / forecast — high I
+    const futureTerms = ['predicc', 'pronós', 'proyecc', 'futuro', 'próxim', 'forecast', 'estimar', 'estimación'];
+    if (futureTerms.some(w => t.includes(w))) { I += 0.35; T -= 0.1; reasons.push('exige predicción sobre estado futuro'); }
+
+    // Contested domains — high F
+    const contestedTerms = ['política', 'ética', 'mejor', 'óptimo', 'debería', 'correcto', 'controvert'];
+    if (contestedTerms.some(w => t.includes(w))) { F += 0.3; reasons.push('toca dominio normativo o contestado'); }
+
+    // Niche / proper names — high I
+    const hasPropernoun = /[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+/.test(text);
+    if (hasPropernoun && text.split(/\s+/).length < 15) { I += 0.15; reasons.push('referencia a entidades específicas'); }
+
+    // Numerical / DOI / citation — risk of hallucination → high I and some F
+    if (/doi|citation|cita|artículo|paper|referencia bibliográfica|isbn/i.test(text)) {
+      I += 0.3; F += 0.15;
+      reasons.push('pide referencias verificables — riesgo de fabricación');
+    }
+
+    // Subjective wording — high I
+    const subjectiveTerms = ['siento', 'creo', 'opin', 'parece', 'mejor opción', 'recomendac'];
+    if (subjectiveTerms.some(w => t.includes(w))) { I += 0.2; reasons.push('contiene marcadores subjetivos'); }
+
+    // Cap at 0-1
+    T = Math.max(0.05, Math.min(0.95, T));
+    I = Math.max(0.05, Math.min(0.95, I));
+    F = Math.max(0.05, Math.min(0.95, F));
+
+    // Determine zone
+    let zone, action, color;
+    if (I > T && I > F && I > 0.5) {
+      if (T < 0.3 && F < 0.3) {
+        zone = 'IGNORANCIA ⚫';
+        action = 'Abstente. La IA está adivinando.';
+        color = '#999';
+      } else {
+        zone = 'AMBIGÜEDAD 🟡';
+        action = 'Investiga. No actúes solo con la respuesta del LLM.';
+        color = '#f0a020';
+      }
+    } else if (T > 0.55 && F > 0.5) {
+      zone = 'CONTRADICCIÓN 🔴';
+      action = 'Mapea ambos lados. Busca un experto humano.';
+      color = '#e0413a';
+    } else if (T > 0.55 && I < 0.35 && F < 0.35) {
+      zone = 'CONSENSO 🟢';
+      action = 'Probable respuesta confiable. Verifica con una segunda fuente.';
+      color = '#06a86c';
+    } else {
+      zone = 'AMBIGÜEDAD 🟡';
+      action = 'Pide al LLM que cite fuentes y explicite supuestos.';
+      color = '#f0a020';
+    }
+
+    const reasonText = reasons.length > 0
+      ? 'Señales detectadas: ' + reasons.join(' · ') + '.'
+      : 'Pregunta estándar sin marcadores especiales.';
+
+    return { T, I, F, zone, action, color, reason: reasonText };
+  }
+
+  // ===== CALIBRATION EXERCISE =====
+  const calibAnswers = {};
+  document.querySelectorAll('.conf-pill').forEach(pill => {
+    pill.addEventListener('click', function() {
+      const q = this.getAttribute('data-q');
+      const answer = this.getAttribute('data-answer');
+      // Clear selected in same question
+      document.querySelectorAll('[data-q="' + q + '"]').forEach(p => p.classList.remove('selected'));
+      this.classList.add('selected');
+      calibAnswers[q] = answer;
+    });
+  });
+
+  const calibReveal = document.getElementById('calibReveal');
+  if (calibReveal) {
+    calibReveal.addEventListener('click', function() {
+      const correct = {
+        q1: '1995',
+        q2: '1.7T',
+        q3: '15-27%',
+        q4: 'dawn-dusk',
+        q5: 'no'
+      };
+      let score = 0;
+      Object.keys(correct).forEach(q => {
+        document.querySelectorAll('[data-q="' + q + '"]').forEach(pill => {
+          const answer = pill.getAttribute('data-answer');
+          if (answer === correct[q]) {
+            pill.classList.add('correct');
+          } else if (calibAnswers[q] === answer) {
+            pill.classList.add('wrong');
+          }
+        });
+        if (calibAnswers[q] === correct[q]) score++;
+      });
+      document.getElementById('calibScore').textContent = score;
+      const answered = Object.keys(calibAnswers).length;
+      let msg = '';
+      if (answered < 5) {
+        msg = '<strong>Solo respondiste ' + answered + ' de 5.</strong> Las respuestas no contestadas son exactamente lo que en T-I-F llamamos <em>indeterminación honesta</em>: reconocer que no sabes. Eso vale.';
+      } else if (score >= 4) {
+        msg = '<strong>Excelente calibración.</strong> Acertaste ' + score + '/5. Cuando alguien tiene este nivel de acierto, su autoconfianza suele ser razonable. La IA típicamente reporta 0.9 en todas — incluso en las que se equivoca.';
+      } else if (score >= 2) {
+        msg = '<strong>Calibración típica.</strong> Acertaste ' + score + '/5. Lo importante: ¿hubieras dicho que estabas seguro de tus respuestas antes de ver el resultado? Esa es exactamente la trampa que la IA cae siempre.';
+      } else {
+        msg = '<strong>Calibración baja.</strong> Acertaste ' + score + '/5. <em>Esto es bueno saberlo</em>. La calibración se entrena. Y es justamente lo que le falta a un LLM: saber cuándo no sabe.';
+      }
+      const r = document.getElementById('calibResult');
+      r.innerHTML = msg;
+      r.style.display = 'block';
+    });
+  }
+</script>
+
+</body>
+</html>
