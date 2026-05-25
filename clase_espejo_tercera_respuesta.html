@@ -1846,6 +1846,31 @@
   #optionalBadge.visible { display: flex; }
   #optionalBadge:hover { background: rgba(240,160,32,0.25); }
 
+
+  /* ============ OPTIONAL SLIDE INDICATOR ============ */
+  #optionalBadge {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 500;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(240,160,32,0.15);
+    border: 1.5px solid rgba(240,160,32,0.55);
+    border-radius: 100px;
+    padding: 7px 16px 7px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #f0a020;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    user-select: none;
+  }
+  #optionalBadge.visible { display: flex; }
+  #optionalBadge:hover { background: rgba(240,160,32,0.25); }
+
 </style>
 </head>
 <body>
@@ -2743,6 +2768,93 @@
           Leyva-Vázquez, M. &amp; Smarandache, F. (2025). <em>Neutrosophic Dynamic Epistemic Logic for Calibrated Abstention in LLMs.</em>
         </p>
         <div style="padding:6px 14px; background:rgba(6,168,108,0.12); border:1px solid rgba(6,168,108,0.3); border-radius:100px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; color:var(--T-color);">N=120 · 2 modelos · 40 anotadores humanos</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 7d: VOCES A TRAVÉS DEL TIEMPO — CITAS CON RETRATOS ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">2 500 años de sabiduría</span>
+        <span class="part">La humanidad siempre supo</span>
+      </div>
+      <div class="right">7d</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">De Éfeso a Mesoamérica a Copenhague — la inteligencia trabaja con contradicción</div>
+      <h2 class="display-m" style="max-width: 1000px; line-height: 1.2;">
+        Antes de los modelos, hubo pensadores que ya <em class="highlight">se negaron a elegir entre verdadero y falso.</em>
+      </h2>
+
+      <!-- Timeline de retratos -->
+      <div style="position: relative; margin-top: 22px;">
+        <!-- Línea de tiempo -->
+        <div style="position: absolute; top: 68px; left: calc(12.5% - 2px); right: calc(12.5% - 2px); height: 2px; background: linear-gradient(to right, rgba(255,215,0,0.15), rgba(255,215,0,0.45), rgba(0,180,216,0.45), rgba(0,180,216,0.15)); z-index: 0;"></div>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; position: relative; z-index: 1;">
+
+          <!-- HERÁCLITO -->
+          <div style="text-align: center; padding: 0 8px;">
+            <div style="width: 136px; height: 136px; border-radius: 50%; overflow: hidden; margin: 0 auto 10px; border: 2px solid rgba(255,215,0,0.45); box-shadow: 0 0 24px rgba(255,215,0,0.12);">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Heraclitus_b_4_compressed.jpg/300px-Heraclitus_b_4_compressed.jpg"
+                   style="width:100%; height:100%; object-fit:cover; object-position:top center;" alt="Heráclito" loading="lazy">
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,215,0,0.55); margin-bottom:2px;">~540–480 a.C.</div>
+            <div style="font-family:'Fraunces',serif; font-size:15px; font-weight:600; color:#fff; margin-bottom:8px;">Heráclito de Éfeso</div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.72); line-height:1.55; font-style:italic; max-width:190px; margin:0 auto;">"Lo que es opuesto está en concierto. De lo que difiere surge la armonía más bella."</div>
+            <div style="font-size:9px; color:rgba(255,255,255,0.32); margin-top:6px;">Fragmento DK B 8</div>
+          </div>
+
+          <!-- POPOL VUH -->
+          <div style="text-align: center; padding: 0 8px;">
+            <div style="width: 136px; height: 136px; border-radius: 50%; overflow: hidden; margin: 0 auto 10px; border: 2px solid rgba(255,215,0,0.45); box-shadow: 0 0 24px rgba(255,215,0,0.12);">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Popol_vuh.jpg/300px-Popol_vuh.jpg"
+                   style="width:100%; height:100%; object-fit:cover; object-position:center top;" alt="Popol Vuh" loading="lazy">
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,215,0,0.55); margin-bottom:2px;">Anterior a 1550</div>
+            <div style="font-family:'Fraunces',serif; font-size:15px; font-weight:600; color:#fff; margin-bottom:8px;">Popol Vuh · K'iche' Maya</div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.72); line-height:1.55; font-style:italic; max-width:190px; margin:0 auto;">"Solo los Creadores, meditando en el silencio. Estaban pensando, deliberando antes de hablar."</div>
+            <div style="font-size:9px; color:rgba(255,255,255,0.32); margin-top:6px;">Parte I · Ms. Ximénez, 1701</div>
+          </div>
+
+          <!-- LEIBNIZ -->
+          <div style="text-align: center; padding: 0 8px;">
+            <div style="width: 136px; height: 136px; border-radius: 50%; overflow: hidden; margin: 0 auto 10px; border: 2px solid rgba(0,180,216,0.45); box-shadow: 0 0 24px rgba(0,180,216,0.12);">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Christoph_Bernhard_Francke_-_Bildnis_des_Philosophen_Leibniz_%28ca._1695%29.jpg/300px-Christoph_Bernhard_Francke_-_Bildnis_des_Philosophen_Leibniz_%28ca._1695%29.jpg"
+                   style="width:100%; height:100%; object-fit:cover; object-position:top center;" alt="Leibniz" loading="lazy">
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(0,180,216,0.65); margin-bottom:2px;">Leipzig, 1686</div>
+            <div style="font-family:'Fraunces',serif; font-size:15px; font-weight:600; color:#fff; margin-bottom:8px;">Gottfried Leibniz</div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.72); line-height:1.55; font-style:italic; max-width:190px; margin:0 auto;">"Si surgieran controversias, bastaría decirse el uno al otro: ¡Calculemos!"</div>
+            <div style="font-size:9px; color:rgba(255,255,255,0.32); margin-top:6px;">Calculus ratiocinator · sueño de la máquina pensante</div>
+          </div>
+
+          <!-- BOHR -->
+          <div style="text-align: center; padding: 0 8px;">
+            <div style="width: 136px; height: 136px; border-radius: 50%; overflow: hidden; margin: 0 auto 10px; border: 2px solid rgba(0,180,216,0.45); box-shadow: 0 0 24px rgba(0,180,216,0.12);">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Niels_Bohr.jpg/300px-Niels_Bohr.jpg"
+                   style="width:100%; height:100%; object-fit:cover; object-position:top center;" alt="Niels Bohr" loading="lazy">
+            </div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(0,180,216,0.65); margin-bottom:2px;">Copenhague, 1922</div>
+            <div style="font-family:'Fraunces',serif; font-size:15px; font-weight:600; color:#fff; margin-bottom:8px;">Niels Bohr</div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.72); line-height:1.55; font-style:italic; max-width:190px; margin:0 auto;">"El opuesto de una verdad profunda puede ser otra verdad profunda."</div>
+            <div style="font-size:9px; color:rgba(255,255,255,0.32); margin-top:6px;">Principio de complementariedad</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Banda cierre — The Third Answer -->
+      <div style="margin-top: 18px; padding: 12px 22px; background: linear-gradient(90deg, rgba(255,215,0,0.04), rgba(0,180,216,0.07)); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+        <div style="flex:1; min-width:200px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.35); margin-bottom:3px;">La formalización contemporánea</div>
+          <div style="font-family:'Fraunces',serif; font-size:17px; font-style:italic; color:#fff;">The Third Answer</div>
+          <div style="font-size:10px; color:rgba(255,255,255,0.5); margin-top:2px;">Leyva-Vázquez & Smarandache · NSIA Publishing · 2026 · T(I)F como espacio independiente</div>
+        </div>
+        <div style="font-family:'Fraunces',serif; font-size:13px; font-style:italic; color:rgba(255,255,255,0.55); max-width:480px; line-height:1.5;">
+          "No verdadero. No falso. No su promedio. <strong style="color:rgba(255,255,255,0.85);">Una tercera respuesta</strong> que preserva la estructura de lo que no sabemos."
+        </div>
       </div>
     </div>
   </section>

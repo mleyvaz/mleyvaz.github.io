@@ -385,6 +385,13 @@ slides_guion = [
     ("n", "Citar: Leyva-Vázquez & Smarandache (2025). N-DEL. N=120 · 2 modelos · 40 anotadores."),
 ]),
 
+("SLIDE 7d — VOCES A TRAVÉS DEL TIEMPO", "2 min", KEEP, [
+    ("t", '"Antes de que existiera un solo modelo de IA, la humanidad ya sabía que la realidad no cabe en verdadero o falso."'),
+    ("t", '"Heráclito, cinco siglos antes de Cristo: \'lo que es opuesto está en concierto — de lo que difiere surge la armonía más bella.\' El Popol Vuh maya: los Creadores deliberan en silencio antes de hablar — no actúan desde la certeza, actúan desde la meditación sobre la incertidumbre. Leibniz sueña con la máquina de razonar — y ya intuye que necesita tres valores, no dos. Bohr lo dice en física cuántica: el opuesto de una verdad profunda puede ser otra verdad profunda."'),
+    ("t", '"Lo que Smarandache formalizó en 1995 y lo que nosotros aplicamos a los LLMs esta noche no es un invento — es una herencia de 2.500 años de inteligencia que se negó a simplificar."'),
+    ("n", "Pausa de 3 segundos. Deja que las imágenes respiren. Este es el momento más filosófico de la clase."),
+]),
+
 ("SLIDE 8 — LA TERCERA RESPUESTA", "1 min", KEEP, [
     ("t", '"Existe una tercera respuesta. No es verdadero. No es falso. Es la estructura formal de lo que no sabemos."'),
 ]),
