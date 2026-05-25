@@ -1997,6 +1997,29 @@
   #optionalBadge:hover { background: rgba(240,160,32,0.25); }
 
 </style>
+  <!-- Firebase SDK: votacion tiempo real slide 7g -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script>
+    /* PASO 1: Reemplaza estos valores con tu proyecto Firebase
+       Ir a: console.firebase.google.com > tu proyecto > Configuracion > SDK snippet */
+    var _FB_CFG = {
+      apiKey:            "TU_API_KEY",
+      authDomain:        "TU_PROYECTO.firebaseapp.com",
+      databaseURL:       "https://TU_PROYECTO-default-rtdb.firebaseio.com",
+      projectId:         "TU_PROYECTO",
+      storageBucket:     "TU_PROYECTO.appspot.com",
+      messagingSenderId: "TU_SENDER_ID",
+      appId:             "TU_APP_ID"
+    };
+    try {
+      if (!firebase.apps.length) firebase.initializeApp(_FB_CFG);
+      window.FBDB = firebase.database();
+    } catch(e) {
+      console.warn('[Firebase] No configurado — votacion local solamente.', e.message);
+      window.FBDB = null;
+    }
+  </script>
 </head>
 <body>
 
@@ -2922,7 +2945,7 @@
           <!-- HERÁCLITO -->
           <div style="text-align: center; padding: 0 8px;">
             <div style="width: 136px; height: 136px; border-radius: 50%; overflow: hidden; margin: 0 auto 10px; border: 2px solid rgba(255,215,0,0.45); box-shadow: 0 0 24px rgba(255,215,0,0.12);">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Heraclitus_b_4_compressed.jpg/300px-Heraclitus_b_4_compressed.jpg"
+              <img src="img/heraclito.jpg"
                    style="width:100%; height:100%; object-fit:cover; object-position:top center;" alt="Heráclito" loading="lazy">
             </div>
             <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,215,0,0.55); margin-bottom:2px;">~540–480 a.C.</div>
@@ -2934,7 +2957,7 @@
           <!-- POPOL VUH -->
           <div style="text-align: center; padding: 0 8px;">
             <div style="width: 136px; height: 136px; border-radius: 50%; overflow: hidden; margin: 0 auto 10px; border: 2px solid rgba(255,215,0,0.45); box-shadow: 0 0 24px rgba(255,215,0,0.12);">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Popol_vuh.jpg/300px-Popol_vuh.jpg"
+              <img src="img/popolvuh.jpg"
                    style="width:100%; height:100%; object-fit:cover; object-position:center top;" alt="Popol Vuh" loading="lazy">
             </div>
             <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,215,0,0.55); margin-bottom:2px;">Anterior a 1550</div>
@@ -2946,7 +2969,7 @@
           <!-- LEIBNIZ -->
           <div style="text-align: center; padding: 0 8px;">
             <div style="width: 136px; height: 136px; border-radius: 50%; overflow: hidden; margin: 0 auto 10px; border: 2px solid rgba(0,180,216,0.45); box-shadow: 0 0 24px rgba(0,180,216,0.12);">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Christoph_Bernhard_Francke_-_Bildnis_des_Philosophen_Leibniz_%28ca._1695%29.jpg/300px-Christoph_Bernhard_Francke_-_Bildnis_des_Philosophen_Leibniz_%28ca._1695%29.jpg"
+              <img src="img/leibniz.jpg"
                    style="width:100%; height:100%; object-fit:cover; object-position:top center;" alt="Leibniz" loading="lazy">
             </div>
             <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(0,180,216,0.65); margin-bottom:2px;">Leipzig, 1686</div>
@@ -2958,7 +2981,7 @@
           <!-- BOHR -->
           <div style="text-align: center; padding: 0 8px;">
             <div style="width: 136px; height: 136px; border-radius: 50%; overflow: hidden; margin: 0 auto 10px; border: 2px solid rgba(0,180,216,0.45); box-shadow: 0 0 24px rgba(0,180,216,0.12);">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Niels_Bohr.jpg/300px-Niels_Bohr.jpg"
+              <img src="img/bohr.jpg"
                    style="width:100%; height:100%; object-fit:cover; object-position:top center;" alt="Niels Bohr" loading="lazy">
             </div>
             <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(0,180,216,0.65); margin-bottom:2px;">Copenhague, 1922</div>
@@ -3083,7 +3106,7 @@
         <!-- Columna derecha: retrato + datos -->
         <div style="text-align: center;">
           <div style="width:200px; height:240px; border-radius:12px; overflow:hidden; margin:0 auto 14px; border:1.5px solid rgba(255,215,0,0.3); box-shadow:0 8px 32px rgba(0,0,0,0.4);">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Nietzsche187a.jpg/300px-Nietzsche187a.jpg"
+            <img src="img/nietzsche.jpg"
                  style="width:100%; height:100%; object-fit:cover; object-position:top center;" alt="Friedrich Nietzsche c.1875" loading="lazy">
           </div>
           <div style="font-family:'Fraunces',serif; font-size:17px; font-weight:600; color:#fff; margin-bottom:3px;">Friedrich Nietzsche</div>
@@ -3111,6 +3134,13 @@
       <div class="right">7g</div>
     </div>
     <div style="margin: auto 0;">
+      <!-- QR widget: participantes votan desde sus telefonos -->
+      <div id="qr_widget" style="position:absolute; top:56px; right:16px; text-align:center; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.11); border-radius:10px; padding:8px 10px; z-index:20; width:110px;">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=https%3A%2F%2Fmleyvaz.github.io%2Fvotar.html&bgcolor=111122&color=d0d0e8&margin=4" style="width:90px;height:90px;border-radius:5px;display:block;" alt="QR Votar" loading="lazy">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:6.5px; letter-spacing:0.07em; color:rgba(255,255,255,0.4); margin-top:4px; text-transform:uppercase; line-height:1.3;">Vota desde<br>tu cel</div>
+        <div id="qr_vote_count" style="font-family:'JetBrains Mono',monospace; font-size:9px; color:rgba(0,200,180,0.8); margin-top:3px; font-weight:700;">0 votos</div>
+        <button onclick="opResetVotes()" title="Reiniciar votos" style="margin-top:5px; font-size:7px; background:none; border:1px solid rgba(255,80,80,0.3); color:rgba(255,120,120,0.6); border-radius:4px; padding:2px 8px; cursor:pointer; font-family:monospace;">reset</button>
+      </div>
       <div class="eyebrow">Vota antes de que explique el punto filosófico &mdash; la sala se dividirá</div>
       <h2 class="display-m" style="max-width: 900px; line-height:1.2;">
         Los mismos datos. <em class="highlight">Percepciones completamente distintas.</em>
@@ -3122,7 +3152,7 @@
         <div id="ilusion_duck_box" style="padding:18px 20px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:12px;">
           <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:10px;">Ilusión clásica · Fliegende Blätter, 1892 · Wittgenstein la usó en Investigaciones Filosóficas §XI</div>
           <div style="text-align:center; margin-bottom:14px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Kaninchen_und_Ente.svg/400px-Kaninchen_und_Ente.svg.png"
+            <img src="img/duck_rabbit.png"
                  style="max-height:180px; max-width:100%; filter:invert(1) brightness(0.85); border-radius:8px;" alt="Pato o Conejo" loading="lazy">
           </div>
           <div style="font-family:'Fraunces',serif; font-size:15px; color:rgba(255,255,255,0.88); text-align:center; margin-bottom:12px;">¿Qué ves <em>primero</em>?</div>
@@ -3159,7 +3189,7 @@
         <div id="ilusion_dress_box" style="padding:18px 20px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:12px;">
           <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:10px;">Fenómeno viral · 2015 · 57% azul/negro · 30% blanco/dorado · estudio Nature 2017</div>
           <div style="text-align:center; margin-bottom:14px;">
-            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/2/21/The_dress_blueblackwhitegold.jpg/400px-The_dress_blueblackwhitegold.jpg"
+            <img src="img/thedress.jpg"
                  style="max-height:180px; max-width:100%; border-radius:8px;" alt="El vestido" loading="lazy">
           </div>
           <div style="font-family:'Fraunces',serif; font-size:15px; color:rgba(255,255,255,0.88); text-align:center; margin-bottom:12px;">¿De qué color es el vestido?</div>
@@ -3223,36 +3253,56 @@
 
     <script>
     (function() {
-      var counts = { duck: { pato: 0, conejo: 0 }, dress: { azul: 0, blanco: 0 } };
-      var voted  = { duck: false, dress: false };
+      var SESSION = 'clase_' + new Date().toISOString().slice(0,10).replace(/-/g,'');
+      var voted   = { duck: false, dress: false };
 
-      window.opVote = function(which, option, btn) {
-        if (voted[which]) return;
-        voted[which] = true;
-        counts[which][option]++;
-        updateBars(which);
-        // Highlight chosen button
-        btn.style.borderColor = '#f0a020';
-        btn.style.background  = 'rgba(240,160,32,0.18)';
-        btn.style.color       = '#f0a020';
-        document.getElementById(which + '_results').style.display = 'block';
-      };
-
-      function updateBars(which) {
-        var c = counts[which];
-        var keys = Object.keys(c);
-        var total = keys.reduce(function(s,k){ return s + c[k]; }, 0);
+      function renderBars(which, c) {
+        var keys = which === 'duck' ? ['pato','conejo'] : ['azul','blanco'];
+        var total = keys.reduce(function(s,k){ return s + (c[k]||0); }, 0);
         if (total === 0) return;
+        document.getElementById(which + '_results').style.display = 'block';
         keys.forEach(function(k) {
-          var pct = Math.round(c[k] / total * 100);
+          var pct = Math.round((c[k]||0) / total * 100);
           var bar = document.getElementById(which + '_' + k + '_bar');
           var lbl = document.getElementById(which + '_' + k + '_pct');
           if (bar) bar.style.width = pct + '%';
-          if (lbl) lbl.textContent = pct + '% (' + c[k] + ')';
+          if (lbl) lbl.textContent = pct + '% (' + (c[k]||0) + ')';
         });
         var tot = document.getElementById(which + '_total');
         if (tot) tot.textContent = total + ' voto' + (total !== 1 ? 's' : '');
       }
+
+      function updateTotalBadge(data) {
+        var badge = document.getElementById('qr_vote_count');
+        if (!badge) return;
+        var d  = (data && data.duck)  || {};
+        var dr = (data && data.dress) || {};
+        var n  = (d.pato||0) + (d.conejo||0) + (dr.azul||0) + (dr.blanco||0);
+        badge.textContent = n + ' voto' + (n !== 1 ? 's' : '');
+      }
+
+      function startListening() {
+        if (!window.FBDB) return;
+        FBDB.ref('votos/' + SESSION).on('value', function(snap) {
+          var data = snap.val() || {};
+          if (data.duck)  renderBars('duck',  data.duck);
+          if (data.dress) renderBars('dress', data.dress);
+          updateTotalBadge(data);
+        });
+      }
+
+      window.opVote = function(which, option, btn) {
+        if (voted[which]) return;
+        voted[which] = true;
+        btn.style.borderColor = '#f0a020';
+        btn.style.background  = 'rgba(240,160,32,0.18)';
+        btn.style.color       = '#f0a020';
+        if (window.FBDB) {
+          FBDB.ref('votos/' + SESSION + '/' + which + '/' + option)
+              .transaction(function(v){ return (v || 0) + 1; });
+        }
+        document.getElementById(which + '_results').style.display = 'block';
+      };
 
       window.opReveal = function() {
         document.getElementById('op_reveal_content').style.display = 'block';
@@ -3260,6 +3310,24 @@
         btn.style.opacity = '0.4';
         btn.style.pointerEvents = 'none';
       };
+
+      window.opResetVotes = function() {
+        if (window.FBDB) FBDB.ref('votos/' + SESSION).remove();
+        voted.duck  = false;
+        voted.dress = false;
+        ['duck','dress'].forEach(function(w){
+          var el = document.getElementById(w + '_results');
+          if (el) el.style.display = 'none';
+        });
+        var badge = document.getElementById('qr_vote_count');
+        if (badge) badge.textContent = '0 votos';
+      };
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startListening);
+      } else {
+        setTimeout(startListening, 200);
+      }
     })();
     </script>
   </section>
