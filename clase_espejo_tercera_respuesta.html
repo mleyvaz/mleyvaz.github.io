@@ -1871,6 +1871,31 @@
   #optionalBadge.visible { display: flex; }
   #optionalBadge:hover { background: rgba(240,160,32,0.25); }
 
+
+  /* ============ OPTIONAL SLIDE INDICATOR ============ */
+  #optionalBadge {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 500;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(240,160,32,0.15);
+    border: 1.5px solid rgba(240,160,32,0.55);
+    border-radius: 100px;
+    padding: 7px 16px 7px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #f0a020;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    user-select: none;
+  }
+  #optionalBadge.visible { display: flex; }
+  #optionalBadge:hover { background: rgba(240,160,32,0.25); }
+
 </style>
 </head>
 <body>
@@ -2855,6 +2880,79 @@
         <div style="font-family:'Fraunces',serif; font-size:13px; font-style:italic; color:rgba(255,255,255,0.55); max-width:480px; line-height:1.5;">
           "No verdadero. No falso. No su promedio. <strong style="color:rgba(255,255,255,0.85);">Una tercera respuesta</strong> que preserva la estructura de lo que no sabemos."
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 7e: VERDAD vs PROBABILIDAD vs INDETERMINACION ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Pregunta filosofica - 30 anos sin respuesta</span>
+        <span class="part">Cual es mas fundamental?</span>
+      </div>
+      <div class="right">7e</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow" style="color: var(--ink-soft);">Verdad - Probabilidad - Indeterminacion: tres marcos, ninguno gana</div>
+      <h2 class="display-m" style="color: var(--ink); max-width: 900px; line-height:1.2;">
+        ?Que es mas fundamental: <em class="highlight">la verdad, la probabilidad o la indeterminacion?</em>
+      </h2>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 18px; align-items: start;">
+
+        <div style="padding: 16px 18px; background: rgba(10,22,40,0.04); border: 1px solid rgba(10,22,40,0.12); border-top: 3px solid #8899aa; border-radius: 10px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.22em; text-transform:uppercase; color:#8899aa; margin-bottom:8px;">La respuesta estandar</div>
+          <div style="font-family:'Fraunces',serif; font-size:15px; font-weight:600; color:var(--ink); margin-bottom:8px; line-height:1.3;">La verdad es mas fundamental</div>
+          <p style="font-size:11px; color:var(--ink-soft); line-height:1.6; margin:0;">
+            La mayoria de los filosofos analiticos: la probabilidad es solo medida de ignorancia. Si supieras todo, no necesitarias probabilidades.
+          </p>
+          <div style="margin-top:10px; padding:8px 10px; background:rgba(10,22,40,0.05); border-radius:6px; font-size:10px; color:var(--ink-faded); font-style:italic;">
+            Posicion bayesiana clasica: la probabilidad es <strong>epistemologica</strong>, no ontologica.
+          </div>
+          <div style="margin-top:8px; font-size:10px; color:#8899aa; font-style:italic;">No convence del todo.</div>
+        </div>
+
+        <div style="padding: 16px 18px; background: rgba(220,80,30,0.04); border: 1px solid rgba(220,80,30,0.18); border-top: 3px solid #c85820; border-radius: 10px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.22em; text-transform:uppercase; color:#c85820; margin-bottom:8px;">El argumento contrario - mas incomodo</div>
+          <div style="font-family:'Fraunces',serif; font-size:15px; font-weight:600; color:var(--ink); margin-bottom:8px; line-height:1.3;">La probabilidad es mas fundamental</div>
+          <p style="font-size:11px; color:var(--ink-soft); line-height:1.6; margin:0;">
+            La fisica cuantica rompio eso. Hay fenomenos donde la probabilidad <em>no es ignorancia</em> -- es la naturaleza misma del evento.
+          </p>
+          <div style="margin-top:10px; padding:8px 10px; background:rgba(220,80,30,0.06); border-radius:6px; font-size:10px; color:var(--ink-faded); font-style:italic;">
+            No es que no sepamos donde esta el electron.<br><strong>No esta en ningun lugar hasta que se mide.</strong>
+          </div>
+          <div style="margin-top:8px; font-size:10px; color:#c85820; font-style:italic;">Mas honesto. Pero tampoco completo.</div>
+        </div>
+
+        <div style="padding: 16px 18px; background: rgba(0,130,180,0.04); border: 1px solid rgba(0,130,180,0.2); border-top: 3px solid var(--unir-cyan-deep); border-radius: 10px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.22em; text-transform:uppercase; color:var(--unir-cyan-deep); margin-bottom:8px;">La posicion mas honesta</div>
+          <div style="font-family:'Fraunces',serif; font-size:15px; font-weight:600; color:var(--ink); margin-bottom:8px; line-height:1.3;">Ninguna gana. Son herramientas distintas.</div>
+          <div style="display:grid; gap:7px; margin-bottom:10px;">
+            <div style="display:flex; gap:8px; align-items:baseline;">
+              <span style="font-family:'Fraunces',serif; font-size:13px; font-weight:700; color:var(--T-color); min-width:12px;">T</span>
+              <span style="font-size:10px; color:var(--ink-soft); line-height:1.4;">captura <strong>estructura y coherencia</strong> del mundo</span>
+            </div>
+            <div style="display:flex; gap:8px; align-items:baseline;">
+              <span style="font-family:'Fraunces',serif; font-size:13px; font-weight:700; color:var(--I-color); min-width:12px;">I</span>
+              <span style="font-size:10px; color:var(--ink-soft); line-height:1.4;">captura <strong>lo que genuinamente no puede resolverse</strong> con mas informacion</span>
+            </div>
+            <div style="display:flex; gap:8px; align-items:baseline;">
+              <span style="font-family:'Fraunces',serif; font-size:13px; font-weight:700; color:var(--F-color); min-width:12px;">F</span>
+              <span style="font-size:10px; color:var(--ink-soft); line-height:1.4;">captura <strong>frecuencia, grado de creencia</strong> y contradiccion</span>
+            </div>
+          </div>
+          <div style="font-size:10px; color:var(--unir-cyan-deep); font-style:italic; line-height:1.5;">La probabilidad es una medicion incompleta.<br>La indeterminacion es lo que queda cuando eres honesto sobre ambas.</div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:16px; padding:14px 20px; background:rgba(10,22,40,0.06); border-left: 4px solid var(--ink); border-radius:0 8px 8px 0;">
+        <div style="font-family:'Fraunces',serif; font-size:16px; font-weight:500; color:var(--ink); line-height:1.55;">
+          &#8220;La pregunta <em>&#191;cual es mas fundamental?</em> asume que una debe ganar.
+          <strong>Eso es exactamente el error binario que este programa de investigacion critica.</strong>&#8221;
+        </div>
+        <div style="font-size:10px; color:var(--ink-faded); margin-top:6px; font-family:'JetBrains Mono',monospace; letter-spacing:0.1em;">La verdad es una ilusion util &middot; La probabilidad es una medicion incompleta &middot; La indeterminacion es lo que queda cuando eres honesto sobre ambas</div>
       </div>
     </div>
   </section>

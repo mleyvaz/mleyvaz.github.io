@@ -392,6 +392,15 @@ slides_guion = [
     ("n", "Pausa de 3 segundos. Deja que las imágenes respiren. Este es el momento más filosófico de la clase."),
 ]),
 
+("SLIDE 7e — VERDAD vs PROBABILIDAD vs INDETERMINACIÓN", "3 min", KEEP, [
+    ("t", '"Antes de mostrarles el marco formal, quiero hacerles una pregunta que los filósofos llevan treinta años sin responder bien: ¿qué es más fundamental — la verdad, la probabilidad o la indeterminación?"'),
+    ("t", '"La respuesta estándar, la que daría la mayoría de los filósofos analíticos: la verdad. La probabilidad sería solo ignorancia — si supieras todo, no la necesitarías. Posición bayesiana clásica: la probabilidad es epistemológica, no ontológica."'),
+    ("t", '"Pero la física cuántica rompió eso. El electrón no está en ningún lugar hasta que se mide — no es que no lo sepamos. La indeterminación no es ignorancia: es la naturaleza misma del fenómeno. Entonces quizás la probabilidad es más fundamental que la verdad."'),
+    ("t", '"Mi posición real: ninguna gana. Son herramientas que capturan aspectos distintos. La verdad captura estructura y coherencia. La probabilidad captura frecuencia y grado de creencia. La indeterminación neutrosófica captura algo que ninguna de las dos captura bien: lo que genuinamente no se puede resolver con más información."'),
+    ("t", '"La pregunta cuál es más fundamental asume que una debe ganar. Eso es exactamente el error binario que este programa critica."'),
+    ("i", "Pregunta rápida al chat: '¿Cuál de las tres les parece más fundamental? T=Verdad · I=Indeterminación · F=Probabilidad.' Lee 3 respuestas y comenta la diversidad."),
+]),
+
 ("SLIDE 8 — LA TERCERA RESPUESTA", "1 min", KEEP, [
     ("t", '"Existe una tercera respuesta. No es verdadero. No es falso. Es la estructura formal de lo que no sabemos."'),
 ]),
