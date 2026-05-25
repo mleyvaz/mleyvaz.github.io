@@ -2011,33 +2011,88 @@
     </div>
     <div style="margin: auto 0;">
       <div class="eyebrow">El problema no es un bug. Es la arquitectura.</div>
-      <h2 class="display-l" style="max-width: 1100px;">
-        Un LLM <em class="highlight">no busca verdad</em>.<br>
+      <h2 class="display-m" style="max-width: 1100px;">
+        Un LLM <em class="highlight">no busca verdad</em>.
         Busca el <em class="F">siguiente token más probable</em>.
       </h2>
-      <p class="lead" style="margin-top: 32px;">
-        Predice palabra por palabra qué texto continúa de forma estadísticamente plausible dado
-        el contexto. <em>No tiene un módulo</em> que distinga "esto lo sé" de "esto lo estoy inventando
-        porque suena bien".
+      <p class="lead" style="margin-top: 18px; font-size: 17px; max-width: 960px;">
+        Predice palabra por palabra qué texto es estadísticamente plausible.
+        <em>No tiene módulo que distinga "sé esto" de "suena bien, lo genero".</em>
+        La "alucinación" no es un fallo — es el sistema funcionando exactamente como fue diseñado.
       </p>
-      <div class="two-col" style="margin-top: 40px;">
-        <div style="padding: 24px; background: var(--surface); border-left: 4px solid var(--F-color); border-radius: 0 8px 8px 0;">
+      <div class="two-col" style="margin-top: 18px; gap: 18px;">
+        <div style="padding: 18px 22px; background: var(--surface); border-left: 4px solid var(--F-color); border-radius: 0 8px 8px 0;">
           <div class="exp-label bad">Lo que la IA hace</div>
-          <p style="margin-top: 8px; font-family: 'Fraunces', serif; font-size: 22px; line-height: 1.4; color: #fff;">
+          <p style="margin-top: 8px; font-family: 'Fraunces', serif; font-size: 19px; line-height: 1.4; color: #fff;">
             Genera el texto que <em class="F">suena</em> verdadero dado todo lo que ha leído.
           </p>
         </div>
-        <div style="padding: 24px; background: var(--surface); border-left: 4px solid var(--T-color); border-radius: 0 8px 8px 0;">
-          <div class="exp-label good">Lo que tú necesitas</div>
-          <p style="margin-top: 8px; font-family: 'Fraunces', serif; font-size: 22px; line-height: 1.4; color: #fff;">
+        <div style="padding: 18px 22px; background: var(--surface); border-left: 4px solid var(--T-color); border-radius: 0 8px 8px 0;">
+          <div class="exp-label good">Lo que necesitas</div>
+          <p style="margin-top: 8px; font-family: 'Fraunces', serif; font-size: 19px; line-height: 1.4; color: #fff;">
             Una señal de cuánto <em class="T">sabe</em> versus cuánto está <em class="F">adivinando</em>.
           </p>
         </div>
       </div>
-      <p class="body" style="margin-top: 28px;">
-        La lógica binaria — verdadero/falso — que heredamos de Aristóteles hace <strong>2 400 años</strong>,
-        no contempla un valor intermedio para "indeterminación". Y los LLMs viven sobre esa lógica.
-      </p>
+
+      <!-- Evidence strip — datos reales de nuestros papers -->
+      <div style="margin-top: 16px; padding: 16px 20px; background: rgba(0,180,216,0.06); border: 1px solid rgba(0,180,216,0.22); border-radius: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--unir-cyan-light);">Evidencia empírica · datos de nuestra investigación</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: rgba(255,255,255,0.32);">Leyva-Vázquez &amp; Smarandache · NSS 2026 · doi:10.5281/zenodo.19954583</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+          <div>
+            <div style="font-family: 'Fraunces', serif; font-size: 48px; font-weight: 500; color: #fff; line-height: 1; letter-spacing: -0.02em;">66%</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--unir-cyan-light); margin: 5px 0 3px;">Hiper-verdad (T+I+F &gt; 1)</div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.4;">N=100 · 4 modelos GPT<br>χ²=11.32, p=0.023</div>
+          </div>
+          <div>
+            <div style="font-family: 'Fraunces', serif; font-size: 48px; font-weight: 500; color: var(--F-color); line-height: 1; letter-spacing: -0.02em;">95%</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--unir-cyan-light); margin: 5px 0 3px;">Contradicciones éticas</div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.4;">El fenómeno más propenso<br>a respuesta inflada</div>
+          </div>
+          <div>
+            <div style="font-family: 'Fraunces', serif; font-size: 48px; font-weight: 500; color: var(--I-color); line-height: 1; letter-spacing: -0.02em;">κ .84</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--unir-cyan-light); margin: 5px 0 3px;">Acuerdo inter-LLM (máx.)</div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.4;">GPT-5, Claude Opus 4.7, Gemini 3<br>Prensa Guayaquil · N-fsQCA 2026</div>
+          </div>
+        </div>
+        <!-- Media divergence callout -->
+        <div style="margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.07); display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--I-color);">Hallazgo adicional · prensa internacional vs. nacional</span>
+          <span style="font-size: 12px; color: rgba(255,255,255,0.55);">Medios internacionales (Reuters, BBC, AP) y nacionales divergen en κ=0.71–0.84 al extraer causalidad — el desacuerdo entre LLMs <em>refleja</em> el desacuerdo entre fuentes.</span>
+          <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.28);">Leyva-Vázquez &amp; Smarandache · Inter-Narrative LLM+N-fsQCA · draft 2026</span>
+        </div>
+      </div>
+
+      <!-- Author infographic strip -->
+      <div style="margin-top: 14px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-light); margin-bottom: 9px;">Conversación global · quiénes lo documentan</div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+          <div style="padding: 12px 14px; background: rgba(0,180,216,0.08); border: 1px solid rgba(0,180,216,0.28); border-radius: 8px; border-top: 3px solid var(--unir-cyan);">
+            <div style="font-family: 'Fraunces', serif; font-size: 13px; font-weight: 500; color: var(--unir-cyan-light); line-height: 1.25; margin-bottom: 3px;">Leyva-Vázquez<br>&amp; Smarandache</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 6px;">UBE · UNM · NSS 2026</div>
+            <div style="font-size: 10px; color: rgba(255,255,255,0.6); font-style: italic; line-height: 1.45;">Hiper-verdad neutrosófica: T+I+F &gt; 1 en 66 % de evaluaciones LLM</div>
+          </div>
+          <div style="padding: 12px 14px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; border-top: 3px solid var(--I-color);">
+            <div style="font-family: 'Fraunces', serif; font-size: 13px; font-weight: 500; color: #fff; line-height: 1.25; margin-bottom: 3px;">Bender,<br>Gebru et al.</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 6px;">UW · Google · FAccT 2021</div>
+            <div style="font-size: 10px; color: rgba(255,255,255,0.6); font-style: italic; line-height: 1.45;">"Stochastic Parrots": fluidez lingüística ≠ comprensión semántica. 15 000+ citas.</div>
+          </div>
+          <div style="padding: 12px 14px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; border-top: 3px solid var(--T-color);">
+            <div style="font-family: 'Fraunces', serif; font-size: 13px; font-weight: 500; color: #fff; line-height: 1.25; margin-bottom: 3px;">Ji et al.</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 6px;">NTU · ACM CSUR 2023</div>
+            <div style="font-size: 10px; color: rgba(255,255,255,0.6); font-style: italic; line-height: 1.45;">Taxonomía de 6 tipos de alucinación en NLG. 9 000+ citas en 2 años.</div>
+          </div>
+          <div style="padding: 12px 14px; background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; border-top: 3px solid var(--F-color);">
+            <div style="font-family: 'Fraunces', serif; font-size: 13px; font-weight: 500; color: #fff; line-height: 1.25; margin-bottom: 3px;">Gary Marcus<br><span style="font-size: 11px; font-style: italic; color: rgba(255,255,255,0.7);">"el escéptico"</span></div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 6px;">NYU · Rebooting AI 2019</div>
+            <div style="font-size: 10px; color: rgba(255,255,255,0.6); font-style: italic; line-height: 1.45;">"Sin causalidad ni sentido común la IA imita sin entender." Cognitivista, no es del gremio deep learning.</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
