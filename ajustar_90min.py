@@ -369,6 +369,15 @@ slides_guion = [
     ("t", '"En nuestro estudio Breaking the Chains — Leyva-Vázquez y Smarandache, NSS 2026 — analizamos 100 consultas a cuatro modelos GPT. El 66% mostró hiper-verdad: T+I+F > 1. El modelo asignaba más certeza total de la que el marco permite. Y aparece en GPT-4, Claude Opus, Gemini — los mejores modelos."'),
 ]),
 
+("SLIDE 7c — BREAKING THE CHAINS: RESULTADOS COMPLETOS", "3 min", KEEP, [
+    ("t", '"Este resultado viene de un paper publicado — nuestro propio estudio. N=100 evaluaciones neutrosóficas válidas, 4 modelos GPT, 5 fenómenos lingüísticos."'),
+    ("t", '"El 66% de las evaluaciones sin restricción producen hiper-verdad — T+I+F mayor que 1. IC 95% entre 56 y 74 por ciento. El fenómeno no es ruido."'),
+    ("t", '"El más extremo: contradicción ética al 95%. Contingencia futura al 70%. Vaguedad al 60%. Ignorancia epistémica al 55%. Paradoja lógica al 50. Y el prompting probabilístico suprime precisamente esos componentes — Δ_I de +0.383 en ignorancia epistémica."'),
+    ("t", '"Mason 2026 replicó independientemente con 5 vendors distintos: Anthropic, Meta, DeepSeek, Alibaba, Mistral. 84% de hiper-verdad. No es un artefacto de OpenAI."'),
+    ("n", "Citar: Leyva-Vázquez & Smarandache. NSS Vol. 99, 2026, pp. 288-299. Código: github.com/mleyvaz/neutrosophic-llm-logic. DOI: 10.5281/zenodo.19911845."),
+    ("i", "Si alguien en el chat pide el paper: el slide tiene el DOI completo — pueden buscarlo ahora mismo."),
+]),
+
 ("SLIDE 7b — N-DEL: RESULTADOS EMPÍRICOS", "2 min", KEEP, [
     ("t", '"¿Funciona medir incertidumbre así? Sí — y tenemos los números."'),
     ("t", '"N-DEL — Neutrosophic Dynamic Epistemic Logic — evaluado en 120 preguntas difíciles, dos modelos grandes, 40 anotadores humanos. AUROC 0.919 contra Semantic Entropy 0.47 — el doble de discriminación. 93.5% de abstención cuando el modelo debería abstenerse. Correlación de 0.861 con el juicio humano. La distancia TIF bajó 57% respecto al baseline."'),

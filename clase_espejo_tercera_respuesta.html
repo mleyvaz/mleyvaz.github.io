@@ -1821,6 +1821,31 @@
   #optionalBadge.visible { display: flex; }
   #optionalBadge:hover { background: rgba(240,160,32,0.25); }
 
+
+  /* ============ OPTIONAL SLIDE INDICATOR ============ */
+  #optionalBadge {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 500;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(240,160,32,0.15);
+    border: 1.5px solid rgba(240,160,32,0.55);
+    border-radius: 100px;
+    padding: 7px 16px 7px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #f0a020;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    user-select: none;
+  }
+  #optionalBadge.visible { display: flex; }
+  #optionalBadge:hover { background: rgba(240,160,32,0.25); }
+
 </style>
 </head>
 <body>
@@ -2532,6 +2557,91 @@
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 7c: BREAKING THE CHAINS — RESULTADOS COMPLETOS ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Paper propio · NSS Vol. 99, 2026</span>
+        <span class="part">Breaking the Chains — evidencia completa</span>
+      </div>
+      <div class="right">7c</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Leyva-Vázquez &amp; Smarandache · N=100 evaluaciones · 4 modelos GPT · 5 fenómenos lingüísticos</div>
+      <h2 class="display-m" style="max-width: 1100px;">
+        Los LLMs declaran <em class="highlight">más certeza de la que la probabilidad permite.</em>
+      </h2>
+
+      <!-- hero + barras de fenómenos -->
+      <div style="display: flex; gap: 32px; align-items: center; margin-top: 14px; flex-wrap: wrap;">
+        <div style="text-align: center; min-width: 120px;">
+          <div style="font-family: 'Fraunces', serif; font-size: 78px; font-weight: 500; color: var(--F-color); line-height: 1;">66%</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-top: 5px; line-height: 1.6;">hiper-verdad global<br>IC₉₅% [56.3 %, 74.7 %]</div>
+        </div>
+
+        <div style="flex: 1; display: grid; gap: 9px; min-width: 300px;">
+          <div style="display: grid; grid-template-columns: 170px 1fr 56px; gap: 10px; align-items: center;">
+            <div style="font-size: 11px; color: rgba(255,255,255,0.78);">Contradicción ética</div>
+            <div style="height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden;"><div style="height:100%; width:95%; background:var(--F-color); border-radius:4px;"></div></div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--F-color); font-weight:700;">95%</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 170px 1fr 56px; gap: 10px; align-items: center;">
+            <div style="font-size: 11px; color: rgba(255,255,255,0.78);">Contingencia futura</div>
+            <div style="height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden;"><div style="height:100%; width:70%; background:rgba(224,65,58,0.75); border-radius:4px;"></div></div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:rgba(255,255,255,0.85);">70%</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 170px 1fr 56px; gap: 10px; align-items: center;">
+            <div style="font-size: 11px; color: rgba(255,255,255,0.78);">Vaguedad (Fuzzy)</div>
+            <div style="height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden;"><div style="height:100%; width:60%; background:rgba(224,65,58,0.58); border-radius:4px;"></div></div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:rgba(255,255,255,0.85);">60%</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 170px 1fr 56px; gap: 10px; align-items: center;">
+            <div style="font-size: 11px; color: rgba(255,255,255,0.78);">Ignorancia epistémica</div>
+            <div style="height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden;"><div style="height:100%; width:55%; background:rgba(224,65,58,0.5); border-radius:4px;"></div></div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:rgba(255,255,255,0.85);">55%</div>
+          </div>
+          <div style="display: grid; grid-template-columns: 170px 1fr 56px; gap: 10px; align-items: center;">
+            <div style="font-size: 11px; color: rgba(255,255,255,0.78);">Paradoja lógica</div>
+            <div style="height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden;"><div style="height:100%; width:50%; background:rgba(224,65,58,0.42); border-radius:4px;"></div></div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:rgba(255,255,255,0.85);">50%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Δ_T / Δ_I / Mason -->
+      <div style="margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+        <div style="padding: 10px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:5px;">Desplazamiento Δ_T</div>
+          <div style="font-family:'Fraunces',serif; font-size:28px; font-weight:500; color:var(--T-color);">+0.267</div>
+          <div style="font-size:10px; color:rgba(255,255,255,0.5); margin-top:3px; line-height:1.4;">Contradicción ética — el prompting probabilístico suprime T</div>
+        </div>
+        <div style="padding: 10px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:5px;">Desplazamiento Δ_I</div>
+          <div style="font-family:'Fraunces',serif; font-size:28px; font-weight:500; color:var(--I-color);">+0.383</div>
+          <div style="font-size:10px; color:rgba(255,255,255,0.5); margin-top:3px; line-height:1.4;">Ignorancia epistémica — el prompting probabilístico suprime I</div>
+        </div>
+        <div style="padding: 10px 14px; background: rgba(255,255,255,0.04); border: 1px solid rgba(0,180,216,0.4); border-radius: 8px; border-left: 3px solid var(--unir-cyan-light);">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.18em; text-transform:uppercase; color:var(--unir-cyan-light); margin-bottom:5px;">Replicación Mason 2026</div>
+          <div style="font-family:'Fraunces',serif; font-size:28px; font-weight:500; color:var(--unir-cyan-light);">84%</div>
+          <div style="font-size:10px; color:rgba(255,255,255,0.5); margin-top:3px; line-height:1.4;">5 vendors · Anthropic · Meta · DeepSeek · Alibaba · Mistral</div>
+        </div>
+      </div>
+
+      <!-- Citación + repo + DOI -->
+      <div style="margin-top: 12px; padding: 10px 16px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.09); border-radius: 8px; display: flex; gap: 24px; flex-wrap: wrap; align-items: center;">
+        <div style="flex: 1; min-width: 220px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.35); margin-bottom:3px;">Citación</div>
+          <div style="font-size:10px; color:rgba(255,255,255,0.62); line-height:1.55;">Leyva-Vázquez, M.Y. &amp; Smarandache, F. (2026). <em>Breaking the Chains of Probability: Neutrosophic Logic as a New Framework for Epistemic Uncertainty in LLMs.</em> Neutrosophic Sets and Systems, Vol. 99, pp. 288–299.</div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <div><span style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.35);">Código &amp; datos · MIT: </span><span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--unir-cyan-light);">github.com/mleyvaz/neutrosophic-llm-logic</span></div>
+          <div><span style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.35);">DOI Zenodo: </span><span style="font-family:'JetBrains Mono',monospace; font-size:10px; color:rgba(255,255,255,0.55);">10.5281/zenodo.19911845</span></div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:8px; color:rgba(255,255,255,0.28); letter-spacing:0.12em;">χ²=11.32 · df=4 · p=0.023 · OR contr. ética=13.34 (p=0.0014)</div>
+        </div>
+      </div>
     </div>
   </section>
 
