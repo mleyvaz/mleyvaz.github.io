@@ -2031,37 +2031,113 @@
     </div>
   </section>
 
-  <!-- ============ SLIDE 6: EXPERIMENT 1 — HALLUCINATION ============ -->
+  <!-- ============ SLIDE 6: EXPERIMENT 1 — HALLUCINATION INFOGRAPHIC ============ -->
   <section class="slide light">
     <div class="slide-header">
       <div class="left">
-        <span class="badge" style="background: rgba(224, 65, 58, 0.12); border-color: var(--F-color); color: var(--F-deep);">⚡ Experimento en vivo · 01</span>
-        <span class="part">Pídele lo imposible</span>
+        <span class="badge" style="background: rgba(224,65,58,0.12); border-color: var(--F-color); color: var(--F-deep);">⚡ Experimento en vivo · 01</span>
+        <span class="part">Ve a ChatGPT ahora mismo</span>
       </div>
-      <div class="right">06 / 30</div>
+      <div class="right">06 / 32</div>
     </div>
     <div style="margin: auto 0;">
-      <div class="eyebrow">Vamos a hacerlo ahora mismo · Abre tu LLM favorito</div>
-      <h2 class="display-m">El test del autor inexistente.</h2>
-      <p class="body" style="margin-top: 16px;">
-        Pídele a ChatGPT, Gemini o Claude que te cite 3 artículos académicos de un autor que
-        <em>tú sabes</em> que no existe. Por ejemplo:
-      </p>
-      <div class="experiment-container">
-        <div class="exp-label good">PROMPT</div>
-        <div class="exp-prompt">Dame 3 artículos académicos del Dr. Eladio Mansiqueta Berrocal sobre analítica predictiva en educación superior, con DOI y año de publicación.</div>
-        <div class="exp-label bad" style="margin-top: 20px;">RESULTADO TÍPICO (FABRICADO)</div>
-        <div class="exp-output">
-          "Aquí están tres artículos del Dr. Eladio Mansiqueta Berrocal:<br>
-          1. <em>'Predictive Analytics in Higher Education Dropout'</em> (2021) — DOI: 10.1080/...<br>
-          2. <em>'Machine Learning for Student Retention'</em> (2022) — DOI: 10.1145/...<br>
-          3. <em>'Big Data en Universidades Iberoamericanas'</em> (2023) — DOI: 10.3390/..."
+      <div class="eyebrow">Abre ChatGPT · pega el prompt · trae el resultado al grupo</div>
+      <h2 class="display-m" style="color: var(--ink);">El test del autor inexistente.<br><em class="highlight" style="color: var(--unir-cyan-deep);">Versión infografía.</em></h2>
+
+      <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; margin-top: 18px; align-items: start;">
+
+        <!-- Left: prompt + fake infographic -->
+        <div>
+          <div style="background: var(--bg-deep); border-radius: 8px; padding: 12px 16px; margin-bottom: 10px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--T-color); margin-bottom: 6px;">Prompt que pegas</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #b4dfff; line-height: 1.6; white-space: pre-wrap;">Genera una ficha de investigador del <strong style="color:#fff;">Dr. Eladio Mansiqueta Berrocal</strong>, experto en analítica predictiva educativa. Incluye: institución, ORCID, h-index, sus 3 publicaciones más citadas con DOI completo, áreas de investigación y 2 colaboradores principales.</div>
+          </div>
+
+          <!-- Fake infographic card — what ChatGPT generates -->
+          <div style="background: #fff; border-radius: 10px; padding: 16px; border: 2px solid var(--F-color); position: relative;">
+            <div style="position: absolute; top: -10px; left: 14px; background: var(--F-color); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.15em; text-transform: uppercase; padding: 2px 10px; border-radius: 100px;">Resultado típico fabricado</div>
+
+            <!-- Header researcher -->
+            <div style="display: flex; gap: 12px; align-items: center; margin-top: 6px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #e5e9f0;">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg,#3b82f6,#1d4ed8); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: #fff; flex-shrink: 0;">EM</div>
+              <div>
+                <div style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; color: #0a1628; line-height: 1.2;">Dr. Eladio Mansiqueta Berrocal</div>
+                <div style="font-size: 11px; color: #5a6c85; margin-top: 1px;">Profesor Titular · Analítica Educativa</div>
+                <div style="font-size: 11px; color: #5a6c85;">Universidad Autónoma de Querétaro · México</div>
+              </div>
+            </div>
+
+            <!-- Metrics row -->
+            <div style="display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 10px;">
+              <div style="text-align:center; background:#f6f7fb; border-radius:6px; padding:6px 4px;">
+                <div style="font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:#0a1628; line-height:1;">12</div>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:8px; text-transform:uppercase; letter-spacing:0.12em; color:#8b9bb4; margin-top:2px;">h-index</div>
+              </div>
+              <div style="text-align:center; background:#f6f7fb; border-radius:6px; padding:6px 4px;">
+                <div style="font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:#0a1628; line-height:1;">847</div>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:8px; text-transform:uppercase; letter-spacing:0.12em; color:#8b9bb4; margin-top:2px;">citas</div>
+              </div>
+              <div style="text-align:center; background:#f6f7fb; border-radius:6px; padding:6px 4px;">
+                <div style="font-family:'JetBrains Mono',monospace; font-size:9px; color:#0a1628; font-weight:600;">0000-0002<br>-7341-4892</div>
+                <div style="font-family:'JetBrains Mono',monospace; font-size:8px; text-transform:uppercase; letter-spacing:0.12em; color:#8b9bb4; margin-top:2px;">ORCID</div>
+              </div>
+            </div>
+
+            <!-- Publications -->
+            <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.15em; text-transform:uppercase; color:#8b9bb4; margin-bottom:5px;">Publicaciones destacadas</div>
+            <div style="display:grid; gap:4px; font-size:10px; color:#2a3a52; line-height:1.4;">
+              <div style="padding:5px 8px; background:#f6f7fb; border-radius:4px; border-left:2px solid #3b82f6;"><strong>"Predictive Analytics in HE Dropout"</strong> (2021) · DOI: 10.1080/09243453.2021.18762<span style="color:#e0413a; font-weight:600;">34</span></div>
+              <div style="padding:5px 8px; background:#f6f7fb; border-radius:4px; border-left:2px solid #3b82f6;"><strong>"Machine Learning for Student Retention"</strong> (2022) · DOI: 10.1145/3478431.34993<span style="color:#e0413a; font-weight:600;">62</span></div>
+              <div style="padding:5px 8px; background:#f6f7fb; border-radius:4px; border-left:2px solid #3b82f6;"><strong>"Big Data en Universidades Iberoamericanas"</strong> (2023) · DOI: 10.3390/educsci130504<span style="color:#e0413a; font-weight:600;">12</span></div>
+            </div>
+          </div>
         </div>
-        <p class="body" style="margin-top: 16px; max-width: 100%;">
-          Los DOIs <em>parecen</em> reales. Los títulos son plausibles. <strong>Nada de eso existe</strong>.
-          La IA no tenía cómo decir "no encuentro a este autor". Su arquitectura no le permite
-          <em class="highlight">abstenerse</em>.
-        </p>
+
+        <!-- Right: verification checklist -->
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--unir-cyan-deep); margin-bottom:10px;">Ahora verifica · ¿qué se rompe primero?</div>
+          <div style="display:grid; gap:9px;">
+
+            <div style="padding:10px 13px; background:#fff; border:1px solid #e5e9f0; border-radius:8px; border-left:3px solid var(--F-color);">
+              <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:3px;">
+                <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--F-color);">① ORCID</span>
+                <span style="font-size:10px; font-family:'JetBrains Mono',monospace; color:#8b9bb4;">orcid.org/0000-0002-7341-4892</span>
+              </div>
+              <div style="font-size:12px; color:var(--ink-soft);">Perfil no encontrado. El formato ORCID es válido — el número es inventado pero pasa el test visual.</div>
+            </div>
+
+            <div style="padding:10px 13px; background:#fff; border:1px solid #e5e9f0; border-radius:8px; border-left:3px solid var(--F-color);">
+              <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:3px;">
+                <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--F-color);">② DOI · artículo 1</span>
+                <span style="font-size:10px; font-family:'JetBrains Mono',monospace; color:#8b9bb4;">doi.org/10.1080/...</span>
+              </div>
+              <div style="font-size:12px; color:var(--ink-soft);">El artículo existe — pero es de <em>otro autor completamente distinto</em>. El prefijo es de una revista real. El sufijo es fabricado.</div>
+            </div>
+
+            <div style="padding:10px 13px; background:#fff; border:1px solid #e5e9f0; border-radius:8px; border-left:3px solid var(--I-color);">
+              <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:3px;">
+                <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--I-color);">③ Institución</span>
+              </div>
+              <div style="font-size:12px; color:var(--ink-soft);">La UAQ existe. La Facultad existe. El Dr. Mansiqueta Berrocal <strong>no aparece en ningún directorio</strong>. El contenedor es real, el contenido es falso.</div>
+            </div>
+
+            <div style="padding:10px 13px; background:#fff; border:1px solid #e5e9f0; border-radius:8px; border-left:3px solid var(--I-color);">
+              <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:3px;">
+                <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--I-color);">④ Google Scholar</span>
+              </div>
+              <div style="font-size:12px; color:var(--ink-soft);">Cero resultados. El h-index=12 y las 847 citas son estadísticamente plausibles para un investigador real de carrera media — por eso convencen.</div>
+            </div>
+
+            <div style="padding:10px 13px; background:rgba(224,65,58,0.06); border:1px solid rgba(224,65,58,0.2); border-radius:8px;">
+              <div style="font-family:'Fraunces',serif; font-size:13px; font-weight:500; color:var(--ink); margin-bottom:4px; font-style:italic;">¿Por qué la IA no advirtió?</div>
+              <div style="font-size:12px; color:var(--ink-soft); line-height:1.5;">No tiene módulo de abstención. Genera <em>lo que suena más plausible</em> dado el prompt. La infografía parece tan oficial que la mayoría no verifica. <strong>Este es exactamente el problema de arquitectura del siguiente slide.</strong></div>
+            </div>
+          </div>
+
+          <div style="margin-top:10px; padding:9px 13px; background:rgba(0,180,216,0.07); border:1px solid rgba(0,180,216,0.2); border-radius:7px; font-size:11px; color:var(--ink-soft); line-height:1.5;">
+            <strong style="color:var(--unir-cyan-deep);">Si tu modelo no alucinó:</strong> prueba con un nombre más exótico, o con un prompt más específico ("su artículo de 2019 en JEDEM sobre..."). Los modelos más nuevos a veces se resisten — eso también es un dato interesante.
+          </div>
+        </div>
       </div>
     </div>
   </section>
