@@ -3125,52 +3125,138 @@ Antes de responder, estructura tu respuesta así:
     </div>
   </section>
 
-  <!-- ============ SLIDE 22: APPLIED CASE 3 — MEDICAL ============ -->
+  <!-- ============ SLIDE 22: APPLIED CASE 3 — SALUD / AUTISMO ============ -->
   <section class="slide light">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Caso aplicado · 03</span>
-        <span class="part">Diagnóstico clínico asistido por IA</span>
+        <span class="part">Síntesis de evidencia en salud</span>
       </div>
-      <div class="right">22 / 30</div>
+      <div class="right">22 / 31</div>
     </div>
     <div style="margin: auto 0;">
-      <div class="eyebrow">Donde los stakes son altos · Decisiones irreversibles</div>
-      <h2 class="display-m" style="max-width: 1000px;">
-        El modelo dice: <em class="F">"melanoma, 81% probabilidad".</em>
+      <div class="eyebrow">Paracetamol prenatal y autismo · 17 estudios · NPL-ES · NCML Vol. 43, 2026</div>
+      <h2 class="display-m" style="max-width: 1100px; color: var(--ink);">
+        El mismo corpus. <em class="highlight">Dos respuestas completamente distintas.</em>
       </h2>
-      <p class="body" style="margin-top: 20px;">
-        Pero el dermatólogo nota algo. La imagen fue tomada con luz no estandarizada. El paciente
-        tiene un fototipo poco representado en el dataset de entrenamiento. ¿Qué dice T-I-F?
+      <p class="body" style="margin-top: 12px; color: var(--ink-soft);">
+        ¿Causa el paracetamol prenatal trastorno del espectro autista (TEA)? 17 estudios. El resultado depende de <em>cómo pesas la evidencia</em>.
       </p>
-      <div class="checklist" style="margin-top: 24px;">
-        <div class="check-item">
-          <div class="check-icon" style="background: var(--T-color);">T</div>
-          <div class="content">
-            <h4>Lo que apoya el diagnóstico</h4>
-            <p>Asimetría visible · borde irregular · color heterogéneo · score CNN entrenado con &gt;100K imágenes.</p>
+      <div class="two-col weighted" style="margin-top: 16px; gap: 18px; align-items: start;">
+        <div>
+          <div style="padding: 16px 18px; background: rgba(224,65,58,0.05); border: 1px solid rgba(224,65,58,0.2); border-radius: 10px; border-top: 3px solid var(--F-color);">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--F-color); margin-bottom: 10px;">LLM sin calibración · conteo de votos</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+              <div style="text-align: center;">
+                <div style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; color: var(--F-color); line-height: 1;">29%</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faded); margin-top: 3px;">Sí (5/17)</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; color: var(--I-color); line-height: 1;">24%</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faded); margin-top: 3px;">Posiblemente (4/17)</div>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-family: 'Fraunces', serif; font-size: 32px; font-weight: 500; color: var(--T-color); line-height: 1;">47%</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faded); margin-top: 3px;">No (8/17)</div>
+              </div>
+            </div>
+            <div style="padding: 9px 12px; background: rgba(224,65,58,0.07); border-radius: 6px; font-family: 'Fraunces', serif; font-style: italic; font-size: 14px; color: var(--ink);">
+              "53% sugieren algún riesgo" → <strong>Conclusión: resultados mixtos, incierto.</strong>
+            </div>
+            <div style="margin-top: 8px; font-size: 11px; color: var(--ink-faded); line-height: 1.45;">Trata todos los estudios como iguales. No pondera diseño metodológico. No distingue ignorancia de contradicción.</div>
           </div>
         </div>
-        <div class="check-item">
-          <div class="check-icon" style="background: var(--I-color);">I</div>
-          <div class="content">
-            <h4>Lo que no sabemos</h4>
-            <p>Iluminación no estandarizada · fototipo VI con &lt;3% representación en training · paciente fuera del rango de edad típico.</p>
-          </div>
-        </div>
-        <div class="check-item">
-          <div class="check-icon" style="background: var(--F-color);">F</div>
-          <div class="content">
-            <h4>Lo que contradice</h4>
-            <p>No hay historia familiar · ningún cambio reportado en 2 años · dermoscopía manual no muestra patrones malignos típicos.</p>
+        <div>
+          <div style="padding: 16px 18px; background: rgba(6,168,108,0.05); border: 1px solid rgba(6,168,108,0.2); border-radius: 10px; border-top: 3px solid var(--T-color);">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--T-color); margin-bottom: 10px;">NPL-ES ponderado por calidad metodológica</div>
+            <div style="display: grid; gap: 7px; margin-bottom: 12px;">
+              <div style="display: grid; grid-template-columns: 20px 1fr 40px; gap: 8px; align-items: center;">
+                <div style="font-family: 'Fraunces', serif; font-size: 14px; font-style: italic; font-weight: 600; color: var(--T-color);">μ</div>
+                <div style="height: 7px; background: rgba(10,22,40,0.1); border-radius: 4px; overflow: hidden;"><div style="height: 100%; width: 27%; background: var(--T-color); border-radius: 4px;"></div></div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-soft); text-align: right;">0.27</div>
+              </div>
+              <div style="display: grid; grid-template-columns: 20px 1fr 40px; gap: 8px; align-items: center;">
+                <div style="font-family: 'Fraunces', serif; font-size: 14px; font-style: italic; font-weight: 600; color: var(--I-color);">I</div>
+                <div style="height: 7px; background: rgba(10,22,40,0.1); border-radius: 4px; overflow: hidden;"><div style="height: 100%; width: 22%; background: var(--I-color); border-radius: 4px;"></div></div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-soft); text-align: right;">0.22</div>
+              </div>
+              <div style="display: grid; grid-template-columns: 20px 1fr 40px; gap: 8px; align-items: center;">
+                <div style="font-family: 'Fraunces', serif; font-size: 14px; font-style: italic; font-weight: 600; color: var(--F-color);">λ</div>
+                <div style="height: 7px; background: rgba(10,22,40,0.1); border-radius: 4px; overflow: hidden;"><div style="height: 100%; width: 54%; background: var(--F-color); border-radius: 4px;"></div></div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-soft); text-align: right;">0.54</div>
+              </div>
+            </div>
+            <div style="padding: 9px 12px; background: rgba(6,168,108,0.07); border-radius: 6px; font-family: 'Fraunces', serif; font-style: italic; font-size: 14px; color: var(--ink);">
+              Estado <strong>NPL-F</strong> (λ &gt;&gt; μ). Evidencia <strong>apunta claramente en contra</strong>.
+            </div>
+            <div style="margin-top: 8px; font-size: 11px; color: var(--ink-faded); line-height: 1.45;"><strong>Por qué cambia:</strong> estudios con control de hermanos (Q=0.75) están en el grupo "No". Los que "sugieren riesgo" tienen confusión conocida (Q=0.57). I=0.22 &lt; θ=0.45 → <em>resolvible</em>.</div>
           </div>
         </div>
       </div>
-      <div class="callout" style="margin-top: 28px;">
-        <div class="label">Decisión calibrada</div>
-        <div class="text">
-          No biopsiar inmediatamente <em>ni</em> ignorar. Repetir imagen con protocolo estandarizado.
-          Segunda opinión humana. La I exige <em>recolectar más datos antes</em> de cualquier decisión irreversible.
+      <div style="margin-top: 12px; padding: 11px 16px; background: rgba(0,180,216,0.05); border: 1px solid rgba(0,180,216,0.18); border-radius: 8px; display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
+        <div style="flex: 1; min-width: 200px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--unir-cyan-deep); margin-bottom: 3px;">Decisión accionable</div>
+          <div style="font-size: 12px; color: var(--ink-soft); line-height: 1.5;">Financiar cohortes con <em>control de hermanos</em>. El desacuerdo tiene origen metodológico, no ontológico → investigación adicional lo resolverá.</div>
+        </div>
+        <div style="flex: 1; min-width: 200px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--unir-cyan-deep); margin-bottom: 3px;">Qué haría un LLM confiado</div>
+          <div style="font-size: 12px; color: var(--ink-soft); line-height: 1.5;">"53% de estudios lo asocian" → titular de alarma. <em>Breaking the Chains</em> (NSS 2026): 95 % de respuestas en contradicciones éticas producen hiper-verdad sin calibración.</div>
+        </div>
+        <div style="flex: 0 0 auto; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--ink-faded); line-height: 1.6;">
+          Leyva-Vázquez &amp; Smarandache<br>NCML Vol. 43, 2026 · pp. 211-221<br>NSS Vol. 99, 2026 · pp. 288-299
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 22b: AULA HONESTA BRIDGE — TODAS LAS DISCIPLINAS ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Para tu disciplina</span>
+        <span class="part">Sin importar si vienes de analítica</span>
+      </div>
+      <div class="right">22b / 31</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">La brújula funciona igual · psicología · enfermería · derecho · comunicación</div>
+      <h2 class="display-m" style="max-width: 1000px;">
+        No necesitas saber programar.<br>
+        Necesitas saber <em class="highlight">en qué zona estás.</em>
+      </h2>
+      <p class="lead" style="margin-top: 16px; font-size: 17px; max-width: 900px;">
+        El mismo caso del autismo. La misma pregunta T-I-F. Tres respuestas disciplinares distintas, todas honestas.
+      </p>
+      <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;">
+        <div style="padding: 18px; background: rgba(0,180,216,0.08); border: 1px solid rgba(0,180,216,0.2); border-radius: 10px; border-top: 3px solid var(--unir-cyan);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--unir-cyan-light); margin-bottom: 8px;">Psicología · Educación</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 16px; font-weight: 500; color: #fff; margin-bottom: 8px; line-height: 1.3;">¿Le informo a mi paciente que el paracetamol es riesgoso?</div>
+          <div style="font-size: 12px; color: rgba(255,255,255,0.62); line-height: 1.5; margin-bottom: 9px;">NPL-F, I bajo. La evidencia de mayor calidad apunta en contra del vínculo. El desacuerdo visible en medios es metodológico.</div>
+          <div style="padding: 8px 11px; background: rgba(6,168,108,0.12); border-radius: 6px; font-size: 11px; color: rgba(255,255,255,0.85); font-style: italic;">"Los estudios más rigurosos no confirman ese riesgo. Seguimos monitoreando con evidencia nueva."</div>
+        </div>
+        <div style="padding: 18px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; border-top: 3px solid var(--I-color);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--I-color); margin-bottom: 8px;">Salud · Enfermería · Odontología</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 16px; font-weight: 500; color: #fff; margin-bottom: 8px; line-height: 1.3;">¿Recomiendo evitar el paracetamol en embarazo?</div>
+          <div style="font-size: 12px; color: rgba(255,255,255,0.62); line-height: 1.5; margin-bottom: 9px;">I=0.22 &lt; θ=0.45 (umbral epidemiológico). No estamos en zona de abstención. El protocolo vigente se sostiene mientras se espera mejor evidencia.</div>
+          <div style="padding: 8px 11px; background: rgba(240,160,32,0.1); border-radius: 6px; font-size: 11px; color: rgba(255,255,255,0.85); font-style: italic;">"Protocolo estándar activo. Se esperan resultados de cohorte con control de hermanos."</div>
+        </div>
+        <div style="padding: 18px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; border-top: 3px solid var(--F-color);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--F-color); margin-bottom: 8px;">Derecho · Periodismo · Comunicación</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 16px; font-weight: 500; color: #fff; margin-bottom: 8px; line-height: 1.3;">¿Publico "paracetamol causa autismo"?</div>
+          <div style="font-size: 12px; color: rgba(255,255,255,0.62); line-height: 1.5; margin-bottom: 9px;">Sin brújula: 53% "sugieren riesgo" → titular de alarma justificado. Con brújula: ese 53% incluye los estudios de menor calidad. El conteo de votos es un sesgo informativo.</div>
+          <div style="padding: 8px 11px; background: rgba(224,65,58,0.1); border-radius: 6px; font-size: 11px; color: rgba(255,255,255,0.85); font-style: italic;">"Evidencia acumulada no confirma el vínculo. Investigación en curso con mejor metodología."</div>
+        </div>
+      </div>
+      <div style="margin-top: 14px; padding: 13px 18px; background: rgba(0,180,216,0.05); border: 1px solid rgba(0,180,216,0.18); border-radius: 8px; display: flex; align-items: center; gap: 20px;">
+        <div style="flex: 1;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--unir-cyan-light); margin-bottom: 4px;">Brújula Neutrosófica · regla de abstención</div>
+          <div style="font-size: 13px; color: rgba(255,255,255,0.72); line-height: 1.5;">Si <strong>I &gt; 0.50</strong> y no tienes fuente verificable → respuesta correcta: <em>"No puedo afirmarlo con la base disponible."</em> Compatible con GPT, Claude, Gemini. Misma calibración en cualquier disciplina.</div>
+        </div>
+        <div style="flex: 0 0 auto; text-align: right; border-left: 1px solid var(--rule); padding-left: 18px;">
+          <div style="font-family: 'Fraunces', serif; font-size: 14px; font-weight: 500; color: var(--unir-cyan-light);">El Aula Honesta</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.38); margin-top: 2px;">Leyva-Vázquez &amp; Smarandache</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.38);">NSIA Publishing · 2026</div>
+          <div style="margin-top: 6px; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--unir-cyan-light);">mleyvaz.github.io/aula_honesta_presentacion.html</div>
         </div>
       </div>
     </div>
