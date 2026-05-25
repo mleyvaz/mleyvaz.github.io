@@ -1771,6 +1771,31 @@
   #optionalBadge.visible { display: flex; }
   #optionalBadge:hover { background: rgba(240,160,32,0.25); }
 
+
+  /* ============ OPTIONAL SLIDE INDICATOR ============ */
+  #optionalBadge {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 500;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(240,160,32,0.15);
+    border: 1.5px solid rgba(240,160,32,0.55);
+    border-radius: 100px;
+    padding: 7px 16px 7px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #f0a020;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    user-select: none;
+  }
+  #optionalBadge.visible { display: flex; }
+  #optionalBadge:hover { background: rgba(240,160,32,0.25); }
+
 </style>
 </head>
 <body>
@@ -2607,7 +2632,7 @@
   </section>
 
   <!-- ============ SLIDE LR2: TRES TÉCNICAS — RAZONAMIENTO FORZADO ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Técnicas · Prompt Engineering lógico</span>
@@ -2702,7 +2727,7 @@
   </section>
 
   <!-- ============ SLIDE LR3: DEDUCTIVO · INDUCTIVO · ABDUCTIVO ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Razonamiento · Tres modos clásicos</span>
