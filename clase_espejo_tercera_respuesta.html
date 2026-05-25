@@ -1671,6 +1671,56 @@
     .ai-lab-diagnosis .diag-grid { grid-template-columns: 1fr; }
     .calib-question { grid-template-columns: 1fr; gap: 10px; }
   }
+
+  /* ============ OPTIONAL SLIDE INDICATOR ============ */
+  #optionalBadge {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 500;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(240,160,32,0.15);
+    border: 1.5px solid rgba(240,160,32,0.55);
+    border-radius: 100px;
+    padding: 7px 16px 7px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #f0a020;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    user-select: none;
+  }
+  #optionalBadge.visible { display: flex; }
+  #optionalBadge:hover { background: rgba(240,160,32,0.25); }
+
+
+  /* ============ OPTIONAL SLIDE INDICATOR ============ */
+  #optionalBadge {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 500;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(240,160,32,0.15);
+    border: 1.5px solid rgba(240,160,32,0.55);
+    border-radius: 100px;
+    padding: 7px 16px 7px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #f0a020;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    user-select: none;
+  }
+  #optionalBadge.visible { display: flex; }
+  #optionalBadge:hover { background: rgba(240,160,32,0.25); }
+
 </style>
 </head>
 <body>
@@ -1837,7 +1887,7 @@
   </section>
 
   <!-- ============ SLIDE 3-NEW: WARM-UP POLL (CONFIDENCE THERMOMETER) ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge" style="background: rgba(0,180,216,0.12); border-color: var(--unir-cyan-deep); color: var(--unir-cyan-deep);">⚡ Actividad 01 · Termómetro</span>
@@ -2051,7 +2101,7 @@
   </section>
 
   <!-- ============ SLIDE 6: EXPERIMENT 1 — HALLUCINATION ATTACK VECTORS ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge" style="background:rgba(224,65,58,0.12); border-color:var(--F-color); color:var(--F-deep);">⚡ Experimento en vivo · 01</span>
@@ -2178,7 +2228,7 @@
   </section>
 
   <!-- ============ SLIDE 6B: VECTOR B — ESTADÍSTICAS SENESCYT ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge" style="background:rgba(240,160,32,0.12); border-color:var(--I-color); color:var(--I-deep);">⚡ Experimento B · Todos hacen esto</span>
@@ -2231,7 +2281,7 @@
   </section>
 
   <!-- ============ SLIDE 6C: VECTOR C — COMPLETA EL ABSTRACT ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge" style="background:rgba(0,180,216,0.1); border-color:var(--unir-cyan-deep); color:var(--unir-cyan-deep);">⚡ Experimento C · Todos hacen esto</span>
@@ -2455,7 +2505,7 @@
   </section>
 
   <!-- ============ SLIDE 9: FAMILY OF UNCERTAINTY FRAMEWORKS ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Estado del arte</span>
@@ -2512,7 +2562,7 @@
   </section>
 
   <!-- ============ SLIDE NEW: ALEATORIC vs EPISTEMIC UNCERTAINTY ============ -->
-  <section class="slide">
+  <section class="slide" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Distinción fundamental</span>
@@ -2564,7 +2614,7 @@
   </section>
 
   <!-- ============ SLIDE NEW: NEUTROSOPHIC AS ONE TOOL ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Una herramienta más</span>
@@ -2816,7 +2866,7 @@
   </section>
 
   <!-- ============ SLIDE NEW: AI QUERY LAB ============ -->
-  <section class="slide">
+  <section class="slide" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge" style="background: rgba(0,180,216,0.12); border-color: var(--unir-cyan); color: var(--unir-cyan-light);">⚡ Actividad 04 · Lab T-I-F</span>
@@ -2864,7 +2914,7 @@
   </section>
 
   <!-- ============ SLIDE 14 (was 14): EXPERIMENT 2 — TRUST CALIBRATION ============ -->
-  <section class="slide">
+  <section class="slide" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge" style="background: rgba(224, 65, 58, 0.12); border-color: var(--F-color); color: var(--F-color);">⚡ Experimento en vivo · 02</span>
@@ -2901,7 +2951,7 @@ Sé brutalmente honesto. Si no sabes, dilo.</div>
   </section>
 
   <!-- ============ SLIDE NEW: SELF-CALIBRATION EXERCISE ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge" style="background: rgba(240,160,32,0.12); border-color: var(--I-deep); color: var(--I-deep);">⚡ Actividad 05 · Auto-calibración</span>
@@ -2982,7 +3032,7 @@ Sé brutalmente honesto. Si no sabes, dilo.</div>
   </section>
 
   <!-- ============ SLIDE 15 (was 15): PARACONSISTENCY ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Insight</span>
@@ -3023,7 +3073,7 @@ Sé brutalmente honesto. Si no sabes, dilo.</div>
   </section>
 
   <!-- ============ SLIDE 16: ABSTENTION ============ -->
-  <section class="slide">
+  <section class="slide" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Principio operativo</span>
@@ -3066,7 +3116,7 @@ Sé brutalmente honesto. Si no sabes, dilo.</div>
   </section>
 
   <!-- ============ SLIDE 17: APPLIED CASE 2 — FRAUD ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Caso aplicado · 02</span>
@@ -3109,7 +3159,7 @@ Sé brutalmente honesto. Si no sabes, dilo.</div>
   </section>
 
   <!-- ============ SLIDE 18: TRAJECTORY (COMPASS TO GPS) ============ -->
-  <section class="slide">
+  <section class="slide" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Marco dinámico</span>
@@ -3153,7 +3203,7 @@ Sé brutalmente honesto. Si no sabes, dilo.</div>
   </section>
 
   <!-- ============ SLIDE 19: LIVE POLL ============ -->
-  <section class="slide">
+  <section class="slide" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge" style="background: rgba(0, 180, 216, 0.12); border-color: var(--unir-cyan); color: var(--unir-cyan-light);">⚡ Encuesta en vivo · 03</span>
@@ -3197,7 +3247,7 @@ Sé brutalmente honesto. Si no sabes, dilo.</div>
   </section>
 
   <!-- ============ SLIDE NEW: CONFORMAL PREDICTION ============ -->
-  <section class="slide">
+  <section class="slide" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Técnica clave · UQ moderna</span>
@@ -3350,7 +3400,7 @@ Antes de responder, estructura tu respuesta así:
   </section>
 
   <!-- ============ SLIDE NEW: CAUSALITY APPLIED ============ -->
-  <section class="slide">
+  <section class="slide" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Caso causal</span>
@@ -3606,7 +3656,7 @@ Antes de responder, estructura tu respuesta así:
   </section>
 
   <!-- ============ SLIDE 23: FROM DASHBOARD TO COMPASS ============ -->
-  <section class="slide">
+  <section class="slide" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Implicación para BI / Analytics</span>
@@ -3654,7 +3704,7 @@ Antes de responder, estructura tu respuesta así:
   </section>
 
   <!-- ============ SLIDE 24-NEW: INTERACTIVE BI DASHBOARD ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge" style="background: rgba(0,180,216,0.12); border-color: var(--unir-cyan-deep); color: var(--unir-cyan-deep);">⚡ Actividad 06 · Dashboard en vivo</span>
@@ -3781,7 +3831,7 @@ Antes de responder, estructura tu respuesta así:
   </section>
 
   <!-- ============ SLIDE 25 (was 24): WHAT TO BUILD ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Implementación</span>
@@ -3830,7 +3880,7 @@ Antes de responder, estructura tu respuesta así:
   </section>
 
   <!-- ============ SLIDE 25: WHAT THIS IS NOT ============ -->
-  <section class="slide">
+  <section class="slide" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Aclaraciones</span>
@@ -3875,7 +3925,7 @@ Antes de responder, estructura tu respuesta así:
   </section>
 
   <!-- ============ SLIDE 26: PRACTICAL TOOLKIT ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Recursos · Stack completo</span>
@@ -3985,7 +4035,7 @@ Antes de responder, estructura tu respuesta así:
   </section>
 
   <!-- ============ SLIDE NEW: OOD DETECTION ============ -->
-  <section class="slide light">
+  <section class="slide light" data-optional="true">
     <div class="slide-header">
       <div class="left">
         <span class="badge">Técnica · Out-of-Distribution</span>
@@ -4369,6 +4419,40 @@ Antes de responder, estructura tu respuesta así:
   });
 
   updateUI();
+
+  // ===== OPTIONAL BADGE (90-min mode) =====
+  (function() {
+    const optBadge = document.createElement('div');
+    optBadge.id = 'optionalBadge';
+    optBadge.innerHTML = '⏭ OPCIONAL &nbsp;·&nbsp; <strong>Saltar →</strong>';
+    optBadge.title = 'No es necesario en 90 min. Clic para saltar.';
+    document.body.appendChild(optBadge);
+
+    function refreshBadge() {
+      if (slides[current] && slides[current].dataset.optional === 'true') {
+        optBadge.classList.add('visible');
+      } else {
+        optBadge.classList.remove('visible');
+      }
+    }
+
+    optBadge.addEventListener('click', () => {
+      let next = current + 1;
+      while (next < total && slides[next] && slides[next].dataset.optional === 'true') next++;
+      if (next < total) goTo(next);
+    });
+
+    // Patch updateUI to also refresh badge
+    const _orig = updateUI;
+    window.updateUI = function() { _orig(); refreshBadge(); };
+    // Override references
+    const origGoTo = goTo;
+    // Re-wire: call refreshBadge after any navigation
+    document.addEventListener('keydown', refreshBadge, true);
+    document.getElementById('prevBtn').addEventListener('click', refreshBadge);
+    document.getElementById('nextBtn').addEventListener('click', refreshBadge);
+    refreshBadge();
+  })();
 
   // ===== INTERACTIVE COMPASS =====
   const tRange = document.getElementById('tRange');
