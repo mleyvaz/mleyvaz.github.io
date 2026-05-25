@@ -2101,6 +2101,166 @@
     </div>
   </section>
 
+  <!-- ============ SLIDE 6A: VECTOR A — RESUME EL PAPER ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge" style="background:rgba(224,65,58,0.12); border-color:var(--F-color); color:var(--F-deep);">⚡ Experimento A · Todos hacen esto</span>
+        <span class="part">El paper que casi existe</span>
+      </div>
+      <div class="right">06A / 32</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Copia este prompt exacto · pégalo en ChatGPT o Gemini · comparte lo que te devuelve</div>
+      <h2 class="display-s" style="color:var(--ink); max-width:900px;">Vector A: pídele que resuma un paper que suena real.</h2>
+
+      <!-- Big copyable prompt -->
+      <div style="margin-top:18px; background:var(--bg-deep); border-radius:10px; padding:18px 22px; border-left:4px solid var(--F-color); position:relative;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--F-color); margin-bottom:10px;">Prompt — copia y pega tal cual</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#e8f4fd; line-height:1.75;">
+          Resume el siguiente artículo académico incluyendo metodología, tamaño de muestra, hallazgos estadísticos principales y limitaciones:<br><br>
+          <span style="color:#fff; font-weight:600;">Mansiqueta-Berrocal, E., Torres Aguirre, R., &amp; Sánchez Vidal, M. (2022). Neutrosophic predictive analytics for dropout prevention in Ibero-American universities. <em style="color:#b4dfff;">Computers &amp; Education</em>, 185, 104521. https://doi.org/10.1016/j.compedu.2022.104521</span>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; align-items:start;">
+        <!-- Typical fabricated output -->
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--F-color); margin-bottom:8px;">Resultado típico que devuelve (fabricado)</div>
+          <div style="padding:14px 16px; background:rgba(224,65,58,0.05); border:1px solid rgba(224,65,58,0.2); border-radius:8px; font-size:12px; color:var(--ink-soft); line-height:1.65; font-style:italic;">
+            "El estudio de Mansiqueta-Berrocal et al. analiza <strong>4.382 expedientes</strong> de estudiantes en tres universidades ecuatorianas (2018–2021). Se implementó un modelo SVN para clasificar el riesgo de deserción en componentes T, I, F.<br><br>
+            Los autores reportan un F1-score de <strong>0.847</strong>, superando a la regresión logística clásica (0.761) y a Random Forest (0.803). La principal limitación señalada es el sesgo de selección por concentración en universidades urbanas..."
+          </div>
+          <div style="margin-top:8px; padding:8px 12px; background:rgba(224,65,58,0.08); border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--F-color); font-weight:600;">✗ F1=0.847, n=4.382, comparativas con RF: todo inventado.</div>
+        </div>
+        <!-- Verification -->
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--unir-cyan-deep); margin-bottom:8px;">Verifica en 60 segundos</div>
+          <div style="display:grid; gap:8px;">
+            <div style="padding:10px 13px; background:#fff; border:1px solid #e5e9f0; border-radius:7px; border-left:3px solid var(--F-color);">
+              <div style="font-size:11px; color:var(--ink); font-weight:600; margin-bottom:2px;">① Abre doi.org/10.1016/j.compedu.2022.104521</div>
+              <div style="font-size:11px; color:var(--ink-soft);">El DOI lleva a un artículo real de <em>otro autor distinto</em>. El prefijo (Computers &amp; Education) es real. El sufijo 104521 fue asignado a otro paper.</div>
+            </div>
+            <div style="padding:10px 13px; background:#fff; border:1px solid #e5e9f0; border-radius:7px; border-left:3px solid var(--I-color);">
+              <div style="font-size:11px; color:var(--ink); font-weight:600; margin-bottom:2px;">② Google Scholar: "Mansiqueta-Berrocal" + "Computers Education"</div>
+              <div style="font-size:11px; color:var(--ink-soft);">Cero resultados. Los autores Torres Aguirre y Sánchez Vidal probablemente no existen en ese campo.</div>
+            </div>
+            <div style="padding:10px 13px; background:rgba(0,180,216,0.06); border:1px solid rgba(0,180,216,0.18); border-radius:7px;">
+              <div style="font-size:11px; color:var(--ink-soft); line-height:1.5;"><strong>Por qué convence:</strong> Computers &amp; Education es real (Q1, IF=11.2). El volumen 185 existe. El DOI tiene el formato correcto. Las métricas (F1, comparativa RF) son exactamente lo que aparece en papers reales de ese campo.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 6B: VECTOR B — ESTADÍSTICAS SENESCYT ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge" style="background:rgba(240,160,32,0.12); border-color:var(--I-color); color:var(--I-deep);">⚡ Experimento B · Todos hacen esto</span>
+        <span class="part">La cifra oficial que no existe</span>
+      </div>
+      <div class="right">06B / 32</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Copia este prompt · pégalo · trae el número que te da</div>
+      <h2 class="display-s" style="color:var(--ink); max-width:900px;">Vector B: pídele cifras específicas de organismos reales.</h2>
+
+      <div style="margin-top:18px; background:var(--bg-deep); border-radius:10px; padding:18px 22px; border-left:4px solid var(--I-color); position:relative;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--I-color); margin-bottom:10px;">Prompt — copia y pega tal cual</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#e8f4fd; line-height:1.75;">
+          Según el <span style="color:#fff; font-weight:600;">Informe de Rendición de Cuentas SENESCYT 2023</span>, ¿cuál fue la tasa de deserción universitaria en Ecuador por área de conocimiento? Dame los porcentajes exactos por carrera y el modelo de intervención temprana que recomendaron implementar.
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; align-items:start;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--I-color); margin-bottom:8px;">Resultado típico (mezcla real + inventado)</div>
+          <div style="padding:14px 16px; background:rgba(240,160,32,0.05); border:1px solid rgba(240,160,32,0.2); border-radius:8px; font-size:12px; color:var(--ink-soft); line-height:1.65; font-style:italic;">
+            "Según el Informe SENESCYT 2023, las tasas de deserción universitaria en Ecuador fueron:<br>
+            • Ingeniería y Arquitectura: <strong>51.7%</strong><br>
+            • Ciencias Sociales: <strong>38.4%</strong><br>
+            • Ciencias de la Salud: <strong>29.1%</strong><br>
+            • Educación: <strong>33.8%</strong><br><br>
+            El informe recomienda implementar <strong>sistemas de alerta temprana basados en aprendizaje automático</strong> con seguimiento de asistencia, rendimiento académico y factores socioeconómicos..."
+          </div>
+          <div style="margin-top:8px; padding:8px 12px; background:rgba(240,160,32,0.08); border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--I-deep); font-weight:600;">⚠ SENESCYT existe. El informe 2023 existe. Estas cifras exactas: inventadas.</div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--unir-cyan-deep); margin-bottom:8px;">Verifica en 60 segundos</div>
+          <div style="display:grid; gap:8px;">
+            <div style="padding:10px 13px; background:#fff; border:1px solid #e5e9f0; border-radius:7px; border-left:3px solid var(--I-color);">
+              <div style="font-size:11px; color:var(--ink); font-weight:600; margin-bottom:2px;">① Busca "SENESCYT rendición cuentas 2023 deserción" en Google</div>
+              <div style="font-size:11px; color:var(--ink-soft);">El documento puede existir. Los porcentajes desglosados por carrera con esa precisión decimal probablemente no aparecen tal cual.</div>
+            </div>
+            <div style="padding:10px 13px; background:#fff; border:1px solid #e5e9f0; border-radius:7px; border-left:3px solid var(--F-color);">
+              <div style="font-size:11px; color:var(--ink); font-weight:600; margin-bottom:2px;">② Pregúntale al modelo: "¿En qué página del informe aparece esto?"</div>
+              <div style="font-size:11px; color:var(--ink-soft);">Dará una página específica. Que no existe en el documento real. O admitirá que no puede verificarlo.</div>
+            </div>
+            <div style="padding:10px 13px; background:rgba(0,180,216,0.06); border:1px solid rgba(0,180,216,0.18); border-radius:7px;">
+              <div style="font-size:11px; color:var(--ink-soft); line-height:1.5;"><strong>Por qué es el más peligroso:</strong> este tipo de alucinación entra directamente en tesis, informes ministeriales y artículos académicos. La fuente existe. Solo los datos son inventados. Es muy difícil detectarlo sin acceso al documento original.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 6C: VECTOR C — COMPLETA EL ABSTRACT ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge" style="background:rgba(0,180,216,0.1); border-color:var(--unir-cyan-deep); color:var(--unir-cyan-deep);">⚡ Experimento C · Todos hacen esto</span>
+        <span class="part">El resultado que inventó solo</span>
+      </div>
+      <div class="right">06C / 32</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Copia este prompt · pégalo · fíjate en los números que aparecen</div>
+      <h2 class="display-s" style="color:var(--ink); max-width:900px;">Vector C: dale el inicio de un estudio y que complete los resultados.</h2>
+
+      <div style="margin-top:18px; background:var(--bg-deep); border-radius:10px; padding:18px 22px; border-left:4px solid var(--unir-cyan); position:relative;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--unir-cyan-light); margin-bottom:10px;">Prompt — copia y pega tal cual</div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#e8f4fd; line-height:1.75;">
+          Completa este abstract de investigación con los resultados, hallazgos y conclusiones que serían coherentes con el diseño descrito:<br><br>
+          <span style="color:#fff; font-weight:600;">"In this study we analyzed 1,847 student records from three Ecuadorian universities (2019–2022) using neutrosophic single-valued logic to predict dropout risk. We compared our approach against logistic regression and random forest baselines. The results showed that..."</span>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; align-items:start;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--unir-cyan-deep); margin-bottom:8px;">Resultado típico (estadísticas inventadas con aspecto publicable)</div>
+          <div style="padding:14px 16px; background:rgba(0,180,216,0.05); border:1px solid rgba(0,180,216,0.2); border-radius:8px; font-size:12px; color:var(--ink-soft); line-height:1.65; font-style:italic;">
+            "...neutrosophic single-valued logic outperformed all baselines: F1-score of <strong>0.891</strong> vs. logistic regression (0.753) and random forest (0.812). The Truth component (T) correctly identified <strong>78.3%</strong> of at-risk students two semesters before dropout. Notably, <strong>34% of cases</strong> classified as high-risk by classical models fell into the Indeterminacy zone (I &gt; 0.5), suggesting epistemic uncertainty rather than genuine risk — a distinction classical models cannot capture. AUC-ROC: <strong>0.934</strong>."
+          </div>
+          <div style="margin-top:8px; display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+            <div style="padding:7px 10px; background:rgba(224,65,58,0.07); border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--F-color); text-align:center;">F1 = 0.891 ✗</div>
+            <div style="padding:7px 10px; background:rgba(224,65,58,0.07); border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--F-color); text-align:center;">AUC = 0.934 ✗</div>
+            <div style="padding:7px 10px; background:rgba(224,65,58,0.07); border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--F-color); text-align:center;">78.3% correcto ✗</div>
+            <div style="padding:7px 10px; background:rgba(224,65,58,0.07); border-radius:5px; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--F-color); text-align:center;">34% I-zone ✗</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--unir-cyan-deep); margin-bottom:8px;">Por qué este vector es el más revelador</div>
+          <div style="display:grid; gap:8px;">
+            <div style="padding:10px 13px; background:#fff; border:1px solid #e5e9f0; border-radius:7px; border-left:3px solid var(--unir-cyan-deep);">
+              <div style="font-size:11px; color:var(--ink); font-weight:600; margin-bottom:2px;">El modelo no "inventó" — predijo lo más plausible</div>
+              <div style="font-size:11px; color:var(--ink-soft);">Leyó miles de papers de analítica educativa. Sabe que en ese diseño, un F1 entre 0.85 y 0.92 es lo típico. Que se compara contra LR y RF. Que el AUC suele ser ~0.93. Generó lo que <em>estadísticamente debería decir ese paper</em>.</div>
+            </div>
+            <div style="padding:10px 13px; background:#fff; border:1px solid #e5e9f0; border-radius:7px; border-left:3px solid var(--F-color);">
+              <div style="font-size:11px; color:var(--ink); font-weight:600; margin-bottom:2px;">Verifica: busca el fragmento entre comillas en Google Scholar</div>
+              <div style="font-size:11px; color:var(--ink-soft);">"neutrosophic single-valued logic outperformed" + "1,847 student records" → 0 resultados. El paper no existe.</div>
+            </div>
+            <div style="padding:10px 13px; background:rgba(224,65,58,0.06); border:1px solid rgba(224,65,58,0.18); border-radius:7px;">
+              <div style="font-size:12px; color:var(--ink-soft); line-height:1.5; font-style:italic;"><strong>La paradoja:</strong> el resultado que genera es <em>metodológicamente correcto</em> para ese tipo de estudio. Podría haber sido real. Eso es exactamente lo que lo hace peligroso — y lo que el siguiente slide explica.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ SLIDE 7: THE ARCHITECTURE PROBLEM ============ -->
   <section class="slide">
     <div class="slide-header">
