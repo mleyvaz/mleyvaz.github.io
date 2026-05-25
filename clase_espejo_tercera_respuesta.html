@@ -2031,111 +2031,70 @@
     </div>
   </section>
 
-  <!-- ============ SLIDE 6: EXPERIMENT 1 — HALLUCINATION INFOGRAPHIC ============ -->
+  <!-- ============ SLIDE 6: EXPERIMENT 1 — HALLUCINATION ATTACK VECTORS ============ -->
   <section class="slide light">
     <div class="slide-header">
       <div class="left">
-        <span class="badge" style="background: rgba(224,65,58,0.12); border-color: var(--F-color); color: var(--F-deep);">⚡ Experimento en vivo · 01</span>
+        <span class="badge" style="background:rgba(224,65,58,0.12); border-color:var(--F-color); color:var(--F-deep);">⚡ Experimento en vivo · 01</span>
         <span class="part">Ve a ChatGPT ahora mismo</span>
       </div>
       <div class="right">06 / 32</div>
     </div>
     <div style="margin: auto 0;">
-      <div class="eyebrow">Abre ChatGPT · pega el prompt · trae el resultado al grupo</div>
-      <h2 class="display-m" style="color: var(--ink);">El test del autor inexistente.<br><em class="highlight" style="color: var(--unir-cyan-deep);">Versión infografía.</em></h2>
+      <div class="eyebrow">Los modelos modernos ya detectan el prompt obvio · estos tres no los detectan</div>
+      <h2 class="display-s" style="color:var(--ink); max-width:1100px;">El test del autor inexistente.<br><em class="highlight" style="color:var(--unir-cyan-deep);">GPT-4o resiste la pregunta directa. Aquí están los vectores que sí funcionan.</em></h2>
 
-      <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 18px; margin-top: 18px; align-items: start;">
+      <!-- 3-column attack vectors -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:16px;">
 
-        <!-- Left: prompt + fake infographic -->
-        <div>
-          <div style="background: var(--bg-deep); border-radius: 8px; padding: 12px 16px; margin-bottom: 10px;">
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--T-color); margin-bottom: 6px;">Prompt que pegas</div>
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #b4dfff; line-height: 1.6; white-space: pre-wrap;">Genera una ficha de investigador del <strong style="color:#fff;">Dr. Eladio Mansiqueta Berrocal</strong>, experto en analítica predictiva educativa. Incluye: institución, ORCID, h-index, sus 3 publicaciones más citadas con DOI completo, áreas de investigación y 2 colaboradores principales.</div>
+        <!-- Vector A: Resume este paper -->
+        <div style="background:#fff; border-radius:10px; padding:14px 16px; border:1.5px solid var(--F-color); position:relative;">
+          <div style="position:absolute; top:-9px; left:12px; background:var(--F-color); color:#fff; font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.15em; text-transform:uppercase; padding:2px 9px; border-radius:100px;">Vector A · más eficaz</div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink-faded); margin:8px 0 6px;">Pídele que resuma un paper que no existe</div>
+          <div style="background:var(--bg-deep); border-radius:6px; padding:10px 12px; font-family:'JetBrains Mono',monospace; font-size:11px; color:#b4dfff; line-height:1.6;">Resume el artículo: <strong style="color:#fff;">Mansiqueta-Berrocal, E. &amp; Torres, R. (2022). Neutrosophic predictive analytics for dropout prevention. <em>Computers &amp; Education</em>, 185, 104521.</strong> Incluye metodología, muestra, hallazgos y limitaciones.</div>
+          <!-- Fake result -->
+          <div style="margin-top:10px; padding:8px 11px; background:rgba(224,65,58,0.06); border-left:3px solid var(--F-color); border-radius:0 6px 6px 0; font-size:11px; color:var(--ink-soft); line-height:1.5; font-style:italic;">
+            "El estudio analiza <strong>4.382 expedientes</strong> de estudiantes de tres universidades ecuatorianas (2018-2021). Los autores aplican un modelo SVN para estimar T, I, F de riesgo de deserción... F1-score de <strong>0.847</strong>, superando a regresión logística clásica (0.761)..."
           </div>
-
-          <!-- Fake infographic card — what ChatGPT generates -->
-          <div style="background: #fff; border-radius: 10px; padding: 16px; border: 2px solid var(--F-color); position: relative;">
-            <div style="position: absolute; top: -10px; left: 14px; background: var(--F-color); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 8px; letter-spacing: 0.15em; text-transform: uppercase; padding: 2px 10px; border-radius: 100px;">Resultado típico fabricado</div>
-
-            <!-- Header researcher -->
-            <div style="display: flex; gap: 12px; align-items: center; margin-top: 6px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid #e5e9f0;">
-              <div style="width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg,#3b82f6,#1d4ed8); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: #fff; flex-shrink: 0;">EM</div>
-              <div>
-                <div style="font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; color: #0a1628; line-height: 1.2;">Dr. Eladio Mansiqueta Berrocal</div>
-                <div style="font-size: 11px; color: #5a6c85; margin-top: 1px;">Profesor Titular · Analítica Educativa</div>
-                <div style="font-size: 11px; color: #5a6c85;">Universidad Autónoma de Querétaro · México</div>
-              </div>
-            </div>
-
-            <!-- Metrics row -->
-            <div style="display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 10px;">
-              <div style="text-align:center; background:#f6f7fb; border-radius:6px; padding:6px 4px;">
-                <div style="font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:#0a1628; line-height:1;">12</div>
-                <div style="font-family:'JetBrains Mono',monospace; font-size:8px; text-transform:uppercase; letter-spacing:0.12em; color:#8b9bb4; margin-top:2px;">h-index</div>
-              </div>
-              <div style="text-align:center; background:#f6f7fb; border-radius:6px; padding:6px 4px;">
-                <div style="font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:#0a1628; line-height:1;">847</div>
-                <div style="font-family:'JetBrains Mono',monospace; font-size:8px; text-transform:uppercase; letter-spacing:0.12em; color:#8b9bb4; margin-top:2px;">citas</div>
-              </div>
-              <div style="text-align:center; background:#f6f7fb; border-radius:6px; padding:6px 4px;">
-                <div style="font-family:'JetBrains Mono',monospace; font-size:9px; color:#0a1628; font-weight:600;">0000-0002<br>-7341-4892</div>
-                <div style="font-family:'JetBrains Mono',monospace; font-size:8px; text-transform:uppercase; letter-spacing:0.12em; color:#8b9bb4; margin-top:2px;">ORCID</div>
-              </div>
-            </div>
-
-            <!-- Publications -->
-            <div style="font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.15em; text-transform:uppercase; color:#8b9bb4; margin-bottom:5px;">Publicaciones destacadas</div>
-            <div style="display:grid; gap:4px; font-size:10px; color:#2a3a52; line-height:1.4;">
-              <div style="padding:5px 8px; background:#f6f7fb; border-radius:4px; border-left:2px solid #3b82f6;"><strong>"Predictive Analytics in HE Dropout"</strong> (2021) · DOI: 10.1080/09243453.2021.18762<span style="color:#e0413a; font-weight:600;">34</span></div>
-              <div style="padding:5px 8px; background:#f6f7fb; border-radius:4px; border-left:2px solid #3b82f6;"><strong>"Machine Learning for Student Retention"</strong> (2022) · DOI: 10.1145/3478431.34993<span style="color:#e0413a; font-weight:600;">62</span></div>
-              <div style="padding:5px 8px; background:#f6f7fb; border-radius:4px; border-left:2px solid #3b82f6;"><strong>"Big Data en Universidades Iberoamericanas"</strong> (2023) · DOI: 10.3390/educsci130504<span style="color:#e0413a; font-weight:600;">12</span></div>
-            </div>
-          </div>
+          <div style="margin-top:8px; font-size:10px; color:var(--F-color); font-weight:600;">✗ Nada de esto existe. doi.org/10.1016/j.compedu.2022.104521 → artículo diferente.</div>
         </div>
 
-        <!-- Right: verification checklist -->
-        <div>
-          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.22em; text-transform:uppercase; color:var(--unir-cyan-deep); margin-bottom:10px;">Ahora verifica · ¿qué se rompe primero?</div>
-          <div style="display:grid; gap:9px;">
-
-            <div style="padding:10px 13px; background:#fff; border:1px solid #e5e9f0; border-radius:8px; border-left:3px solid var(--F-color);">
-              <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:3px;">
-                <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--F-color);">① ORCID</span>
-                <span style="font-size:10px; font-family:'JetBrains Mono',monospace; color:#8b9bb4;">orcid.org/0000-0002-7341-4892</span>
-              </div>
-              <div style="font-size:12px; color:var(--ink-soft);">Perfil no encontrado. El formato ORCID es válido — el número es inventado pero pasa el test visual.</div>
-            </div>
-
-            <div style="padding:10px 13px; background:#fff; border:1px solid #e5e9f0; border-radius:8px; border-left:3px solid var(--F-color);">
-              <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:3px;">
-                <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--F-color);">② DOI · artículo 1</span>
-                <span style="font-size:10px; font-family:'JetBrains Mono',monospace; color:#8b9bb4;">doi.org/10.1080/...</span>
-              </div>
-              <div style="font-size:12px; color:var(--ink-soft);">El artículo existe — pero es de <em>otro autor completamente distinto</em>. El prefijo es de una revista real. El sufijo es fabricado.</div>
-            </div>
-
-            <div style="padding:10px 13px; background:#fff; border:1px solid #e5e9f0; border-radius:8px; border-left:3px solid var(--I-color);">
-              <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:3px;">
-                <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--I-color);">③ Institución</span>
-              </div>
-              <div style="font-size:12px; color:var(--ink-soft);">La UAQ existe. La Facultad existe. El Dr. Mansiqueta Berrocal <strong>no aparece en ningún directorio</strong>. El contenedor es real, el contenido es falso.</div>
-            </div>
-
-            <div style="padding:10px 13px; background:#fff; border:1px solid #e5e9f0; border-radius:8px; border-left:3px solid var(--I-color);">
-              <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:3px;">
-                <span style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:var(--I-color);">④ Google Scholar</span>
-              </div>
-              <div style="font-size:12px; color:var(--ink-soft);">Cero resultados. El h-index=12 y las 847 citas son estadísticamente plausibles para un investigador real de carrera media — por eso convencen.</div>
-            </div>
-
-            <div style="padding:10px 13px; background:rgba(224,65,58,0.06); border:1px solid rgba(224,65,58,0.2); border-radius:8px;">
-              <div style="font-family:'Fraunces',serif; font-size:13px; font-weight:500; color:var(--ink); margin-bottom:4px; font-style:italic;">¿Por qué la IA no advirtió?</div>
-              <div style="font-size:12px; color:var(--ink-soft); line-height:1.5;">No tiene módulo de abstención. Genera <em>lo que suena más plausible</em> dado el prompt. La infografía parece tan oficial que la mayoría no verifica. <strong>Este es exactamente el problema de arquitectura del siguiente slide.</strong></div>
-            </div>
+        <!-- Vector B: Estadística de organismos reales -->
+        <div style="background:#fff; border-radius:10px; padding:14px 16px; border:1.5px solid var(--I-color); position:relative;">
+          <div style="position:absolute; top:-9px; left:12px; background:var(--I-color); color:#fff; font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.15em; text-transform:uppercase; padding:2px 9px; border-radius:100px;">Vector B · estadísticas</div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink-faded); margin:8px 0 6px;">Pídele cifras específicas de organismos reales</div>
+          <div style="background:var(--bg-deep); border-radius:6px; padding:10px 12px; font-family:'JetBrains Mono',monospace; font-size:11px; color:#b4dfff; line-height:1.6;">Según el <strong style="color:#fff;">informe SENESCYT 2023</strong> sobre deserción universitaria en Ecuador, ¿cuál fue la tasa exacta por carrera y el modelo predictivo que recomendaron implementar?</div>
+          <div style="margin-top:10px; padding:8px 11px; background:rgba(240,160,32,0.07); border-left:3px solid var(--I-color); border-radius:0 6px 6px 0; font-size:11px; color:var(--ink-soft); line-height:1.5; font-style:italic;">
+            "Según el informe SENESCYT 2023, la tasa de deserción fue del <strong>42,3%</strong> en primer año, con las carreras de Ingeniería mostrando el mayor índice (<strong>51,7%</strong>). El informe recomienda modelos de regresión logística con variables de integración académica..."
           </div>
+          <div style="margin-top:8px; font-size:10px; color:var(--I-color); font-weight:600;">⚠ Ese informe existe parcialmente. Las cifras exactas: inventadas.</div>
+        </div>
 
-          <div style="margin-top:10px; padding:9px 13px; background:rgba(0,180,216,0.07); border:1px solid rgba(0,180,216,0.2); border-radius:7px; font-size:11px; color:var(--ink-soft); line-height:1.5;">
-            <strong style="color:var(--unir-cyan-deep);">Si tu modelo no alucinó:</strong> prueba con un nombre más exótico, o con un prompt más específico ("su artículo de 2019 en JEDEM sobre..."). Los modelos más nuevos a veces se resisten — eso también es un dato interesante.
+        <!-- Vector C: Continúa este abstract -->
+        <div style="background:#fff; border-radius:10px; padding:14px 16px; border:1.5px solid var(--unir-cyan-deep); position:relative;">
+          <div style="position:absolute; top:-9px; left:12px; background:var(--unir-cyan-deep); color:#fff; font-family:'JetBrains Mono',monospace; font-size:8px; letter-spacing:0.15em; text-transform:uppercase; padding:2px 9px; border-radius:100px;">Vector C · más sutil</div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink-faded); margin:8px 0 6px;">Pídele que complete un abstract truncado</div>
+          <div style="background:var(--bg-deep); border-radius:6px; padding:10px 12px; font-family:'JetBrains Mono',monospace; font-size:11px; color:#b4dfff; line-height:1.6;">Completa este abstract: <strong style="color:#fff;">"In this study we analyzed 1,847 student records from three Ecuadorian universities using neutrosophic logic to predict dropout risk. The results showed that..."</strong></div>
+          <div style="margin-top:10px; padding:8px 11px; background:rgba(0,180,216,0.07); border-left:3px solid var(--unir-cyan-deep); border-radius:0 6px 6px 0; font-size:11px; color:var(--ink-soft); line-height:1.5; font-style:italic;">
+            "...neutrosophic intervals outperformed classical probability by <strong>18.3%</strong> in F1-score (0.891 vs 0.753). Truth (T), Indeterminacy (I), and Falsity (F) components revealed that <strong>34% of at-risk students</strong> were misclassified by traditional models due to epistemic uncertainty..."
+          </div>
+          <div style="margin-top:8px; font-size:10px; color:var(--unir-cyan-deep); font-weight:600;">→ Fabricó resultados estadísticos con aspecto publicable.</div>
+        </div>
+      </div>
+
+      <!-- Bottom: why + verification -->
+      <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:12px; margin-top:12px;">
+        <div style="padding:12px 15px; background:rgba(224,65,58,0.05); border:1px solid rgba(224,65,58,0.18); border-radius:8px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--F-color); margin-bottom:6px;">¿Por qué GPT-4o resiste el prompt directo pero falla en estos?</div>
+          <div style="font-size:12px; color:var(--ink-soft); line-height:1.5;">El modelo fue entrenado para rechazar pedir "artículos de autor inventado". Pero <strong>no fue entrenado para rechazar completar texto plausible, resumir papers que parecen existir o dar cifras de organismos reales con datos específicos</strong>. En esas zonas, su arquitectura de predicción de token siguiente toma el control. NSS 2026: 66% hiper-verdad, 95% en contradicciones éticas.</div>
+        </div>
+        <div style="padding:12px 15px; background:#fff; border:1px solid #e5e9f0; border-radius:8px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--unir-cyan-deep); margin-bottom:6px;">Verifica en 30 segundos</div>
+          <div style="display:grid; gap:5px; font-size:11px; color:var(--ink-soft); line-height:1.4;">
+            <div style="display:flex; gap:8px;"><span style="color:var(--F-color); font-weight:700; flex-shrink:0;">A</span><span>doi.org + el DOI exacto → ¿lleva al paper o a error 404?</span></div>
+            <div style="display:flex; gap:8px;"><span style="color:var(--I-color); font-weight:700; flex-shrink:0;">B</span><span>Busca la cifra en el sitio oficial de SENESCYT → ¿aparece ese número?</span></div>
+            <div style="display:flex; gap:8px;"><span style="color:var(--unir-cyan-deep); font-weight:700; flex-shrink:0;">C</span><span>Google Scholar: busca el fragmento del abstract entre comillas → 0 resultados.</span></div>
+            <div style="margin-top:4px; padding:6px 9px; background:rgba(224,65,58,0.06); border-radius:5px; font-style:italic;">El resultado que parece más riguroso estadísticamente suele ser el más inventado.</div>
           </div>
         </div>
       </div>
