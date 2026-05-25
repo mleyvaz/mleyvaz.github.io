@@ -1746,6 +1746,31 @@
   #optionalBadge.visible { display: flex; }
   #optionalBadge:hover { background: rgba(240,160,32,0.25); }
 
+
+  /* ============ OPTIONAL SLIDE INDICATOR ============ */
+  #optionalBadge {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 500;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(240,160,32,0.15);
+    border: 1.5px solid rgba(240,160,32,0.55);
+    border-radius: 100px;
+    padding: 7px 16px 7px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #f0a020;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    user-select: none;
+  }
+  #optionalBadge.visible { display: flex; }
+  #optionalBadge:hover { background: rgba(240,160,32,0.25); }
+
 </style>
 </head>
 <body>
@@ -2672,6 +2697,120 @@
           externaliza no solo los pasos del razonamiento, sino también la incertidumbre estructural de cada paso.
           Es la versión neutrosófica del Chain-of-Thought — y la más útil cuando la incertidumbre importa.
         </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE LR3: DEDUCTIVO · INDUCTIVO · ABDUCTIVO ============ -->
+  <section class="slide light">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Razonamiento · Tres modos clásicos</span>
+        <span class="part">Forzar al LLM a pensar como un lógico</span>
+      </div>
+      <div class="right">LR·3</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">Tres modos de razonamiento · tres prompts distintos · tres preguntas que no son iguales</div>
+      <h2 class="display-m" style="margin-bottom:8px;">
+        El LLM mezcla los tres sin avisar.<br>
+        <em class="highlight">Tú puedes elegir cuál quieres.</em>
+      </h2>
+
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:20px;">
+
+        <!-- DEDUCTIVO -->
+        <div style="background:#fff; border-radius:14px; box-shadow:0 4px 20px rgba(10,22,40,0.08); overflow:hidden;">
+          <div style="background:var(--T-deep); padding:14px 18px;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; color:rgba(255,255,255,0.6); text-transform:uppercase; margin-bottom:4px;">Modo 01 · General → Particular</div>
+            <div style="font-family:'Fraunces',serif; font-size:22px; color:#fff; font-weight:600;">Deductivo</div>
+            <div style="font-size:12px; color:rgba(255,255,255,0.7); margin-top:4px;">Si las premisas son verdaderas, la conclusión <em>necesariamente</em> lo es.</div>
+          </div>
+          <div style="padding:16px 18px;">
+            <div style="font-size:12px; color:var(--ink-soft); margin-bottom:10px; line-height:1.5;">
+              <strong>Ejemplo:</strong> Todo modelo entrenado con datos sesgados produce sesgos (regla). Este modelo fue entrenado con datos de crédito histórico sesgados (caso). <span style="color:var(--T-deep); font-weight:600;">∴ Este modelo produce sesgos en el scoring (conclusión).</span>
+            </div>
+            <div style="background:var(--bg-light); border:1px solid var(--rule-light); border-radius:8px; padding:12px; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ink); line-height:1.75;">
+              Dado que [regla general],<br>
+              y dado que [caso específico],<br>
+              ¿qué se sigue necesariamente?<br>
+              Muestra el silogismo completo.<br>
+              Señala si alguna premisa es falsa.
+            </div>
+            <div style="margin-top:10px; padding:8px 10px; background:rgba(6,168,108,0.07); border-radius:6px;">
+              <div style="font-size:11px; color:var(--T-deep); line-height:1.5;">
+                <strong>Conecta con T-I-F:</strong> Si T=1 en ambas premisas, la conclusión es Consenso. Si alguna premisa tiene I alto, la conclusión hereda esa incertidumbre.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- INDUCTIVO -->
+        <div style="background:#fff; border-radius:14px; box-shadow:0 4px 20px rgba(10,22,40,0.08); overflow:hidden;">
+          <div style="background:var(--I-deep); padding:14px 18px;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; color:rgba(255,255,255,0.6); text-transform:uppercase; margin-bottom:4px;">Modo 02 · Particular → General</div>
+            <div style="font-family:'Fraunces',serif; font-size:22px; color:#fff; font-weight:600;">Inductivo</div>
+            <div style="font-size:12px; color:rgba(255,255,255,0.7); margin-top:4px;">Las observaciones apoyan la conclusión — pero no la <em>garantizan</em>.</div>
+          </div>
+          <div style="padding:16px 18px;">
+            <div style="font-size:12px; color:var(--ink-soft); margin-bottom:10px; line-height:1.5;">
+              <strong>Ejemplo:</strong> En 15 de 17 estudios el paracetamol prenatal no mostró vínculo con TEA. <span style="color:var(--I-deep); font-weight:600;">∴ La evidencia general no apoya el vínculo — pero dos estudios discrepan (I no es cero).</span>
+            </div>
+            <div style="background:var(--bg-light); border:1px solid var(--rule-light); border-radius:8px; padding:12px; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ink); line-height:1.75;">
+              Dadas estas N observaciones:<br>
+              [lista de evidencias]<br>
+              ¿Qué patrón o principio general<br>
+              se puede inferir?<br>
+              ¿Cuál es la fuerza de esa inferencia?<br>
+              ¿Qué la falsificaría?
+            </div>
+            <div style="margin-top:10px; padding:8px 10px; background:rgba(240,160,32,0.07); border-radius:6px;">
+              <div style="font-size:11px; color:var(--I-deep); line-height:1.5;">
+                <strong>Conecta con T-I-F:</strong> El resultado inductivo actualiza T, I y F según cuántas observaciones apoyan, cuántas son ambiguas, cuántas contradicen.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ABDUCTIVO -->
+        <div style="background:#fff; border-radius:14px; box-shadow:0 4px 20px rgba(10,22,40,0.08); overflow:hidden;">
+          <div style="background:var(--F-deep); padding:14px 18px;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.2em; color:rgba(255,255,255,0.6); text-transform:uppercase; margin-bottom:4px;">Modo 03 · Observación → Mejor explicación</div>
+            <div style="font-family:'Fraunces',serif; font-size:22px; color:#fff; font-weight:600;">Abductivo</div>
+            <div style="font-size:12px; color:rgba(255,255,255,0.7); margin-top:4px;">Infiere la hipótesis que <em>mejor explica</em> lo observado. No garantiza verdad.</div>
+          </div>
+          <div style="padding:16px 18px;">
+            <div style="font-size:12px; color:var(--ink-soft); margin-bottom:10px; line-height:1.5;">
+              <strong>Ejemplo:</strong> El modelo da métricas precisas de un paper que no existe. <span style="color:var(--F-deep); font-weight:600;">∴ Mejor explicación: está extrapolando estadísticamente, no citando — alucinación de tipo patrón.</span>
+            </div>
+            <div style="background:var(--bg-light); border:1px solid var(--rule-light); border-radius:8px; padding:12px; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--ink); line-height:1.75;">
+              Dadas estas observaciones:<br>
+              [lista de hechos]<br>
+              Genera 3 hipótesis explicativas.<br>
+              Puntúa cada una (0–1) por:<br>
+              · parsimonia · poder explicativo<br>
+              · compatibilidad con evidencia.<br>
+              Elige la mejor. Justifica.
+            </div>
+            <div style="margin-top:10px; padding:8px 10px; background:rgba(224,65,58,0.07); border-radius:6px;">
+              <div style="font-size:11px; color:var(--F-deep); line-height:1.5;">
+                <strong>Conecta con T-I-F:</strong> Si I &gt; 0.50 (zona Ignorancia), el razonamiento abductivo es el modo correcto — no deduzcas, busca la mejor explicación disponible.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interaction cue -->
+      <div style="margin-top:16px; padding:12px 18px; border:1.5px dashed rgba(10,22,40,0.2); border-radius:10px; display:flex; align-items:center; gap:14px;">
+        <span style="font-size:18px; flex-shrink:0;">🎯</span>
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; color:var(--unir-cyan-deep); margin-bottom:4px;">PREGUNTA RÁPIDA · 30 segundos</div>
+          <p style="font-size:13px; color:var(--ink-soft); margin:0; line-height:1.5;">
+            Piensen en la última pregunta importante que le hicieron a un LLM en su trabajo.
+            ¿Necesitaban un resultado <strong>deductivo</strong> (certeza formal), <strong>inductivo</strong> (patrón de datos) o <strong>abductivo</strong> (mejor explicación)? ¿Le pidieron explícitamente ese modo?
+          </p>
+        </div>
       </div>
     </div>
   </section>
