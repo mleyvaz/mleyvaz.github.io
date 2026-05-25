@@ -1796,6 +1796,31 @@
   #optionalBadge.visible { display: flex; }
   #optionalBadge:hover { background: rgba(240,160,32,0.25); }
 
+
+  /* ============ OPTIONAL SLIDE INDICATOR ============ */
+  #optionalBadge {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 500;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(240,160,32,0.15);
+    border: 1.5px solid rgba(240,160,32,0.55);
+    border-radius: 100px;
+    padding: 7px 16px 7px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #f0a020;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    user-select: none;
+  }
+  #optionalBadge.visible { display: flex; }
+  #optionalBadge:hover { background: rgba(240,160,32,0.25); }
+
 </style>
 </head>
 <body>
@@ -2450,21 +2475,26 @@
           <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--unir-cyan-light);">Evidencia empírica · datos de nuestra investigación</span>
           <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.1em; color: rgba(255,255,255,0.32);">Leyva-Vázquez &amp; Smarandache · NSS 2026 · doi:10.5281/zenodo.19954583</span>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
           <div>
-            <div style="font-family: 'Fraunces', serif; font-size: 48px; font-weight: 500; color: #fff; line-height: 1; letter-spacing: -0.02em;">66%</div>
+            <div style="font-family: 'Fraunces', serif; font-size: 44px; font-weight: 500; color: #fff; line-height: 1; letter-spacing: -0.02em;">66%</div>
             <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--unir-cyan-light); margin: 5px 0 3px;">Hiper-verdad (T+I+F &gt; 1)</div>
             <div style="font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.4;">N=100 · 4 modelos GPT<br>χ²=11.32, p=0.023</div>
           </div>
           <div>
-            <div style="font-family: 'Fraunces', serif; font-size: 48px; font-weight: 500; color: var(--F-color); line-height: 1; letter-spacing: -0.02em;">95%</div>
+            <div style="font-family: 'Fraunces', serif; font-size: 44px; font-weight: 500; color: var(--F-color); line-height: 1; letter-spacing: -0.02em;">95%</div>
             <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--unir-cyan-light); margin: 5px 0 3px;">Contradicciones éticas</div>
-            <div style="font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.4;">El fenómeno más propenso<br>a respuesta inflada</div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.4;">Fenómeno más propenso<br>a respuesta inflada · Δ_I +0.38</div>
           </div>
           <div>
-            <div style="font-family: 'Fraunces', serif; font-size: 48px; font-weight: 500; color: var(--I-color); line-height: 1; letter-spacing: -0.02em;">κ .84</div>
+            <div style="font-family: 'Fraunces', serif; font-size: 44px; font-weight: 500; color: var(--I-color); line-height: 1; letter-spacing: -0.02em;">κ .84</div>
             <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--unir-cyan-light); margin: 5px 0 3px;">Acuerdo inter-LLM (máx.)</div>
             <div style="font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.4;">GPT-5, Claude Opus 4.7, Gemini 3<br>Prensa Guayaquil · N-fsQCA 2026</div>
+          </div>
+          <div style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 14px;">
+            <div style="font-family: 'Fraunces', serif; font-size: 44px; font-weight: 500; color: var(--T-color); line-height: 1; letter-spacing: -0.02em;">84%</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--unir-cyan-light); margin: 5px 0 3px;">Replicación cross-vendor</div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.4;">Mason 2026 · 5 vendedores<br>Anthropic, Meta, DeepSeek, Alibaba, Mistral</div>
           </div>
         </div>
         <!-- Media divergence callout -->
@@ -2502,6 +2532,108 @@
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 7b: N-DEL EVIDENCIA EMPÍRICA ============ -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="left">
+        <span class="badge">Evidencia empírica · N-DEL</span>
+        <span class="part">¿El marco T-I-F realmente funciona?</span>
+      </div>
+      <div class="right">7b</div>
+    </div>
+    <div style="margin: auto 0;">
+      <div class="eyebrow">N = 120 preguntas · Claude Haiku + GPT-4o-mini · 3 dominios · Leyva-Vázquez &amp; Smarandache 2025</div>
+
+      <!-- Headline comparison -->
+      <div style="display:grid; grid-template-columns: auto 1fr; gap:32px; align-items:center; margin-top:20px;">
+
+        <!-- Big AUROC -->
+        <div style="text-align:center; padding:28px 36px; background:rgba(6,168,108,0.08); border:2px solid rgba(6,168,108,0.35); border-radius:16px; min-width:200px;">
+          <div style="font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--T-color); margin-bottom:8px;">AUROC · Detección alucinaciones</div>
+          <div style="font-family:'Fraunces',serif; font-size:80px; font-weight:600; color:var(--T-color); line-height:1;">0.919</div>
+          <div style="margin-top:10px; display:flex; align-items:center; gap:10px; justify-content:center;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(255,255,255,0.4); text-decoration:line-through;">Semantic Entropy: 0.47</div>
+            <div style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--T-color); font-weight:700;">+96%</div>
+          </div>
+          <div style="margin-top:8px; font-size:10px; color:rgba(255,255,255,0.35); font-style:italic;">Mann-Whitney p = 0.0005</div>
+        </div>
+
+        <!-- 4 secondary stats -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+
+          <div style="padding:18px 20px; background:rgba(0,180,216,0.07); border:1px solid rgba(0,180,216,0.22); border-radius:12px;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--unir-cyan-light); margin-bottom:6px;">Abstención correcta</div>
+            <div style="font-family:'Fraunces',serif; font-size:44px; color:#fff; font-weight:600; line-height:1;">93.5<span style="font-size:22px;">%</span></div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.5); margin-top:4px; line-height:1.4;">Solo 3 de 46 abstenciones justificadas fueron omitidas</div>
+          </div>
+
+          <div style="padding:18px 20px; background:rgba(240,160,32,0.07); border:1px solid rgba(240,160,32,0.22); border-radius:12px;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--I-color); margin-bottom:6px;">Calibración I-componente</div>
+            <div style="font-family:'Fraunces',serif; font-size:44px; color:#fff; font-weight:600; line-height:1;">r = 0.86</div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.5); margin-top:4px; line-height:1.4;">Correlación I-humano vs I-predicho por N-DEL (Claude, p&lt;0.001)</div>
+          </div>
+
+          <div style="padding:18px 20px; background:rgba(6,168,108,0.07); border:1px solid rgba(6,168,108,0.22); border-radius:12px;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--T-color); margin-bottom:6px;">Reducción distancia TIF</div>
+            <div style="font-family:'Fraunces',serif; font-size:44px; color:#fff; font-weight:600; line-height:1;">−57<span style="font-size:22px;">%</span></div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.5); margin-top:4px; line-height:1.4;">Con prompt N-DEL vs prompt libre · p = 0.0016</div>
+          </div>
+
+          <div style="padding:18px 20px; background:rgba(224,65,58,0.07); border:1px solid rgba(224,65,58,0.22); border-radius:12px;">
+            <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:var(--F-color); margin-bottom:6px;">Sesgo de sobreconfianza</div>
+            <div style="font-family:'Fraunces',serif; font-size:32px; color:#fff; font-weight:600; line-height:1.1;">−0.12 → <span style="color:var(--T-color);">+0.03</span></div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.5); margin-top:4px; line-height:1.4;">I-bias eliminado al aplicar estructura T-I-F</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Domain bar strip -->
+      <div style="margin-top:20px; padding:16px 20px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:12px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink-light); margin-bottom:14px;">AUROC por dominio · N-DEL vs Semantic Entropy</div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:13px; color:#fff;">Salud</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--T-color); font-weight:700;">0.918</span>
+            </div>
+            <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
+              <div style="height:100%; width:91.8%; background:var(--T-color); border-radius:3px;"></div>
+            </div>
+            <div style="font-size:10px; color:rgba(255,255,255,0.3); margin-top:4px;">vs SE: 0.56</div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:13px; color:#fff;">Política</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--T-color); font-weight:700;">0.880</span>
+            </div>
+            <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
+              <div style="height:100%; width:88%; background:var(--T-color); border-radius:3px;"></div>
+            </div>
+            <div style="font-size:10px; color:rgba(255,255,255,0.3); margin-top:4px;">vs SE: 0.41</div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:13px; color:#fff;">Tecnología emergente</span>
+              <span style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--T-color); font-weight:700;">0.887</span>
+            </div>
+            <div style="height:6px; background:rgba(255,255,255,0.1); border-radius:3px; overflow:hidden;">
+              <div style="height:100%; width:88.7%; background:var(--T-color); border-radius:3px;"></div>
+            </div>
+            <div style="font-size:10px; color:rgba(255,255,255,0.3); margin-top:4px;">vs SE: 0.43</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom note -->
+      <div style="margin-top:14px; display:flex; justify-content:space-between; align-items:center;">
+        <p style="font-size:12px; color:rgba(255,255,255,0.35); margin:0; font-style:italic;">
+          Leyva-Vázquez, M. &amp; Smarandache, F. (2025). <em>Neutrosophic Dynamic Epistemic Logic for Calibrated Abstention in LLMs.</em>
+        </p>
+        <div style="padding:6px 14px; background:rgba(6,168,108,0.12); border:1px solid rgba(6,168,108,0.3); border-radius:100px; font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:0.15em; color:var(--T-color);">N=120 · 2 modelos · 40 anotadores humanos</div>
+      </div>
     </div>
   </section>
 
@@ -3922,6 +4054,32 @@ Antes de responder, estructura tu respuesta así:
           </div>
         </div>
       </div>
+
+      <!-- 5 NPL states classification strip -->
+      <div style="margin-top: 12px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px;">
+        <div style="padding: 8px 10px; border-radius: 8px; text-align: center; background: rgba(6,168,108,0.06); border: 1px solid rgba(6,168,108,0.2);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--T-color); margin-bottom: 4px;">NPL-V</div>
+          <div style="font-size: 10px; color: var(--ink-soft); line-height: 1.4;">μ&gt;0.5 · λ&lt;0.5<br>Evidencia apoya</div>
+        </div>
+        <div style="padding: 8px 10px; border-radius: 8px; text-align: center; background: rgba(224,65,58,0.12); border: 2px solid var(--F-color); position: relative;">
+          <div style="position: absolute; top: -8px; left: 50%; transform: translateX(-50%); background: var(--F-color); color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 7px; letter-spacing: 0.1em; padding: 2px 6px; border-radius: 3px; white-space: nowrap;">ESTE CASO</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--F-color); margin-bottom: 4px;">NPL-F</div>
+          <div style="font-size: 10px; color: var(--ink-soft); line-height: 1.4;">λ&gt;0.5 · μ&lt;0.5<br>Evidencia contradice</div>
+        </div>
+        <div style="padding: 8px 10px; border-radius: 8px; text-align: center; background: rgba(255,165,0,0.06); border: 1px solid rgba(255,165,0,0.2);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: #e07b00; margin-bottom: 4px;">NPL-Para</div>
+          <div style="font-size: 10px; color: var(--ink-soft); line-height: 1.4;">μ+λ&gt;1<br>Paraconsistente</div>
+        </div>
+        <div style="padding: 8px 10px; border-radius: 8px; text-align: center; background: rgba(0,180,216,0.06); border: 1px solid rgba(0,180,216,0.2);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--I-color); margin-bottom: 4px;">NPL-I</div>
+          <div style="font-size: 10px; color: var(--ink-soft); line-height: 1.4;">I&gt;0.5<br>Indeterminado</div>
+        </div>
+        <div style="padding: 8px 10px; border-radius: 8px; text-align: center; background: rgba(10,22,40,0.04); border: 1px solid rgba(10,22,40,0.12);">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ink-faded); margin-bottom: 4px;">NPL-PC</div>
+          <div style="font-size: 10px; color: var(--ink-faded); line-height: 1.4;">Todo bajo<br>Datos insuficientes</div>
+        </div>
+      </div>
+
       <div style="margin-top: 12px; padding: 11px 16px; background: rgba(0,180,216,0.05); border: 1px solid rgba(0,180,216,0.18); border-radius: 8px; display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
         <div style="flex: 1; min-width: 200px;">
           <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--unir-cyan-deep); margin-bottom: 3px;">Decisión accionable</div>
