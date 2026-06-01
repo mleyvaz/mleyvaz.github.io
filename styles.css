@@ -390,6 +390,12 @@ em, .italic { font-style: italic; }
 .book-neutro {
   background: linear-gradient(135deg, #1F4E79 0%, #143352 100%);
 }
+.book-typek {
+  background:
+    linear-gradient(135deg, #0B132B 0%, #1C2541 100%),
+    radial-gradient(circle at 30% 25%, #5BC0BE 0%, transparent 55%);
+  background-blend-mode: screen;
+}
 .book-year {
   font-size: 0.85rem;
   letter-spacing: 0.15em;
