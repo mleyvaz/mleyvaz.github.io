@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IA y Derecho — Una Nueva Encrucijada</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --ink:    #0a0e1c;
+      --ink2:   #111831;
+      --brass:  #e4032e;
+      --brass2: #ff8090;
+      --cream:  #f5ede0;
+      --paper:  #dfe6f7;
+      --muted:  #8492b4;
+      --crimson:#d65a4a;
+      --green:  #5fb98a;
+      --line:   rgba(228,3,46,.55);
+    }
+
+    *{ box-sizing:border-box; margin:0; padding:0; }
+
+    html,body{ height:100%; }
+    body{
+      font-family:'Outfit', system-ui, sans-serif;
+      background:var(--ink);
+      color:var(--cream);
+      overflow:hidden;
+      width:100vw; height:100vh;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    /* ── GRAIN + VIGNETTE OVERLAY ───────────────────────── */
+    body::after{
+      content:""; position:fixed; inset:0; z-index:50; pointer-events:none;
+      background:radial-gradient(120% 120% at 50% 0%, transparent 55%, rgba(0,0,0,.45) 100%);
+    }
+    body::before{
+      content:""; position:fixed; inset:-50%; z-index:49; pointer-events:none;
+      opacity:.05; mix-blend-mode:overlay;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ── DECK / SLIDES ──────────────────────────────────── */
+    .deck{ width:100%; height:100vh; position:relative; }
+    .slide{
+      position:absolute; inset:0; overflow:hidden;
+      display:flex; flex-direction:column;
+      justify-content:center; align-items:center;
+      padding:clamp(2rem,6vh,5rem) clamp(2rem,8vw,8rem);
+      opacity:0; transform:scale(1.04);
+      transition:opacity .6s ease, transform .6s ease;
+      pointer-events:none;
+    }
+    .slide::before{
+      content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
+      background-image:var(--photo, none);
+      background-size:cover; background-position:center;
+      opacity:var(--photo-opacity, .34);
+      filter:saturate(118%) contrast(110%);
+      transform:scale(1.02);
+    }
+    .slide::after{
+      content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
+      background:
+        linear-gradient(90deg, rgba(10,14,28,.92) 0%, rgba(10,14,28,.70) 42%, rgba(10,14,28,.35) 100%),
+        radial-gradient(120% 100% at 50% 50%, transparent 42%, rgba(0,0,0,.48) 100%);
+    }
+    .slide.active{ opacity:1; transform:scale(1); pointer-events:all; }
+    .slide.exit{ opacity:0; transform:scale(.97); }
+
+    .content{
+      position:relative; z-index:2;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      width:100%;
+    }
+
+    /* staggered entrance for content of active slide */
+    .slide.active .content > *{ animation:rise .7s cubic-bezier(.16,.84,.34,1) both; }
+    .slide.active .content > *:nth-child(1){ animation-delay:.12s; }
+    .slide.active .content > *:nth-child(2){ animation-delay:.24s; }
+    .slide.active .content > *:nth-child(3){ animation-delay:.36s; }
+    .slide.active .content > *:nth-child(4){ animation-delay:.46s; }
+    .slide.active .content > *:nth-child(5){ animation-delay:.54s; }
+    .slide.active .content > *:nth-child(6){ animation-delay:.60s; }
+    @keyframes rise{
+      from{ opacity:0; transform:translateY(26px); filter:blur(6px); }
+      to  { opacity:1; transform:translateY(0);    filter:blur(0); }
+    }
+
+    /* ── ANIMATED BACKGROUND LAYER (per slide) ──────────── */
+    .fx{
+      position:absolute; inset:0; z-index:1; overflow:hidden; pointer-events:none;
+      background:
+        radial-gradient(38vmax 38vmax at 18% 26%, var(--c1), transparent 60%),
+        radial-gradient(34vmax 34vmax at 84% 74%, var(--c2), transparent 60%),
+        radial-gradient(26vmax 26vmax at 62% 8%,  var(--c3, transparent), transparent 60%);
+      background-repeat:no-repeat;
+      filter:saturate(125%);
+      animation:fxdrift 26s ease-in-out infinite alternate;
+      will-change:transform, background-position;
+    }
+    @keyframes fxdrift{
+      0%  { background-position:0% 0%, 0% 0%, 0% 0%; transform:scale(1); }
+      100%{ background-position:14% 12%, -12% -10%, 9% -7%; transform:scale(1.14); }
+    }
+    /* drifting particle field (parallax) */
+    .fx::before{
+      content:""; position:absolute; inset:-25%;
+      background-image:
+        radial-gradient(2px 2px at 20px 30px,  rgba(245,237,224,.55), transparent),
+        radial-gradient(2px 2px at 130px 90px, rgba(245,237,224,.35), transparent),
+        radial-gradient(1.5px 1.5px at 210px 170px, rgba(228,3,46,.55), transparent),
+        radial-gradient(2px 2px at 320px 50px, rgba(245,237,224,.40), transparent),
+        radial-gradient(1.5px 1.5px at 390px 210px, rgba(228,3,46,.45), transparent),
+        radial-gradient(1.5px 1.5px at 90px 220px, rgba(245,237,224,.30), transparent);
+      background-repeat:repeat; background-size:430px 270px;
+      animation:floatp 46s linear infinite, twinkle 5.5s ease-in-out infinite alternate;
+    }
+    @keyframes floatp{ from{ background-position:0 0; } to{ background-position:430px -560px; } }
+    @keyframes twinkle{ from{ opacity:.30; } to{ opacity:.75; } }
+    /* drifting diagonal mesh (Google-IO style) */
+    .fx::after{
+      content:""; position:absolute; inset:-35%;
+      background-image:repeating-linear-gradient(58deg, rgba(228,3,46,.07) 0 1px, transparent 1px 48px);
+      -webkit-mask:radial-gradient(72% 72% at 50% 50%, #000, transparent 78%);
+              mask:radial-gradient(72% 72% at 50% 50%, #000, transparent 78%);
+      animation:meshmove 34s linear infinite; opacity:.65;
+    }
+    @keyframes meshmove{ from{ background-position:0 0; } to{ background-position:340px 560px; } }
+
+    /* pause animation off-screen for performance */
+    .slide:not(.active) .fx,
+    .slide:not(.active) .fx::before,
+    .slide:not(.active) .fx::after{ animation-play-state:paused; }
+
+    /* per-slide background palettes */
+    .fx-open { --c1:rgba(228,3,46,.30); --c2:rgba(60,110,200,.28); --c3:rgba(150,90,200,.18); }
+    .fx-cover{ --c1:rgba(228,3,46,.26); --c2:rgba(40,90,180,.32); }
+    .fx-soc  { --c1:rgba(95,140,220,.30); --c2:rgba(228,3,46,.20); }
+    .fx-quote{ --c1:rgba(240,170,70,.34); --c2:rgba(180,90,40,.26); }
+    .fx-risk { --c1:rgba(214,90,74,.34); --c2:rgba(120,40,80,.30); }
+    .fx-no   { --c1:rgba(95,185,138,.30); --c2:rgba(40,120,90,.26); }
+    .fx-five { --c1:rgba(228,3,46,.26); --c2:rgba(130,150,60,.24); }
+    .fx-fiveb{ --c1:rgba(95,140,220,.30); --c2:rgba(228,3,46,.20); }
+    .fx-close{ --c1:rgba(228,3,46,.34); --c2:rgba(40,90,180,.26); --c3:rgba(150,90,200,.16); }
+    .fx-mirror{ --c1:rgba(170,90,200,.30); --c2:rgba(214,90,74,.28); --c3:rgba(95,140,220,.16); }
+    .fx-logic { --c1:rgba(95,185,138,.26); --c2:rgba(228,3,46,.30); --c3:rgba(214,90,74,.20); }
+    .fx-code  { --c1:rgba(60,130,220,.30); --c2:rgba(80,200,200,.24); --c3:rgba(228,3,46,.16); }
+    .fx-ai    { --c1:rgba(120,110,220,.28); --c2:rgba(60,130,220,.26); --c3:rgba(214,90,74,.16); }
+    .fx-fict  { --c1:rgba(240,170,70,.32); --c2:rgba(60,150,230,.26); --c3:rgba(150,90,200,.18); }
+    .fx-cat   { --c1:rgba(80,200,200,.26); --c2:rgba(150,90,200,.26); --c3:rgba(228,3,46,.18); }
+    .fx-harari{ --c1:rgba(130,90,210,.30); --c2:rgba(228,3,46,.24); --c3:rgba(60,110,200,.18); }
+    .fx-rights{ --c1:rgba(214,90,74,.30); --c2:rgba(150,90,200,.26); --c3:rgba(60,130,220,.16); }
+    .fx-parad { --c1:rgba(150,90,200,.32); --c2:rgba(214,90,74,.24); --c3:rgba(228,3,46,.14); }
+    .fx-wall  { --c1:rgba(95,185,138,.28); --c2:rgba(60,130,220,.26); --c3:rgba(228,3,46,.16); }
+    .fx-map   { --c1:rgba(60,130,220,.26); --c2:rgba(150,90,200,.22); --c3:rgba(228,3,46,.16); }
+    .fx-ideo  { --c1:rgba(214,90,74,.28); --c2:rgba(60,110,200,.24); --c3:rgba(140,120,160,.16); }
+    .fx-data  { --c1:rgba(80,200,200,.26); --c2:rgba(150,90,200,.26); --c3:rgba(228,3,46,.16); }
+    .fx-axis  { --c1:rgba(60,130,220,.26); --c2:rgba(228,3,46,.22); --c3:rgba(95,185,138,.14); }
+    .fx-anti  { --c1:rgba(95,185,138,.30); --c2:rgba(228,3,46,.28); --c3:rgba(60,130,220,.18); }
+    .fx-crt   { --c1:rgba(240,170,70,.30); --c2:rgba(80,200,200,.24); --c3:rgba(150,90,200,.16); }
+    .fx-mind  { --c1:rgba(60,130,220,.28); --c2:rgba(150,90,200,.24); --c3:rgba(228,3,46,.16); }
+    .fx-bias  { --c1:rgba(214,90,74,.30); --c2:rgba(228,3,46,.26); --c3:rgba(150,90,200,.16); }
+    .fx-hallu { --c1:rgba(150,90,200,.30); --c2:rgba(214,90,74,.26); --c3:rgba(80,200,200,.18); }
+    .fx-evid  { --c1:rgba(228,3,46,.30); --c2:rgba(95,185,138,.24); --c3:rgba(60,130,220,.18); }
+    .fx-dk    { --c1:rgba(240,140,60,.30); --c2:rgba(214,90,74,.24); --c3:rgba(95,140,220,.16); }
+    .fx-mat   { --c1:rgba(60,130,220,.26); --c2:rgba(240,140,60,.26); --c3:rgba(150,90,200,.16); }
+
+    /* ── BASE BACKGROUNDS PER SLIDE ─────────────────────── */
+    .s-open  { background:linear-gradient(135deg,#0c1226 0%, #0a0e1c 60%, #14091f 100%); }
+    .s-cover { background:linear-gradient(160deg,#0a0e1c 0%, #15203f 100%); }
+    .s-socrates{ background:linear-gradient(135deg,#10152b 0%, #0a0e1c 100%); }
+    .s-quote { background:linear-gradient(135deg,#1a0f0a 0%, #1d1206 55%, #0a0e1c 100%); }
+    .s-risk  { background:linear-gradient(135deg,#0a0e1c 0%, #220b16 100%); }
+    .s-no    { background:linear-gradient(135deg,#06150f 0%, #0a0e1c 100%); }
+    .s-five  { background:linear-gradient(135deg,#141a14 0%, #0a0e1c 100%); }
+    .s-five-b{ background:linear-gradient(135deg,#0a0e1c 0%, #141d33 100%); }
+    .s-close { background:linear-gradient(160deg,#0a0e1c 0%, #15203f 100%); }
+    .s-mirror{ background:linear-gradient(135deg,#160a1f 0%, #0a0e1c 100%); }
+    .s-logic { background:linear-gradient(135deg,#0a0e1c 0%, #101a2e 100%); }
+    .s-code  { background:linear-gradient(135deg,#08111f 0%, #0a0e1c 100%); }
+    .s-ai    { background:linear-gradient(135deg,#0c0a1f 0%, #0a0e1c 100%); }
+    .s-fict  { background:linear-gradient(135deg,#1a1207 0%, #0a0e1c 100%); }
+    .s-cat   { background:linear-gradient(135deg,#0a141c 0%, #0c0a1f 100%); }
+    .s-harari{ background:linear-gradient(135deg,#120a22 0%, #0a0e1c 100%); }
+    .s-rights{ background:linear-gradient(135deg,#1a0a14 0%, #0a0e1c 100%); }
+    .s-parad { background:linear-gradient(135deg,#140a1e 0%, #0a0e1c 60%, #1a0a10 100%); }
+    .s-wall  { background:linear-gradient(135deg,#08160f 0%, #0a0e1c 100%); }
+    .s-map   { background:linear-gradient(135deg,#0a0e1c 0%, #0e1428 60%, #120a1e 100%); }
+    .s-ideo  { background:linear-gradient(135deg,#1a0c0c 0%, #0a0e1c 100%); }
+    .s-data  { background:linear-gradient(135deg,#0a141c 0%, #0e0a1f 100%); }
+    .s-axis  { background:linear-gradient(135deg,#0a0e1c 0%, #101a2e 100%); }
+    .s-anti  { background:linear-gradient(135deg,#08160f 0%, #0a0e1c 60%, #141206 100%); }
+    .s-crt   { background:linear-gradient(135deg,#1a1206 0%, #0a0e1c 100%); }
+    .s-mind  { background:linear-gradient(135deg,#0a0e1c 0%, #12102a 100%); }
+    .s-bias  { background:linear-gradient(135deg,#180a0c 0%, #0a0e1c 100%); }
+    .s-hallu { background:linear-gradient(135deg,#140a1e 0%, #0a0e1c 100%); }
+    .s-dk    { background:linear-gradient(135deg,#170f06 0%, #0a0e1c 100%); }
+    .s-mat   { background:linear-gradient(135deg,#0a1020 0%, #0a0e1c 55%, #160f06 100%); }
+    .s-evid  { background:linear-gradient(135deg,#141206 0%, #0a0e1c 60%, #08160f 100%); }
+
+    .s-open, .s-cover, .s-close{
+      --photo:url("img/ted_auditorium.jpg");
+      --photo-opacity:.46;
+    }
+    .s-crt, .s-mind, .s-bias, .s-hallu, .s-dk, .s-mat, .s-five{
+      --photo:url("img/ted_court_data.jpg");
+      --photo-opacity:.34;
+    }
+    .s-code, .s-ai, .s-data, .s-axis, .s-fict, .s-cat{
+      --photo:url("img/ted_algorithmic_code.jpg");
+      --photo-opacity:.38;
+    }
+    .s-harari, .s-rights, .s-wall, .s-map{
+      --photo:url("img/ted_ai_law.jpg");
+      --photo-opacity:.36;
+    }
+    .s-mirror, .s-logic, .s-evid{
+      --photo:url("img/ted_human_logic.jpg");
+      --photo-opacity:.39;
+    }
+    .s-act{
+      --photo:url("img/ted_auditorium.jpg");
+      --photo-opacity:.54;
+    }
+
+    /* ── TYPOGRAPHY ─────────────────────────────────────── */
+    .kicker{
+      font-size:clamp(.7rem,1vw,.82rem); font-weight:600;
+      letter-spacing:.32em; text-transform:uppercase; color:var(--brass);
+      display:flex; align-items:center; gap:.8rem; margin-bottom:1.6rem;
+    }
+    .kicker::before{ content:""; width:34px; height:1px; background:var(--brass); opacity:.7; }
+
+    h1{
+      font-family:'Fraunces',serif; font-optical-sizing:auto;
+      font-weight:600; line-height:1.06; letter-spacing:-.02em;
+      font-size:clamp(2.4rem,6.4vw,6rem); text-align:center; margin-bottom:1.2rem;
+    }
+    h2{
+      font-family:'Fraunces',serif; font-optical-sizing:auto;
+      font-weight:500; line-height:1.12; letter-spacing:-.015em;
+      font-size:clamp(1.9rem,4.6vw,3.7rem); text-align:center; margin-bottom:1.4rem;
+    }
+    .hi{ background:linear-gradient(100deg,var(--brass2),var(--brass));
+         -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+    em{ font-style:italic; color:var(--brass2); }
+
+    .sub{
+      font-size:clamp(.98rem,1.55vw,1.3rem); font-weight:300; color:var(--paper);
+      text-align:center; max-width:760px; line-height:1.75;
+    }
+    .sub strong{ color:var(--brass2); font-weight:600; }
+    .line{ width:64px; height:2px; background:var(--brass); border-radius:2px; margin:1.4rem auto; opacity:.85; }
+
+    /* ── COVER ──────────────────────────────────────────── */
+    .cover-sub{ font-size:clamp(1rem,1.9vw,1.4rem); font-weight:300; color:var(--muted);
+                text-align:center; max-width:680px; line-height:1.7; margin-bottom:2.2rem; }
+    .meta{ display:flex; gap:.7rem; flex-wrap:wrap; justify-content:center; }
+    .meta span{ font-size:.74rem; font-weight:500; letter-spacing:.08em; color:var(--brass);
+                border:1px solid rgba(228,3,46,.35); border-radius:999px; padding:.4rem 1.1rem; }
+
+    /* ── BLOCKQUOTE ─────────────────────────────────────── */
+    blockquote{
+      font-family:'Fraunces',serif; font-weight:400; font-style:italic;
+      font-size:clamp(1.4rem,3.1vw,2.5rem); line-height:1.4; text-align:center;
+      max-width:980px; color:var(--cream); letter-spacing:-.01em;
+    }
+    .attribution{ margin-top:1.4rem; font-size:.92rem; color:var(--muted); text-align:center; }
+    .attribution em{ color:var(--brass); font-style:normal; }
+
+    /* ── HIGHLIGHT BOX ──────────────────────────────────── */
+    .hbox{
+      background:linear-gradient(180deg, rgba(9,12,26,.74), rgba(18,8,18,.56));
+      border:1px solid rgba(228,3,46,.36); border-radius:10px; padding:1.3rem 2rem;
+      max-width:780px; text-align:center; font-size:clamp(.98rem,1.5vw,1.18rem);
+      font-weight:300; line-height:1.7; color:var(--cream); margin-top:1.8rem; backdrop-filter:blur(8px);
+      box-shadow:0 18px 50px rgba(0,0,0,.24);
+    }
+    .hbox strong{ font-weight:600; }
+
+    /* ── CARDS ──────────────────────────────────────────── */
+    .cards{ display:flex; gap:1.3rem; flex-wrap:wrap; justify-content:center; width:100%; max-width:1040px; margin-top:1.8rem; }
+    .card{
+      background:linear-gradient(180deg, rgba(10,14,28,.82), rgba(14,18,36,.58));
+      border:1px solid rgba(255,255,255,.13); border-radius:8px; padding:1.45rem 1.55rem;
+      flex:1 1 220px; max-width:300px; text-align:left;
+      transition:transform .25s ease, border-color .25s ease, background .25s ease;
+      box-shadow:0 16px 38px rgba(0,0,0,.28);
+      backdrop-filter:blur(7px);
+    }
+    .card:hover{ transform:translateY(-6px); border-color:rgba(228,3,46,.45);
+      background:linear-gradient(180deg, rgba(228,3,46,.10), rgba(255,255,255,.02)); }
+    .card .num{ font-family:'Fraunces',serif; font-size:1.7rem; font-weight:600; color:var(--brass); margin-bottom:.6rem; display:block; }
+    .card p{ font-size:.95rem; font-weight:300; color:var(--paper); line-height:1.6; }
+
+    /* ── COMPARISON TABLE ───────────────────────────────── */
+    .ctable{ width:100%; max-width:940px; border-collapse:collapse; margin-top:1.6rem; }
+    .ctable th{ font-size:.78rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase;
+      color:var(--brass); padding:.85rem 1rem; text-align:left; border-bottom:1px solid var(--line); }
+    .ctable td{ padding:.9rem 1rem; font-size:clamp(.85rem,1.3vw,1.02rem); font-weight:300;
+      line-height:1.5; vertical-align:top; border-bottom:1px solid rgba(255,255,255,.07); }
+    .ctable td:first-child{ color:var(--brass2); font-weight:500; font-family:'Fraunces',serif; white-space:nowrap; }
+    .ctable td:nth-child(2){ color:var(--muted); }
+    .ctable td:last-child{ color:var(--cream); }
+
+    /* ── THINKER PORTRAITS ──────────────────────────────── */
+    .thinker-corner{ position:absolute; top:1.6rem; left:2rem; z-index:3; display:flex; align-items:center; gap:.7rem; max-width:250px; }
+    .thinker-corner img{ width:62px; height:62px; border-radius:50%; object-fit:cover; border:2px solid var(--brass); box-shadow:0 6px 20px rgba(0,0,0,.5); }
+    .thinker-corner span{ font-size:.72rem; letter-spacing:.05em; color:var(--brass2); line-height:1.25; }
+    .card .face{ width:52px; height:52px; border-radius:50%; object-fit:cover; border:2px solid var(--brass); float:right; margin:0 0 .5rem .7rem; box-shadow:0 4px 14px rgba(0,0,0,.45); }
+    @media (max-width:640px){ .thinker-corner{ display:none; } }
+
+    /* ── ICON ROW ───────────────────────────────────────── */
+    .icon-row{ display:flex; gap:1.6rem; flex-wrap:wrap; justify-content:center; margin-top:1.8rem; }
+    .icon-box{ display:flex; flex-direction:column; align-items:center; gap:.8rem; width:140px; }
+    .icon-box .ico{
+      font-size:2rem; background:radial-gradient(circle at 30% 30%, rgba(228,3,46,.25), rgba(228,3,46,.06));
+      border:1px solid var(--line); border-radius:50%; width:76px; height:76px;
+      display:flex; align-items:center; justify-content:center; box-shadow:0 8px 30px rgba(0,0,0,.35);
+      animation:floaty 6s ease-in-out infinite;
+    }
+    .icon-box:nth-child(2) .ico{ animation-delay:.6s; }
+    .icon-box:nth-child(3) .ico{ animation-delay:1.2s; }
+    .icon-box:nth-child(4) .ico{ animation-delay:1.8s; }
+    .icon-box:nth-child(5) .ico{ animation-delay:2.4s; }
+    @keyframes floaty{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-10px); } }
+    .icon-box span{ font-size:.84rem; font-weight:300; text-align:center; color:var(--paper); line-height:1.45; }
+
+    /* ── NUMBERED LIST ──────────────────────────────────── */
+    .num-list{ list-style:none; max-width:800px; width:100%; margin-top:1.2rem; }
+    .num-list li{ display:flex; align-items:flex-start; gap:1.3rem; padding:1rem 0;
+      border-bottom:1px solid rgba(255,255,255,.08); font-size:clamp(.92rem,1.45vw,1.1rem);
+      font-weight:300; color:var(--paper); line-height:1.6; text-align:left; }
+    .num-list li strong{ font-family:'Fraunces',serif; font-weight:600; font-size:1.12em; color:var(--cream); }
+    .num-list li .n{ flex:none; width:42px; height:42px;
+      background:linear-gradient(150deg,var(--brass2),var(--brass)); color:var(--ink);
+      border-radius:12px; display:flex; align-items:center; justify-content:center;
+      font-family:'Fraunces',serif; font-weight:700; font-size:1.15rem; box-shadow:0 6px 18px rgba(228,3,46,.3); }
+
+    /* ── NAV / CHROME ───────────────────────────────────── */
+    nav{ position:fixed; bottom:1.8rem; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:1rem; z-index:100; }
+    .btn{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.18); color:var(--cream);
+      border-radius:999px; padding:.55rem 1.5rem; font-family:'Outfit',sans-serif; font-size:.88rem;
+      font-weight:500; cursor:pointer; transition:background .2s, border-color .2s; backdrop-filter:blur(6px); }
+    .btn:hover{ background:rgba(228,3,46,.18); border-color:var(--line); }
+    .btn:disabled{ opacity:.25; cursor:not-allowed; }
+    .counter{ font-family:'Fraunces',serif; font-size:.95rem; color:var(--muted); min-width:64px; text-align:center; letter-spacing:.05em; }
+
+    #progress{ position:fixed; top:0; left:0; height:3px;
+      background:linear-gradient(90deg,var(--brass),var(--brass2));
+      transition:width .5s cubic-bezier(.16,.84,.34,1); z-index:200; box-shadow:0 0 12px rgba(228,3,46,.6); }
+    .pagenum{ position:fixed; top:1.6rem; right:2rem; z-index:100; font-family:'Fraunces',serif; font-size:.9rem; color:var(--muted); letter-spacing:.1em; }
+    .pagenum b{ color:var(--brass); font-weight:600; }
+    .kbd-hint{ position:fixed; bottom:5.2rem; left:50%; transform:translateX(-50%); font-size:.7rem; font-weight:300; color:rgba(245,237,224,.22); letter-spacing:.1em; z-index:100; }
+
+    /* ── ACT LABEL (bottom-left) ────────────────────────── */
+    .actlabel{ position:fixed; bottom:1.9rem; left:2rem; z-index:100;
+      font-size:.68rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
+      color:rgba(255,128,144,.55); }
+
+    /* ── MENU OVERLAY (tecla M) ─────────────────────────── */
+    #menu{ position:fixed; inset:0; z-index:300; background:rgba(6,9,20,.92);
+      backdrop-filter:blur(10px); display:none; overflow-y:auto; padding:3rem clamp(1.5rem,6vw,5rem); }
+    #menu.open{ display:block; }
+    #menu h3{ font-family:'Fraunces',serif; font-weight:500; color:var(--brass2);
+      font-size:1rem; letter-spacing:.12em; text-transform:uppercase; margin:1.6rem 0 .7rem; }
+    #menu h3:first-child{ margin-top:0; }
+    .menu-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:.5rem; }
+    .menu-item{ background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
+      border-radius:10px; padding:.6rem .9rem; cursor:pointer; font-size:.85rem; font-weight:300;
+      color:var(--paper); transition:border-color .15s, background .15s; display:flex; gap:.6rem; align-items:baseline; }
+    .menu-item:hover{ border-color:var(--brass); background:rgba(228,3,46,.12); }
+    .menu-item.cur{ border-color:var(--brass); background:rgba(228,3,46,.18); }
+    .menu-item .mn{ font-family:'Fraunces',serif; color:var(--brass); font-weight:600; min-width:1.6em; }
+    #menu .close-hint{ text-align:center; color:var(--muted); font-size:.75rem; margin-bottom:1.4rem; letter-spacing:.1em; }
+
+    /* ── ACT DIVIDERS ───────────────────────────────────── */
+    .s-act{ background:linear-gradient(135deg,#16060c 0%, #0a0e1c 70%, #0c1226 100%); }
+    .fx-act{ --c1:rgba(228,3,46,.32); --c2:rgba(60,110,200,.20); --c3:rgba(245,237,224,.05); }
+    .act-num{
+      font-family:'Fraunces',serif; font-weight:900; line-height:.9;
+      font-size:clamp(7rem,26vh,17rem); letter-spacing:-.02em;
+      background:linear-gradient(165deg,var(--brass2) 0%,var(--brass) 70%);
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+      filter:drop-shadow(0 12px 40px rgba(228,3,46,.35));
+    }
+    .act-title{ font-family:'Fraunces',serif; font-weight:500; color:var(--cream);
+      font-size:clamp(1.5rem,3.6vw,2.8rem); margin-top:1rem; text-align:center; letter-spacing:-.01em; }
+
+    /* ── UBE LOGO ───────────────────────────────────────── */
+    .logochip{ background:#fff; border-radius:14px; padding:.7rem 1.2rem; margin-top:2.2rem;
+      box-shadow:0 12px 36px rgba(0,0,0,.45); display:inline-block; }
+    .logochip img{ height:48px; display:block; }
+    .pagenum img{ height:24px; vertical-align:-6px; margin-right:.55rem; }
+
+    /* ── PRESENTER NOTES (tecla N) ──────────────────────── */
+    #notes{ position:fixed; left:1.2rem; right:1.2rem; bottom:5.8rem; z-index:260;
+      background:rgba(10,14,28,.93); border:1px solid rgba(228,3,46,.45); border-radius:14px;
+      padding:1rem 1.4rem; display:none; backdrop-filter:blur(8px); }
+    #notes.open{ display:block; }
+    #notes .tm{ float:right; font-family:'Fraunces',serif; font-size:1.5rem; font-weight:600;
+      color:var(--brass2); margin-left:1.2rem; min-width:4.2em; text-align:right; }
+    #notes .tm.warn{ color:#ff4d4d; animation:blink 1s steps(2) infinite; }
+    @keyframes blink{ 50%{ opacity:.45; } }
+    #notes .nt{ font-size:.95rem; font-weight:300; color:var(--paper); line-height:1.6; }
+    #notes .nt b{ color:var(--brass2); font-weight:600; }
+
+    @media (max-width:640px){ .slide{ padding:2rem 1.4rem; } nav{ bottom:1rem; } .kbd-hint{ display:none; } }
+    @media (prefers-reduced-motion:reduce){
+      .fx, .fx::before, .fx::after, .icon-box .ico{ animation:none !important; }
+      .slide.active .content > *{ animation-duration:.01ms; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div class="pagenum"><img src="img/ube_escudo.png" alt="UBE"><b id="pn-cur">01</b> / <span id="pn-tot">10</span></div>
+
+<div class="deck" id="deck">
+
+  <!-- ── V. VIDEO DE APERTURA — EL CASO QUE NUNCA EXISTIÓ ── -->
+  <div class="slide s-video active" style="padding:0;">
+    <div class="content" style="width:100%;height:100%;max-width:none;">
+      <video id="opener-video" src="videos/opener.mp4" poster="videos/opener_poster.png" controls playsinline
+             style="width:100%;height:100vh;object-fit:contain;background:#000;"></video>
+    </div>
+  </div>
+
+  <!-- ── Q. LA PREGUNTA ─────────────────────────────────── -->
+  <div class="slide s-bigq">
+    <div class="fx fx-act"></div>
+    <div class="content">
+      <h1 style="text-align:center;font-size:clamp(2.6rem,7vw,5.5rem);line-height:1.1;">¿Cuándo creerle a una <span class="hi">máquina</span>?</h1>
+    </div>
+  </div>
+
+  <!-- ── 0. APERTURA — THAMUS / FEDRO ───────────────────── -->
+  <div class="slide s-open">
+    <div class="fx fx-open"></div>
+    <div class="thinker-corner"><img src="img/platon.jpg" alt="Platón"><span>Platón · <em>Fedro</em></span></div>
+    <div class="content">
+      <div class="kicker">¿Cuándo creerle a una máquina?</div>
+      <blockquote>"…confiados en lo escrito, recordarán desde fuera, mediante signos ajenos, y no desde dentro, por su propio esfuerzo."</blockquote>
+      <p class="attribution">— Thamus a Theuth · Platón, <em>Fedro</em>, 275a (ca. 370 a. C.)</p>
+      <div class="hbox">Hace 2.400 años la queja era contra la escritura muda. Hoy la marca externa responde, se adapta y nos mira a los ojos. La pregunta de Thamus no caducó: <strong style="color:var(--brass2)">se afiló</strong>.</div>
+    </div>
+  </div>
+
+  <!-- ── 1. PORTADA ─────────────────────────────────────── -->
+  <div class="slide s-cover">
+    <div class="fx fx-cover"></div>
+    <div class="content">
+      <div class="kicker">Universidad Bolivariana del Ecuador · X Encuentro RECADE</div>
+      <h1>IA y <span class="hi">Derecho</span></h1>
+      <p class="cover-sub">¿Cuándo creerle a una máquina? Incertidumbre, verdad y debido proceso en la era de la inteligencia artificial jurídica.</p>
+      <div class="meta"><span>Dr. Maikel Leyva Vázquez</span><span>12 de junio de 2026</span><span>Auditorio UBE</span></div>
+      <div class="logochip"><img src="img/ube_logo.png" alt="Universidad Bolivariana del Ecuador"></div>
+    </div>
+  </div>
+
+<!-- ── DIVISOR ACTO I ─────────────────────────────────── -->
+  <div class="slide s-act">
+    <div class="fx fx-act"></div>
+    <div class="content">
+      <div class="kicker">Primer acto</div>
+      <div class="act-num">I</div>
+      <div class="act-title">La IA no es de fiar</div>
+    </div>
+  </div>
+
+  <!-- ── 3. LA CITA CLAVE ───────────────────────────────── -->
+  <div class="slide s-quote">
+    <div class="fx fx-quote"></div>
+    <div class="content">
+      <div class="kicker">La nueva alfabetización</div>
+      <blockquote>"Un graduado en Derecho que se incorpore al mercado laboral sin capacidad de comprender y trabajar críticamente con la IA estará tan poco preparado como un abogado que no sabe leer."</blockquote>
+      <p class="attribution">— <em>The Conversation</em>, 2025</p>
+      <p class="sub" style="margin-top:1.8rem;">La alfabetización en IA ya no es una ventaja competitiva: es un <strong>requisito mínimo profesional</strong>.</p>
+    </div>
+  </div>
+
+  <!-- ── EL BATE Y LA PELOTA — PREGUNTA ──────────────────── -->
+  <div class="slide s-crt">
+    <div class="fx fx-crt"></div>
+    <div class="content">
+      <div class="kicker">Un experimento mental</div>
+      <h2>Un bate y una pelota cuestan <span class="hi">$1.10</span></h2>
+      <p class="sub">El bate cuesta <strong>$1.00 más</strong> que la pelota. ¿Cuánto cuesta la pelota?</p>
+      <div class="hbox">Respóndelo en silencio. Quédate con tu primera intuición — la vamos a necesitar.</div>
+    </div>
+  </div>
+
+  <!-- ── EL BATE Y LA PELOTA — REVELACIÓN ────────────────── -->
+  <div class="slide s-crt">
+    <div class="fx fx-crt"></div>
+    <div class="content">
+      <div class="kicker">Un experimento mental</div>
+      <h2>La trampa del <span class="hi">pensamiento rápido</span></h2>
+      <div class="cards">
+        <div class="card" style="border-color:rgba(214,90,74,.4)"><span class="num" style="color:var(--crimson)">10 ¢</span><p>Lo que responde la <strong>mayoría</strong>… pero entonces el bate costaría $1.10 y el total $1.20. Incorrecto.</p></div>
+        <div class="card" style="border-color:rgba(95,185,138,.45)"><span class="num" style="color:var(--green)">5 ¢</span><p>La respuesta correcta: pelota 5¢ + bate $1.05 = $1.10. Exige <strong>parar y pensar</strong>.</p></div>
+      </div>
+      <div class="hbox">Tu cerebro tomó el atajo. Esa es la trampa del <strong>pensamiento rápido</strong> — y la IA la alimenta.</div>
+    </div>
+  </div>
+
+  <!-- ── PENSAMIENTO RÁPIDO Y LENTO — KAHNEMAN ───────────── -->
+  <div class="slide s-mind">
+    <div class="fx fx-mind"></div>
+    <div class="thinker-corner"><img src="img/kahneman.jpg" alt="Daniel Kahneman"><span>Daniel Kahneman</span></div>
+    <div class="content">
+      <div class="kicker">Kahneman · Pensar rápido, pensar despacio</div>
+      <h2>Dos sistemas, <span class="hi">uno en peligro</span></h2>
+      <div class="cards">
+        <div class="card"><span class="num">Sistema 1 · rápido</span><p>Automático, intuitivo, sin esfuerzo. Resuelve por atajos — y cae en la trampa del bate.</p></div>
+        <div class="card"><span class="num">Sistema 2 · lento</span><p>Deliberado, esforzado, crítico. Es el razonamiento que un jurista no puede delegar.</p></div>
+      </div>
+      <div class="hbox">Al delegar el esfuerzo en la IA dejamos de ejercitar el Sistema 2: <strong>erosión cognitiva</strong> —"deuda cognitiva" (MIT Media Lab, 2025; Microsoft–CMU, 2025)—. La IA no nos hace tontos; nos quita el <em>incentivo</em> de pensar despacio.</div>
+    </div>
+  </div>
+
+  <!-- ── MI INVESTIGACIÓN — SESGO DE PRESTIGIO EN LLMs ───── -->
+  <div class="slide s-bias">
+    <div class="fx fx-bias"></div>
+    <div class="content">
+      <div class="kicker">Mi investigación · Leyva-Vázquez &amp; Smarandache</div>
+      <h2>El nombre de la universidad <span class="hi">cambia la respuesta</span></h2>
+      <p class="sub">4 modelos (Claude, GPT-4o-mini, Gemini, Llama) · 5 dominios · perfiles idénticos · <strong>2.880 consultas</strong>. Los algoritmos no son neutrales.</p>
+      <div class="cards">
+        <div class="card"><span class="num">Pesa la institución</span><p>Gradiente institucional <strong>+0.297</strong> (MIT vs. U. de Guayaquil). El nombre de la persona: casi nada (&lt;0.094).</p></div>
+        <div class="card"><span class="num">Prestigio, no geografía</span><p>UNAM (México) supera a una universidad de EE.&nbsp;UU. de bajo prestigio en <strong>3 de 4 modelos</strong>.</p></div>
+        <div class="card"><span class="num">Donde más duele</span><p>El sesgo crece en <strong>crédito</strong> (+0.278) y <strong>política pública</strong> (+0.201): decisiones sobre vidas.</p></div>
+      </div>
+      <div class="hbox">Cambia solo el prestigio —todo lo demás idéntico— y la IA reescribe su veredicto. Y los perfiles de baja prestige cargan más <strong>indeterminación (I)</strong>: desventaja epistémica.</div>
+    </div>
+  </div>
+
+  <!-- ── ALUCINACIONES — LA IA NO BUSCA LA VERDAD ────────── -->
+  <div class="slide s-hallu">
+    <div class="fx fx-hallu"></div>
+    <div class="content">
+      <div class="kicker">La IA no busca la verdad</div>
+      <h2>Alucina — con total <span class="hi">aplomo</span></h2>
+      <p class="sub">Un LLM no verifica hechos: predice la <strong>palabra más probable</strong>. Por eso inventa, con seguridad, citas, sentencias y datos que nunca existieron.</p>
+      <div class="cards">
+        <div class="card"><span class="num">Pruébalo tú mismo</span><p>Pídele jurisprudencia sobre un caso muy específico: te devolverá sentencias con número, fecha y tribunal… <strong>inexistentes</strong>, pero verosímiles.</p></div>
+        <div class="card"><span class="num">Ya pasó: <em>Mata v. Avianca</em></span><p>2023: un abogado presentó ante el tribunal 6 precedentes fabricados por ChatGPT. Fue sancionado. La máquina no mintió: <em>no sabe</em> qué es mentir.</p></div>
+      </div>
+      <div class="hbox">No es un fallo ocasional: es <strong>cómo funciona</strong>. La verdad no es su objetivo; la plausibilidad, sí.</div>
+    </div>
+  </div>
+
+  <!-- ── DUNNING-KRUGER — NADIE SABE QUE NO SABE ─────────── -->
+  <div class="slide s-dk">
+    <div class="fx fx-dk"></div>
+    <div class="content">
+      <div class="kicker">El efecto Dunning-Kruger</div>
+      <h2>Nadie sabe que <span class="hi">no sabe</span></h2>
+      <p class="sub">A menor competencia, mayor exceso de confianza: falta el criterio mismo para detectar el propio error.</p>
+      <div class="cards">
+        <div class="card"><span class="num">El humano</span><p>Cuanto menos sabes del tema, menos puedes detectar el error de la IA. Confías justo donde eres más vulnerable.</p></div>
+        <div class="card"><span class="num">La máquina</span><p>No tiene metacognición: no distingue lo que sabe de lo que inventa, y <strong>no puede determinar cuándo se equivoca</strong>. Afirma una falsedad con la misma seguridad que una verdad.</p></div>
+      </div>
+      <div class="hbox">Doble punto ciego. El antídoto neutrosófico: hacer <em>explícita</em> la <strong>indeterminación (I)</strong> que el modelo —y el usuario— colapsan en falsa certeza.</div>
+    </div>
+  </div>
+
+  <!-- ── EL LÍMITE DE LA IA — EL MATORRAL ────────────────── -->
+  <div class="slide s-mat">
+    <div class="fx fx-mat"></div>
+    <div class="content">
+      <div class="kicker">El límite de la IA</div>
+      <h2>¿Modelar la realidad o <span class="hi">automatizar el matorral</span>?</h2>
+      <div class="cards">
+        <div class="card"><img class="face" src="img/nietzsche.jpg" alt="Nietzsche"><span class="num">El matorral digital</span><p><em>"Si alguien esconde una cosa detrás de un matorral, la busca allí mismo y la encuentra, no hay mucho de qué vanagloriarse."</em> — Nietzsche.<br>La IA reencuentra <strong>nuestros propios patrones</strong>: la entrenamos con datos humanos y nos asombra que los repita.</p></div>
+        <div class="card"><img class="face" src="img/einstein.jpg" alt="Einstein"><span class="num">El filtro de la abstracción</span><p><em>"En la medida en que las leyes de la matemática se refieren a la realidad, no son ciertas."</em> — Einstein.<br>Opera con matemática pura; tropieza con lo real —indeterminación, paradoja, contradicción— que ninguna ecuación cierra.</p></div>
+      </div>
+      <div class="hbox">La verdadera inteligencia no reduce el caos a un cálculo perfecto: incorpora la <strong>autocrítica</strong> para reconocer sus propias contradicciones e indeterminaciones. <em>El puente hacia la neutrosofía.</em></div>
+    </div>
+  </div>
+
+  <!-- ── LA RESPUESTA FORMATIVA (integra 5 cambios + capacidades) ── -->
+  <div class="slide s-five">
+    <div class="fx fx-five"></div>
+    <div class="content">
+      <div class="kicker">La respuesta formativa</div>
+      <h2>Formar juristas que <span class="hi">piensen con IA</span></h2>
+      <div class="cards">
+        <div class="card"><span class="num">Qué cambiar</span><p>Formación <strong>docente</strong> en IA, alfabetización <strong>universal y obligatoria</strong> (no electiva) y <strong>límites deliberados</strong>: definir qué tareas la IA <em>no</em> debe hacer.</p></div>
+        <div class="card"><span class="num">Qué preservar</span><p>Lo irreemplazable: razonamiento ético, interpretación, argumentación oral, empatía y estrategia. La IA redacta y resume; el jurista <strong>juzga, pondera y decide</strong>.</p></div>
+      </div>
+      <div class="hbox">No se trata de enseñar a usar ChatGPT, sino de formar juristas que <strong>piensen con IA</strong> sin depender de ella.</div>
+    </div>
+  </div>
+
+  <!-- ── DIVISOR ACTO II ────────────────────────────────── -->
+  <div class="slide s-act">
+    <div class="fx fx-act"></div>
+    <div class="content">
+      <div class="kicker">Segundo acto</div>
+      <div class="act-num">II</div>
+      <div class="act-title">El código y las ficciones</div>
+    </div>
+  </div>
+
+  <!-- ── DERECHO ALGORÍTMICO — CODE IS LAW ──────────────── -->
+  <div class="slide s-code">
+    <div class="fx fx-code"></div>
+    <div class="thinker-corner"><img src="img/lessig.png" alt="Lawrence Lessig"><span>Lawrence Lessig</span></div>
+    <div class="content">
+      <div class="kicker">El giro tecnológico y digital</div>
+      <h2>Cuando el <span class="hi">código</span> es la ley</h2>
+      <p class="sub"><strong>«Code is Law»</strong> (Lessig): los algoritmos de IA y el código informático regulan la conducta humana en internet — sin pasar por ningún parlamento.</p>
+      <div class="cards">
+        <div class="card"><span class="num">Ley de facto</span><p>El ranking, el filtrado y los términos de servicio moldean lo permitido más que el código penal.</p></div>
+        <div class="card"><span class="num">Sin voto</span><p>No hay debate, ni elección, ni separación de poderes: decide quien escribe el algoritmo.</p></div>
+        <div class="card"><span class="num">Reglas en la arquitectura</span><p>Lo que el sistema no permite, simplemente no ocurre. La norma se incrusta en el diseño.</p></div>
+      </div>
+      <div class="hbox">El Derecho ya no es el único que regula. ¿Quién controla a <strong>quien escribe las reglas que nadie votó</strong>?</div>
+    </div>
+  </div>
+
+  <!-- ── JURISPRUDENCIA DE LA IA ─────────────────────────── -->
+  <div class="slide s-ai">
+    <div class="fx fx-ai"></div>
+    <div class="content">
+      <div class="kicker">El giro tecnológico y digital</div>
+      <h2><span class="hi">Jurisprudencia</span> de la inteligencia artificial</h2>
+      <p class="sub">La IA ya no es solo objeto del Derecho: empieza a <em>ejercerlo</em>. Dos frentes abiertos.</p>
+      <div class="cards">
+        <div class="card"><span class="num">Vacío de responsabilidad</span><p>Cuando la IA actúa sola y daña, ¿quién responde: el creador, el usuario… o la máquina? El Derecho no tiene a quién imputar.</p></div>
+        <div class="card"><span class="num">Sesgo predictivo</span><p>El software de reincidencia <strong>COMPAS</strong> marcó con el doble de falsos positivos de "alto riesgo" a acusados negros (ProPublica, 2016). El prejuicio se disfraza de objetividad.</p></div>
+        <div class="card"><span class="num">Caja negra</span><p>Decisiones que afectan la libertad de las personas sin una explicación auditable ni recurso real.</p></div>
+        <div class="card" style="border-color:rgba(95,185,138,.45)"><span class="num" style="color:var(--green)">¿Y en Ecuador?</span><p>Colombia ya falló: el juez <strong>no puede delegar la motivación</strong> en la IA (T-323/2024). Ecuador: estrategia nacional y proyecto de ley en la Asamblea — los jueces, aún sin reglas.</p></div>
+      </div>
+      <div class="hbox">Delegamos el juicio a sistemas que no comprendemos del todo. La pregunta jurídica no es <em>si</em> deciden, sino <strong>con qué garantías</strong>.</div>
+    </div>
+  </div>
+
+  <!-- ── HARARI — LA REALIDAD IMAGINADA ──────────────────── -->
+  <div class="slide s-harari">
+    <div class="fx fx-harari"></div>
+    <div class="thinker-corner"><img src="img/harari.jpg" alt="Yuval Noah Harari"><span>Yuval N. Harari</span></div>
+    <div class="content">
+      <div class="kicker">Harari · Sapiens · la realidad imaginada</div>
+      <h2>Vivimos dentro de <span class="hi">ficciones colectivas</span></h2>
+      <p class="sub">Cooperamos con millones de desconocidos porque creemos en las mismas historias. Harari divide el mundo en dos realidades.</p>
+      <div class="cards">
+        <div class="card"><span class="num">Realidad objetiva</span><p>Existe aunque nadie crea en ella: la gravedad, los ríos, el ADN, el dolor.</p></div>
+        <div class="card"><span class="num">Realidad imaginada</span><p>Existe porque acordamos <em>actuar como si</em>: si dejamos de creer, desaparece al instante.</p></div>
+      </div>
+      <div class="hbox">El Derecho es la ficción intersubjetiva <strong>más poderosa</strong>: un billete es papel, una nación es una línea invisible, una empresa es un "fantasma legal" escrito en un papel.</div>
+    </div>
+  </div>
+
+  <!-- ── EL GRAN CAMBIO DE EJE ───────────────────────────── -->
+  <div class="slide s-axis">
+    <div class="fx fx-axis"></div>
+    <div class="content">
+      <div class="kicker">El gran cambio de eje</div>
+      <h2>Del <span class="hi">humano</span> al <span class="hi">algoritmo</span></h2>
+      <table class="ctable">
+        <thead><tr><th></th><th>Siglo XX</th><th>Siglo XXI</th></tr></thead>
+        <tbody>
+          <tr><td>Centro del relato</td><td>El ser humano (votante, obrero, soldado)</td><td>El algoritmo (el humano es un chip biológico)</td></tr>
+          <tr><td>El poder</td><td>Controlar los medios de producción (fábricas, tierras)</td><td>Controlar el capital en la nube (servidores, datos)</td></tr>
+          <tr><td>El método</td><td>Narrativas políticas (votos, discursos, revoluciones)</td><td>Empujones algorítmicos (nudges, adicción al scroll)</td></tr>
+        </tbody>
+      </table>
+      <div class="hbox">La nueva gran ficción ya no es Dios ni el Estado: es el dato — Harari la llama <strong>"dataísmo"</strong>. Y la propuesta de Milei es <strong>el puente</strong>: el derecho deja de proteger al humano para proteger al algoritmo.</div>
+    </div>
+  </div>
+
+  <!-- ── NUEVAS FICCIONES JURÍDICAS — CASO MILEI ─────────── -->
+  <div class="slide s-fict">
+    <div class="fx fx-fict"></div>
+    <div class="content">
+      <div class="kicker">Nuevas ficciones jurídicas · el caso Milei</div>
+      <h2>«El capitalismo necesita <span class="hi">nuevas ficciones jurídicas</span>»</h2>
+      <p class="sub">Milei lleva esa lógica al extremo (<em>Financial Times</em>: «Argentina invita a la IA a liberarse»): si en el s. XVII inventamos que una empresa <em>es</em> una persona, hoy propone que una <strong>IA sea una corporación</strong> autónoma.</p>
+      <div class="cards">
+        <div class="card"><span class="num">Sociedades sin humanos</span><p>Algoritmos que compran, contratan y litigan con responsabilidad limitada. Accionistas humanos: opcionales.</p></div>
+        <div class="card"><span class="num">Compromiso de no regular</span><p>El Estado se obliga a no imponer normas restrictivas a la tecnología.</p></div>
+        <div class="card"><span class="num">Fiscalidad mínima</span><p>Impuestos corporativos bajísimos y gobierno corporativo a medida.</p></div>
+      </div>
+      <div class="hbox">Harari y otros advierten una <strong>"impunidad programada"</strong>: si la IA defrauda, no hay pena aplicable y la víctima absorbe el daño que excede el patrimonio de la propia máquina.</div>
+    </div>
+  </div>
+
+  <!-- ── NUEVAS CATEGORÍAS, NUEVOS RIESGOS (fusión) ──────── -->
+  <div class="slide s-cat">
+    <div class="fx fx-cat"></div>
+    <div class="content">
+      <div class="kicker">El Derecho responde · y los DDHH tiemblan</div>
+      <h2>Nuevas categorías, <span class="hi">nuevos riesgos</span></h2>
+      <p class="sub">El Derecho inventa categorías para la IA; cada una erosiona el <strong>ancla humana</strong> de los DDHH.</p>
+      <div class="cards" style="max-width:900px;">
+        <div class="card"><span class="num" style="font-size:1.1rem;">🤖 Persona sintética</span><p>La IA como sujeto de derechos con patrimonio propio — que responda ella, no sus programadores.</p></div>
+        <div class="card"><span class="num" style="font-size:1.1rem;">🧠 Neuroderechos</span><p>Chile, pionero: tus datos neuronales son extensión de tu cuerpo, no mercancía.</p></div>
+        <div class="card" style="border-color:rgba(214,90,74,.4)"><span class="num" style="font-size:1.1rem;color:var(--crimson)">Fin del antropocentrismo</span><p>Se separa <strong>Persona</strong> de <strong>Humano</strong>: los derechos dejan de reflejar el sufrimiento y la mortalidad.</p></div>
+        <div class="card" style="border-color:rgba(214,90,74,.4)"><span class="num" style="font-size:1.1rem;color:var(--crimson)">Impunidad estructurada</span><p>No se puede encarcelar a un algoritmo: los DDHH pierden su fuerza coercitiva.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LAS MURALLAS DE CONTENCIÓN ──────────────────────── -->
+  <div class="slide s-wall">
+    <div class="fx fx-wall"></div>
+    <div class="content">
+      <div class="kicker">Que la ficción no devore a su creador</div>
+      <h2>Las <span class="hi">murallas</span> de contención</h2>
+      <p class="sub">El consenso no destruye las ficciones —sin ellas la civilización colapsa— sino que las <strong>subordina</strong>: la realidad biológica debe mandar sobre la imaginada.</p>
+      <div class="cards" style="max-width:900px;">
+        <div class="card"><span class="num" style="font-size:1.05rem;">1 · Veto a la personalidad de la IA</span><p><em>Harari:</em> prohibir que un algoritmo abra cuentas, registre patentes o funde empresas solo. Las ficciones no pueden poseer ficciones.</p></div>
+        <div class="card"><span class="num" style="font-size:1.05rem;">2 · Ancla biológica del sufrimiento</span><p><em>Bostrom:</em> derechos fundamentales solo a quien puede sufrir y tener conciencia. Una máquina se "daña", pero no sufre.</p></div>
+        <div class="card"><span class="num" style="font-size:1.05rem;">3 · Responsabilidad causal última</span><p><em>Floridi, Tegmark:</em> siempre un humano al final de la cadena. Prohibido usar la IA como escudo de impunidad.</p></div>
+        <div class="card"><span class="num" style="font-size:1.05rem;">4 · Humano en el bucle</span><p><em>Reglamento UE:</em> ninguna decisión sobre libertad, salud o justicia 100% automatizada. Siempre un botón de apagado.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── EL VERDADERO PELIGRO — EL MAPA, NO EL TERRITORIO ── -->
+  <div class="slide s-map">
+    <div class="fx fx-map"></div>
+    <div class="content">
+      <div class="kicker">El verdadero peligro</div>
+      <blockquote>El peligro no es que las máquinas despierten y nos destruyan. Es que adaptemos nuestra vida para <em>complacer</em> a las ficciones: escribir para gustarle al algoritmo, talar un bosque porque "financieramente rinde más".</blockquote>
+      <div class="hbox">El dinero, las leyes y la IA son el <strong>mapa</strong> — nunca el territorio. Los límites solo nos recuerdan quién debe servir a quién.</div>
+    </div>
+  </div>
+
+  <!-- ── DIVISOR ACTO III ───────────────────────────────── -->
+  <div class="slide s-act">
+    <div class="fx fx-act"></div>
+    <div class="content">
+      <div class="kicker">Tercer acto</div>
+      <div class="act-num">III</div>
+      <div class="act-title">La lógica que viene</div>
+    </div>
+  </div>
+
+  <!-- ── EL ESPEJO INCÓMODO — CLS / LAW AS POLITICS ──────── -->
+  <div class="slide s-mirror">
+    <div class="fx fx-mirror"></div>
+    <div class="content">
+      <div class="kicker">El espejo incómodo · Law as Politics</div>
+      <h2>Si la IA se sesga, <span class="hi">el Derecho también</span></h2>
+      <p class="sub">La <strong>tesis de la indeterminación</strong> (Critical Legal Studies): la ley es <em>contradictoria</em>, <em>ambigua</em> y depende de la <em>interpretación</em> de los jueces.</p>
+      <div class="cards">
+        <div class="card"><span class="num">Realismo jurídico</span><p>El resultado depende de <em>quién</em> juzga, no solo de la norma. ¿Se ha demostrado? Sí, con datos.</p></div>
+        <div class="card"><span class="num">Modelo actitudinal</span><p>Segal &amp; Spaeth: la ideología del juez predice su voto, sobre todo en los <em>casos difíciles</em>.</p></div>
+        <div class="card"><span class="num">Efectos de panel</span><p>La composición ideológica del tribunal cambia el resultado; sesgos documentados por afiliación, raza y género.</p></div>
+      </div>
+      <div class="hbox">Correlación robusta, <strong>no determinismo</strong>: el Derecho no es pura política — pero tampoco la neutralidad perfecta que oponemos a la "máquina sesgada".</div>
+    </div>
+  </div>
+
+  <!-- ── 10. UNA LÓGICA PARA LA INDETERMINACIÓN ──────────── -->
+  <div class="slide s-logic">
+    <div class="fx fx-logic"></div>
+    <div class="content">
+      <div class="kicker">La tercera respuesta</div>
+      <h2>Una lógica para la <span class="hi">indeterminación</span></h2>
+      <p class="sub"><strong>«No culpable» ≠ «inocente».</strong> Ese hueco —la duda, lo aún no decidido— la lógica binaria lo borra. Tiene nombre.</p>
+      <div class="cards">
+        <div class="card" style="border-color:rgba(95,185,138,.4)"><span class="num" style="color:var(--green)">T</span><p><strong>Verdad.</strong> Lo probado, lo sostenido por la evidencia.</p></div>
+        <div class="card" style="border-color:rgba(228,3,46,.55)"><span class="num" style="color:var(--brass)">I</span><p><strong>Indeterminación.</strong> La duda razonable, la textura abierta, lo no decidible.</p></div>
+        <div class="card" style="border-color:rgba(214,90,74,.4)"><span class="num" style="color:var(--crimson)">F</span><p><strong>Falsedad.</strong> Lo refutado, lo descartado por la prueba.</p></div>
+      </div>
+      <div class="hbox">La <strong>lógica neutrosófica</strong> trata T, I y F como dimensiones independientes: convive con la contradicción sin colapsar y hace <em>visible</em> la duda. Una misma herramienta para auditar a la IA <strong>y</strong> al juez.</div>
+    </div>
+  </div>
+
+  <!-- ── LA EVIDENCIA — MIS INVESTIGACIONES ──────────────── -->
+  <div class="slide s-evid">
+    <div class="fx fx-evid"></div>
+    <div class="thinker-corner"><img src="img/smarandache.jpg" alt="Florentin Smarandache"><span>F. Smarandache</span></div>
+    <div class="content">
+      <div class="kicker">La evidencia · Leyva-Vázquez &amp; Smarandache</div>
+      <h2>La neutrosofía <span class="hi">ya lo está midiendo</span></h2>
+      <p class="sub">No es teoría: es un programa empírico que mide lo que la lógica binaria no puede ver.</p>
+      <div class="cards">
+        <div class="card"><span class="num">Breaking the Chains</span><p><em>NSS, 2026.</em> Los LLMs sostienen verdad y falsedad <strong>a la vez</strong> —hiper-verdad (T+I+F&gt;1)— en el 35 % de los casos; replicado en 6 modelos. El binario lo oculta; la neutrosofía lo mide.</p></div>
+        <div class="card"><span class="num">Hallucination Beyond Softmax</span><p><em>2026.</em> Teorema: los detectores actuales <strong>no pueden ver la contradicción</strong> (comparten el softmax). Un protocolo dual recupera el 100 % de los casos paraconsistentes que el método estándar deja en 0 %.</p></div>
+        <div class="card"><span class="num">Sesgo de prestigio</span><p><em>2026.</em> El índice neutrosófico de indeterminación (<strong>I</strong>) cuantifica la desventaja epistémica de los perfiles de baja prestige — invisible para el sí/no.</p></div>
+      </div>
+      <div class="hbox">Usar la matemática avanzada no para <em>encadenarnos</em> a los datos, sino para <strong>devolver la decisión al humano</strong>.</div>
+    </div>
+  </div>
+
+  <!-- ── 11. CIERRE ─────────────────────────────────────── -->
+  <div class="slide s-close">
+    <div class="fx fx-close"></div>
+    <div class="content">
+      <div class="kicker">Conclusión</div>
+      <h2>Preparar para el mundo <span class="hi">que viene</span>,<br>no para el que fue</h2>
+      <p class="sub">La escritura no disminuyó la inteligencia humana: la transformó. La IA hará lo mismo — si la enseñanza del Derecho está a la altura.</p>
+      <div class="hbox">La adaptabilidad humana es la clave. <strong>"Preparar a los alumnos para el mundo al que pronto se enfrentarán, no para el que nosotros nos formamos."</strong></div>
+      <div class="meta" style="margin-top:2rem;"><span>Basado en The Conversation, 2025</span><span>theconversation.com</span></div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<nav>
+  <button class="btn" id="prev" onclick="move(-1)" disabled>← Anterior</button>
+  <span class="counter" id="counter">1 / 10</span>
+  <button class="btn" id="next" onclick="move(1)">Siguiente →</button>
+</nav>
+<p class="kbd-hint">← → navegar · F pantalla completa · M índice · N notas+cronómetro · T reiniciar tiempo</p>
+<div class="actlabel" id="actlabel"></div>
+<div id="menu"><p class="close-hint">M o Esc para cerrar · clic para saltar</p><div id="menu-body"></div></div>
+<div id="notes"><span class="tm" id="nt-timer">25:00</span><div class="nt" id="nt-text"></div></div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total  = slides.length;
+  let cur = 0;
+
+  document.getElementById('pn-tot').textContent = String(total).padStart(2,'0');
+
+  function move(dir){
+    const next = cur + dir;
+    if (next < 0 || next >= total) return;
+    const prev = cur;
+    slides[prev].classList.add('exit');
+    slides[prev].classList.remove('active');
+    cur = next;
+    slides[cur].classList.remove('exit');
+    void slides[cur].offsetWidth;          // restart entrance animations
+    slides[cur].classList.add('active');
+    setTimeout(() => slides[prev].classList.remove('exit'), 600);
+    update();
+  }
+
+  // ── Actos (para etiqueta e índice) ──────────────────────
+  const ACTS = [
+    { from: 0,  name: 'I · La IA no es de fiar' },
+    { from: 14, name: 'II · El código y las ficciones' },
+    { from: 23, name: 'III · La lógica que viene' },
+  ];
+
+  // ── Notas del orador (tecla N) ──────────────────────────
+  const NOTES = [
+    'VIDEO (clic para reproducir). Narrar en vivo: "La respuesta llegó en segundos. Tenía citas. Tenía fechas. Tenía autoridad. Parecía Derecho. Pero el caso no existía. La sentencia no existía. La certeza… tampoco."',
+    '2 segundos de silencio. Luego: "Esa es la pregunta que hoy tenemos que llevar al Derecho, a la Universidad y al debido proceso."',
+    'Gancho: la desconfianza ante la tecnología de la palabra tiene 2.400 años. Leer la cita despacio y dejar un silencio.',
+    'Presentación personal en 30 segundos. La promesa: tres cosas — la IA no es de fiar; el Derecho entra al juego más peligroso de su historia; existe una tercera respuesta.',
+    'Anunciar el primer acto: por qué no podemos fiarnos a ciegas de la máquina.',
+    'La alfabetización en IA como requisito mínimo del jurista — la palabra clave es "críticamente".',
+    'Hacer la pregunta EN VIVO. Pedir manos: ¿quién pensó 10¢? NO avanzar hasta que se comprometan.',
+    'Revelación: 5¢. "Su cerebro tomó el atajo — el mío también la primera vez."',
+    'Sistema 1 vs Sistema 2; la IA alimenta el atajo. Mencionar "deuda cognitiva" (MIT 2025).',
+    'MI ESTUDIO: 2.880 consultas, 4 modelos. El prestigio cambia el veredicto; LatAm en desventaja medible.',
+    'Caso Mata v. Avianca: el sistema confirmó citas falsas con total aplomo. No sabe qué es mentir.',
+    'Doble punto ciego: ni el modelo ni el usuario novato saben que no saben.',
+    'Nietzsche y Einstein: la IA reencuentra nuestros patrones. "Guarden esa idea — vuelve al final." (Si falta tiempo: 30 s.)',
+    'Qué cambiar y qué preservar: formar juristas que piensen CON IA sin depender de ella.',
+    'Segundo acto: del aula al orden jurídico.',
+    'Lessig: el código regula sin pasar por ningún parlamento.',
+    'COMPAS + tarjeta verde: Colombia T-323/2024 (juez no delega motivación) vs. Ecuador sin reglas. "¿Esperamos a nuestro propio caso?"',
+    'Harari: el derecho es la ficción intersubjetiva más poderosa (dinero, naciones, empresas). "No es insulto: es tecnología de cooperación."',
+    'La tabla del cambio de eje: del humano al algoritmo. Dataísmo. Milei como puente.',
+    'Milei FT: IA como corporación autónoma. PROTECCIÓN: "no evalúo al personaje, evalúo la ficción". Impunidad programada.',
+    'Fusión: categorías (persona sintética, neuroderechos Chile) + riesgos en rojo (fin antropocentrismo, impunidad).',
+    'Las murallas: veto, ancla biológica, responsabilidad última, humano en el bucle (UE).',
+    'El verdadero peligro: adaptar la vida para complacer a la ficción. El mapa no es el territorio.',
+    'Tercer acto: "la parte incómoda — para nosotros, los del Derecho".',
+    'CLS: el derecho también es indeterminado — nivela el terreno frente a la "máquina sesgada". TRANSICIÓN CLAVE, ensayada.',
+    '«No culpable» ≠ «inocente»: presentar T, I, F con calma. Es la slide clave.',
+    'Mis resultados: hiper-verdad 35 %, dual-NLI, sesgo de prestigio. La neutrosofía YA lo mide.',
+    'Cierre circular: "Empecé con un caso que nunca existió…" Preparar para el mundo que viene. Gracias.',
+  ];
+
+  // ── Modo presentador: panel + cronómetro 15 min ─────────
+  const notesEl = document.getElementById('notes');
+  const ntText = document.getElementById('nt-text');
+  const ntTimer = document.getElementById('nt-timer');
+  let t0 = null;
+  const LIMIT = 25 * 60;
+  setInterval(() => {
+    if (t0 === null) return;
+    const left = LIMIT - Math.floor((Date.now() - t0) / 1000);
+    const a = Math.abs(left);
+    ntTimer.textContent = (left < 0 ? '−' : '') +
+      String(Math.floor(a / 60)).padStart(2, '0') + ':' + String(a % 60).padStart(2, '0');
+    ntTimer.classList.toggle('warn', left < 120);
+  }, 500);
+  function updateNotes(){
+    ntText.innerHTML = '<b>' + String(cur + 1).padStart(2, '0') + '</b> · ' + (NOTES[cur] || '');
+  }
+  function actOf(i){
+    let a = ACTS[0];
+    for (const act of ACTS) if (i >= act.from) a = act;
+    return a.name;
+  }
+
+  function slideTitle(s){
+    const el = s.querySelector('h1, h2');
+    if (el) return el.textContent.trim();
+    const k = s.querySelector('.kicker');
+    return k ? k.textContent.trim() : 'Diapositiva';
+  }
+
+  // ── Menú (tecla M) ──────────────────────────────────────
+  const menu = document.getElementById('menu');
+  const menuBody = document.getElementById('menu-body');
+  function buildMenu(){
+    menuBody.innerHTML = '';
+    let actIdx = -1;
+    let grid = null;
+    slides.forEach((s, i) => {
+      const newAct = ACTS.findIndex(a => a.from === i);
+      if (newAct !== -1){
+        actIdx = newAct;
+        const h = document.createElement('h3');
+        h.textContent = ACTS[actIdx].name;
+        menuBody.appendChild(h);
+        grid = document.createElement('div');
+        grid.className = 'menu-grid';
+        menuBody.appendChild(grid);
+      }
+      const item = document.createElement('div');
+      item.className = 'menu-item' + (i === cur ? ' cur' : '');
+      item.innerHTML = `<span class="mn">${String(i+1).padStart(2,'0')}</span><span>${slideTitle(s)}</span>`;
+      item.onclick = () => { goTo(i); toggleMenu(false); };
+      grid.appendChild(item);
+    });
+  }
+  function toggleMenu(force){
+    const open = force !== undefined ? force : !menu.classList.contains('open');
+    if (open) buildMenu();
+    menu.classList.toggle('open', open);
+  }
+
+  function goTo(i){
+    if (i === cur || i < 0 || i >= total) return;
+    const prev = cur;
+    slides[prev].classList.add('exit');
+    slides[prev].classList.remove('active');
+    cur = i;
+    slides[cur].classList.remove('exit');
+    void slides[cur].offsetWidth;
+    slides[cur].classList.add('active');
+    setTimeout(() => slides[prev].classList.remove('exit'), 600);
+    update();
+  }
+
+  function update(){
+    const vid = document.getElementById('opener-video');
+    if (vid && !slides[cur].contains(vid)) vid.pause();
+    document.getElementById('counter').textContent = `${cur + 1} / ${total}`;
+    document.getElementById('pn-cur').textContent = String(cur + 1).padStart(2,'0');
+    document.getElementById('prev').disabled = cur === 0;
+    document.getElementById('next').disabled = cur === total - 1;
+    document.getElementById('progress').style.width = `${((cur + 1) / total) * 100}%`;
+    document.getElementById('actlabel').textContent = actOf(cur);
+    updateNotes();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape'){ toggleMenu(false); return; }
+    if (e.key === 'm' || e.key === 'M'){ toggleMenu(); return; }
+    if (e.key === 'n' || e.key === 'N'){
+      notesEl.classList.toggle('open');
+      if (notesEl.classList.contains('open') && t0 === null) t0 = Date.now();
+      updateNotes(); return;
+    }
+    if (e.key === 't' || e.key === 'T'){ t0 = Date.now(); return; }
+    if (menu.classList.contains('open')) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') move(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   move(-1);
+    if (e.key === 'Home') goTo(0);
+    if (e.key === 'End')  goTo(total - 1);
+    if (e.key === 'f' || e.key === 'F'){
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true});
+  document.addEventListener('touchend',   e => {
+    const dx = tx - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 50) move(dx > 0 ? 1 : -1);
+  }, {passive:true});
+
+  update();
+</script>
+</body>
+</html>
