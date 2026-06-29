@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Tercera Respuesta &mdash; IA, Incertidumbre y Educacion en Ingenieria &middot; UBO 2026</title>
+<meta name="description" content="Charla magistral del Dr. Maikel Leyva-Vazquez con Florentin Smarandache en la Universidad Bernardo O'Higgins (Chile): The Third Answer, The Honest Classroom y Type-k Neutrosophic Sets aplicados a la educacion en ingenieria.">
+<meta property="og:title" content="La Tercera Respuesta - UBO 2026">
+<meta property="og:description" content="IA, incertidumbre y el futuro de la educacion en ingenieria. Tres libros, una linea: idea, aula y fundamento.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22&gt;&lt;text y=%22.9em%22 font-size=%2290%22&gt;&#129504;&lt;/text&gt;&lt;/svg&gt;">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#0a0f1c;--bg2:#0d1424;--ink:#eef2fb;--ink-soft:#aab4cc;--ink-faint:#6b7798;
+--rule:rgba(255,255,255,.12);--card:rgba(255,255,255,.045);
+--gold:#d9b779;--cyan:#5ad1e6;
+--T:#34d399;--I:#fbbf24;--F:#f87171;
+--third:#7aa2ff;--honest:#ff9bb0;--typek:#9be59b;
+--serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);overflow:hidden}
+.deck{position:fixed;inset:0}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+padding:6vh 8vw;opacity:0;visibility:hidden;transform:translateY(18px) scale(.992);
+transition:opacity .55s ease,transform .55s ease,visibility .55s;pointer-events:none;
+background:radial-gradient(120% 120% at 15% 0%,var(--bg2) 0%,var(--bg) 60%);overflow:auto}
+.slide.active{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+.slide-inner{width:100%;max-width:1080px;margin:0 auto}
+.kicker{font-family:var(--mono);font-size:.82rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1.4rem}
+.title{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,4.4vw,3.3rem);line-height:1.08;letter-spacing:-.01em;margin-bottom:1.6rem}
+.title.big{font-size:clamp(1.7rem,3.6vw,2.7rem)}
+.lead{font-size:clamp(1rem,1.7vw,1.32rem);color:var(--ink-soft);line-height:1.55;margin:1.2rem 0;max-width:62ch}
+.hl{color:var(--gold)}.hl-li{color:var(--gold)!important}
+.t-text{color:var(--T)}.i-text{color:var(--I)}.f-text{color:var(--F)}
+em{font-style:italic;color:var(--ink)}
+.cover{justify-content:center;text-align:left}
+.display{font-family:var(--serif);font-weight:700;font-size:clamp(3.2rem,10vw,7.5rem);line-height:.95;letter-spacing:-.03em;margin:.4rem 0 1.4rem;
+background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.cover-sub{font-family:var(--serif);font-style:italic;font-size:clamp(1.1rem,2.4vw,1.7rem);color:var(--ink-soft);max-width:46ch;line-height:1.35}
+.triad-mini{display:flex;gap:.5rem;align-items:center;font-family:var(--serif);font-weight:700;font-size:1.6rem;margin:2.2rem 0 1.4rem}
+.triad-mini .t{color:var(--T)}.triad-mini .i{color:var(--I)}.triad-mini .f{color:var(--F)}.triad-mini .sep{color:var(--ink-faint)}
+.cover-by{font-family:var(--mono);font-size:.92rem;color:var(--ink-soft);letter-spacing:.04em}
+.cover.end .contact{font-size:1.1rem;color:var(--ink-soft);margin-top:1.4rem}
+.cover.end .contact a{color:var(--gold);text-decoration:none}
+.statement{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,5.2vw,4rem);line-height:1.12;letter-spacing:-.015em;max-width:20ch}
+.statement em{font-style:italic;color:var(--ink-soft)}
+.statement .hl{color:var(--gold)}
+.dark{background:radial-gradient(120% 120% at 80% 100%,#10182c 0%,#070b14 70%)}
+.divider{justify-content:center}
+.block-n{font-family:var(--serif);font-weight:700;font-size:clamp(4rem,13vw,10rem);line-height:.8;color:var(--rule);letter-spacing:-.04em}
+.block-title{font-family:var(--serif);font-weight:600;font-size:clamp(2.4rem,6vw,4.4rem);line-height:1;margin:.3rem 0 .8rem;letter-spacing:-.02em}
+.block-sub{font-size:clamp(1rem,2vw,1.4rem);color:var(--ink-soft)}
+.book-tag{font-family:var(--mono);font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
+.book-third .block-title{color:var(--third)}.book-honest .block-title{color:var(--honest)}.book-typek .block-title{color:var(--typek)}
+.book-third{background:radial-gradient(120% 120% at 80% 20%,#16204a 0%,#070b16 70%)}
+.book-honest{background:radial-gradient(120% 120% at 80% 20%,#3a1622 0%,#0d0710 70%)}
+.book-typek{background:radial-gradient(120% 120% at 80% 20%,#13321f 0%,#06100a 70%)}
+.bullets{list-style:none;display:flex;flex-direction:column;gap:1rem;max-width:64ch}
+.bullets li{position:relative;padding-left:1.6rem;font-size:clamp(1rem,1.55vw,1.22rem);line-height:1.5;color:var(--ink-soft)}
+.bullets li strong,.bullets li b{color:var(--ink);font-weight:600}
+.bullets li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.bullets.two-col-list{display:grid;grid-template-columns:1fr 1fr;gap:1rem 2.4rem;max-width:none}
+.agenda{list-style:none;display:flex;flex-direction:column;gap:.9rem}
+.agenda li{display:flex;gap:1.2rem;align-items:baseline}
+.agenda .n{font-family:var(--serif);font-weight:700;font-size:1.8rem;color:var(--gold);min-width:1.4em}
+.agenda b{font-size:clamp(1rem,1.7vw,1.3rem);color:var(--ink)}
+.agenda span{display:block;color:var(--ink-soft);font-size:.98rem;margin-top:.1rem}
+.split{display:grid;grid-template-columns:1.4fr 1fr;gap:2.5rem;align-items:center}
+.bignum{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1rem;border-left:1px solid var(--rule);padding-left:2rem}
+.bignum .big{font-family:var(--serif);font-weight:700;font-size:clamp(3rem,7vw,5.5rem);line-height:.9}
+.bignum .cap{font-family:var(--mono);font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:.8rem}
+.threecol{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin:1.6rem 0}
+.threecol.four{grid-template-columns:repeat(4,1fr)}
+.twocard{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1.4rem 0}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:1.3rem 1.4rem}
+.card b{display:block;color:var(--ink);font-weight:600;font-size:1.06rem;margin-bottom:.3rem}
+.card span{color:var(--ink-faint);font-size:.92rem}
+.card p{color:var(--ink-soft);font-size:1rem;line-height:1.45}
+.card .lbl{font-family:var(--mono);font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:.5rem}
+.t-card{border-color:rgba(52,211,153,.4)}.t-card b{color:var(--T)}
+.i-card{border-color:rgba(251,191,36,.4)}.i-card b,.i-card .lbl{color:var(--I)}
+.f-card{border-color:rgba(248,113,113,.4)}.f-card b,.f-card .lbl{color:var(--F)}
+.triad-big{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2rem}
+.orb{display:flex;flex-direction:column;align-items:center;gap:.6rem;padding:2rem 1rem;border-radius:18px;border:1px solid var(--rule);background:var(--card)}
+.orb span{font-family:var(--serif);font-weight:700;font-size:clamp(2.5rem,6vw,4rem);width:1.6em;height:1.6em;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.orb b{font-size:1.1rem;letter-spacing:.02em}
+.orb.t span{color:var(--T);box-shadow:inset 0 0 0 2px rgba(52,211,153,.5)}.orb.t b{color:var(--T)}
+.orb.i span{color:var(--I);box-shadow:inset 0 0 0 2px rgba(251,191,36,.5)}.orb.i b{color:var(--I)}
+.orb.f span{color:var(--F);box-shadow:inset 0 0 0 2px rgba(248,113,113,.5)}.orb.f b{color:var(--F)}
+.grid{width:100%;border-collapse:collapse;margin-top:1.2rem;font-size:clamp(.85rem,1.3vw,1.05rem)}
+.grid th{text-align:left;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);padding:.7rem 1rem;border-bottom:1px solid var(--rule)}
+.grid td{padding:.85rem 1rem;border-bottom:1px solid rgba(255,255,255,.06);color:var(--ink-soft)}
+.grid td b{color:var(--ink)}
+.grid.zones td{text-align:left}
+.pull{font-family:var(--serif);font-style:italic;font-size:clamp(1.2rem,2.6vw,1.8rem);color:var(--gold);border-left:3px solid var(--gold);padding-left:1.4rem;margin-top:1.8rem;line-height:1.3}
+.fourd{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1.6rem 0}
+.fourd .d{padding:1.4rem 1rem;border-radius:14px;border:1px solid var(--rule);background:var(--card);text-align:center}
+.fourd .d span{font-family:var(--mono);font-size:.8rem;color:var(--ink-faint);letter-spacing:.1em}
+.fourd .d b{display:block;font-size:1.2rem;margin:.4rem 0 .2rem}
+.fourd .d small{color:var(--ink-faint);font-size:.82rem}
+.fourd .hot{border-color:var(--gold)}.fourd .hot b{color:var(--gold)}
+.flow{display:flex;align-items:stretch;gap:1rem;margin-top:2rem;flex-wrap:wrap}
+.flow .step{flex:1;min-width:200px;padding:1.5rem;border-radius:16px;background:var(--card);border:1px solid var(--rule)}
+.flow .step b{display:block;font-family:var(--serif);font-size:1.25rem;margin-bottom:.5rem}
+.flow .step span{color:var(--ink-soft);font-size:.95rem;line-height:1.45}
+.flow .arrow{display:flex;align-items:center;color:var(--ink-faint);font-size:1.6rem}
+.flow .book-third b{color:var(--third)}.flow .book-honest b{color:var(--honest)}.flow .book-typek b{color:var(--typek)}
+.flow .book-third{border-color:rgba(122,162,255,.4)}.flow .book-honest{border-color:rgba(255,155,176,.4)}.flow .book-typek{border-color:rgba(155,229,155,.4)}
+.qrrow{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin:1.8rem 0}
+.qrcard{display:flex;flex-direction:column;align-items:center;gap:.7rem;background:#fff;border-radius:16px;padding:1.4rem}
+.qrcard img{width:100%;max-width:190px;height:auto;border-radius:6px}
+.qrcard b{color:#0a0f1c;font-size:1.05rem}
+.qrcard a{color:#2156c9;font-size:.8rem;text-decoration:none;word-break:break-all;text-align:center}
+.foot-note{color:var(--ink-faint);font-size:.85rem;text-align:center}
+.brandline{position:absolute;left:8vw;bottom:3vh;font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--cyan));z-index:30;transition:width .4s ease;width:0}
+.counter{position:fixed;right:8vw;bottom:3vh;font-family:var(--mono);font-size:.78rem;color:var(--ink-soft);z-index:30;letter-spacing:.1em}
+.counter b{color:var(--ink)}
+.nav{position:fixed;bottom:2.4vh;left:50%;transform:translateX(-50%);display:flex;gap:.5rem;z-index:30}
+.nav button{width:40px;height:40px;border-radius:50%;border:1px solid var(--rule);background:rgba(255,255,255,.05);color:var(--ink);font-size:1.1rem;cursor:pointer;transition:.2s}
+.nav button:hover{background:rgba(255,255,255,.14);border-color:var(--gold)}
+.hint{position:fixed;left:8vw;bottom:3vh;font-family:var(--mono);font-size:.7rem;color:var(--ink-faint);z-index:29;opacity:.6}
+@media(max-width:760px){
+.split{grid-template-columns:1fr}.threecol,.threecol.four,.twocard,.triad-big,.fourd,.qrrow{grid-template-columns:1fr}
+.bullets.two-col-list{grid-template-columns:1fr}.bignum{border-left:none;border-top:1px solid var(--rule);padding:1rem 0 0}
+.flow{flex-direction:column}.flow .arrow{transform:rotate(90deg)}.nav,.hint{display:none}.brandline{display:none}
+.slide{padding:7vh 6vw}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+<section class="slide cover" data-i="0">
+<div class="slide-inner">
+<p class="kicker">Conferencia &middot; Universidad Bernardo O'Higgins &middot; Santiago de Chile &middot; 2026</p>
+<h1 class="display">La Tercera<br>Respuesta</h1>
+<p class="cover-sub">Inteligencia Artificial, Incertidumbre y el Futuro de la Educaci&oacute;n en Ingenier&iacute;a</p>
+<div class="triad-mini"><span class="t">T</span><span class="sep">&middot;</span><span class="i">I</span><span class="sep">&middot;</span><span class="f">F</span></div>
+<p class="cover-by">Dr. Maikel Yelandi Leyva-V&aacute;zquez &nbsp;&middot;&nbsp; con Florentin Smarandache</p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide statement dark" data-i="1">
+<div class="slide-inner">
+<p class="kicker">La tesis en una frase</p>
+<blockquote class="statement">El problema no es que la IA <em>se equivoque</em>;<br>es que no sabe <span class="hl">cu&aacute;ndo no sabe</span>.</blockquote>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="2">
+<div class="slide-inner">
+<p class="kicker">Qui&eacute;n les habla</p>
+<h2 class="title">Una l&iacute;nea de investigaci&oacute;n entre la l&oacute;gica, la IA y la educaci&oacute;n</h2>
+<ul class="bullets">
+<li><strong>Dr. Maikel Leyva-V&aacute;zquez</strong> &mdash; PhD en Ciencias T&eacute;cnicas (IA y Ciencia de Datos).</li>
+<li>Coordinador de Posgrado (UBE) &middot; Editor-in-Chief de <em>Neutrosophic Sets and Systems</em> y <em>NCML</em>.</li>
+<li>Director de la Asociaci&oacute;n Latinoamericana de Ciencias Neutros&oacute;ficas (ALCN).</li>
+<li>L&iacute;nea: l&oacute;gica neutros&oacute;fica, IA, incertidumbre y su aplicaci&oacute;n a la educaci&oacute;n y la decisi&oacute;n.</li>
+</ul>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="3">
+<div class="slide-inner">
+<p class="kicker">Qu&eacute; van a escuchar</p>
+<h2 class="title">Cinco bloques &mdash; de la idea a la pr&aacute;ctica al fundamento</h2>
+<ol class="agenda">
+<li><span class="n">1</span><div><b>El problema</b><span>La m&aacute;quina que no puede decir "no s&eacute;".</span></div></li>
+<li><span class="n">2</span><div><b>La Tercera Respuesta &mdash; T, I, F</b><span>Libro: <em>The Third Answer</em>.</span></div></li>
+<li><span class="n">3</span><div><b>Del libro al aula</b><span><em>The Honest Classroom</em> &mdash; educaci&oacute;n en ingenier&iacute;a.</span></div></li>
+<li><span class="n">4</span><div><b>El fundamento formal</b><span><em>Type-k Neutrosophic Sets</em> &mdash; matem&aacute;tica e ingenier&iacute;a.</span></div></li>
+<li><span class="n">5</span><div><b>S&iacute;ntesis</b><span>Qu&eacute; cambia en la formaci&oacute;n de ingenieros y qu&eacute; tesis abre.</span></div></li>
+</ol>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide divider dark" data-i="4">
+<div class="slide-inner"><p class="block-n">01</p><h2 class="block-title">El problema</h2><p class="block-sub">La m&aacute;quina que no puede decir "no s&eacute;".</p></div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="5">
+<div class="slide-inner">
+<p class="kicker">Caso de apertura &middot; Mata v. Avianca</p>
+<h2 class="title">Un abogado, seis casos, <span class="f-text">cero existencia real</span></h2>
+<div class="split">
+<ul class="bullets">
+<li>Nueva York, <b>2023</b>. Un abogado us&oacute; un chatbot para investigar precedentes.</li>
+<li>La IA devolvi&oacute; <b>seis citas completas</b>: nombres, expedientes, res&uacute;menes.</li>
+<li>Al pedir verificaci&oacute;n, las confirm&oacute; con la misma confianza. <b>Ninguna exist&iacute;a.</b></li>
+<li>Sanci&oacute;n: USD 5&thinsp;000 por abogado; el da&ntilde;o reputacional, a&ntilde;os.</li>
+</ul>
+<div class="bignum"><span class="big">6</span><span class="cap">citas perfectas</span><span class="big f-text">0</span><span class="cap">reales</span></div>
+</div>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="6">
+<div class="slide-inner">
+<p class="kicker">La ra&iacute;z del problema</p>
+<h2 class="title">Confianza uniforme</h2>
+<p class="lead">Los LLM generan texto por coincidencia de patrones probabil&iacute;sticos. No tienen un mecanismo intr&iacute;nseco para distinguir entre:</p>
+<div class="threecol">
+<div class="card t-card"><b>Conocimiento verificado</b></div>
+<div class="card i-card"><b>Conocimiento parcial o dudoso</b></div>
+<div class="card f-card"><b>Informaci&oacute;n fabricada</b></div>
+</div>
+<p class="lead">Todo sale con el <span class="hl">mismo tono de certeza</span>. Esa es la falla estructural.</p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="7">
+<div class="slide-inner">
+<p class="kicker">No es solo "alucinaci&oacute;n"</p>
+<h2 class="title">Cuatro modos de fallo &mdash; distinta severidad y detectabilidad</h2>
+<table class="grid">
+<thead><tr><th>Modo de fallo</th><th>Qu&eacute; ocurre</th><th>Detectabilidad</th></tr></thead>
+<tbody>
+<tr><td><b>Fabricaci&oacute;n</b></td><td>Inventa hechos, citas o datos inexistentes</td><td class="f-text">Baja &mdash; suena plausible</td></tr>
+<tr><td><b>Exceso de confianza</b></td><td>Afirma lo incierto como cierto</td><td class="f-text">Baja</td></tr>
+<tr><td><b>Sesgo silencioso</b></td><td>Reproduce un sesgo sin se&ntilde;alarlo</td><td class="i-text">Media</td></tr>
+<tr><td><b>Omisi&oacute;n</b></td><td>Calla lo que no sabe en vez de marcarlo</td><td class="t-text">Alta &mdash; si se audita</td></tr>
+</tbody></table>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="8">
+<div class="slide-inner">
+<p class="kicker">Por qu&eacute; importa en ingenier&iacute;a</p>
+<h2 class="title">De la an&eacute;cdota legal al riesgo de dise&ntilde;o</h2>
+<ul class="bullets">
+<li>La ingenier&iacute;a decide bajo incertidumbre: cargas, materiales, demanda, riesgo.</li>
+<li>Si la IA entra al flujo de decisi&oacute;n sin se&ntilde;alar su incertidumbre, <b>contamina la decisi&oacute;n</b>.</li>
+<li>Dimensionamiento con datos inventados &middot; c&oacute;digo con fallos sutiles &middot; informes con citas falsas.</li>
+<li class="hl-li">La confiabilidad de un sistema con IA depende de que la IA sepa comunicar lo que no sabe.</li>
+</ul>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide divider book-third" data-i="9">
+<div class="slide-inner"><p class="block-n">02</p><p class="book-tag">Libro 1</p><h2 class="block-title">The Third Answer</h2><p class="block-sub">La l&oacute;gica que s&iacute; puede decir "no s&eacute;".</p></div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="10">
+<div class="slide-inner">
+<p class="kicker">La tercera respuesta</p>
+<h2 class="title">Ni verdadero, ni falso &mdash; hay un tercer lugar l&oacute;gico</h2>
+<div class="triad-big">
+<div class="orb t"><span>T</span><b>Verdad</b></div>
+<div class="orb i"><span>I</span><b>Indeterminaci&oacute;n</b></div>
+<div class="orb f"><span>F</span><b>Falsedad</b></div>
+</div>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="11">
+<div class="slide-inner">
+<p class="kicker">La distinci&oacute;n que lo cambia todo</p>
+<h2 class="title">Dos indeterminaciones distintas, dos respuestas distintas</h2>
+<div class="twocard">
+<div class="card i-card"><span class="lbl">I de ignorancia</span><p>Falta evidencia &mdash; a&uacute;n no sabemos.</p></div>
+<div class="card f-card"><span class="lbl">I de contradicci&oacute;n</span><p>Hay evidencia en ambos sentidos &mdash; datos en conflicto.</p></div>
+</div>
+<p class="lead">La l&oacute;gica cl&aacute;sica colapsa ambas en "no s&eacute;". La neutros&oacute;fica las <span class="hl">separa y las mide</span>. En ingenier&iacute;a: no es lo mismo "falta el dato" que "los sensores se contradicen".</p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="12">
+<div class="slide-inner">
+<p class="kicker">Cinco siglos, una sola estructura</p>
+<h2 class="title">La genealog&iacute;a intelectual de la Tercera Respuesta</h2>
+<ul class="bullets">
+<li><b>Escol&aacute;stica de Salamanca</b> &mdash; la duda productiva, formalizada.</li>
+<li><b>Cosmovisi&oacute;n andina</b> &mdash; la contradicci&oacute;n complementaria.</li>
+<li><b>Aymara &middot; ch'ixi</b> &mdash; lo que es dos cosas a la vez sin dejar de ser uno.</li>
+<li><b>Maya &middot; In Lak'ech</b> &nbsp;|&nbsp; <b>Quechua &middot; Sumak Kawsay</b>.</li>
+</ul>
+<p class="lead">El <span class="hl">Sur global</span> pens&oacute; la indeterminaci&oacute;n mucho antes de que la IA la necesitara.</p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="13">
+<div class="slide-inner">
+<p class="kicker">Tres preguntas, cuatro zonas epist&eacute;micas</p>
+<h2 class="title">La terna (T, I, F) define en qu&eacute; zona estamos y qu&eacute; hacer</h2>
+<table class="grid zones">
+<thead><tr><th>Zona</th><th>T</th><th>I</th><th>F</th><th>Qu&eacute; hacer</th></tr></thead>
+<tbody>
+<tr><td><b>Conocimiento s&oacute;lido</b></td><td class="t-text">alta</td><td>baja</td><td>baja</td><td>Usar con confianza</td></tr>
+<tr><td><b>Ignorancia</b></td><td>baja</td><td class="i-text">alta</td><td>baja</td><td>Buscar m&aacute;s evidencia</td></tr>
+<tr><td><b>Contradicci&oacute;n</b></td><td>media</td><td class="i-text">alta</td><td>media</td><td>Resolver el conflicto</td></tr>
+<tr><td><b>Refutado</b></td><td>baja</td><td>baja</td><td class="f-text">alta</td><td>Descartar</td></tr>
+</tbody></table>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="14">
+<div class="slide-inner">
+<p class="kicker">Ejemplo trabajado &mdash; una decisi&oacute;n real</p>
+<h2 class="title">La misma pregunta, dos respuestas</h2>
+<p class="lead">&laquo;&iquest;Es seguro este material para esta carga?&raquo;</p>
+<div class="twocard">
+<div class="card f-card"><span class="lbl">Respuesta tipo LLM</span><p>"S&iacute;, es totalmente seguro." &rarr; <b>certeza uniforme</b>.</p></div>
+<div class="card t-card"><span class="lbl">Con Tercera Respuesta</span><p>T=0.6 (datos parciales lo apoyan) &middot; I=0.35 (faltan ensayos de fatiga) &middot; F=0.05.</p></div>
+</div>
+<p class="lead hl">No es "s&iacute;/no": es "ap&oacute;yate, pero ordena ensayos de fatiga antes de firmar".</p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="15">
+<div class="slide-inner">
+<p class="kicker">El conocimiento evoluciona</p>
+<h2 class="title">Trayectoria epist&eacute;mica &mdash; de la foto al video</h2>
+<ul class="bullets">
+<li>La terna (T, I, F) no es est&aacute;tica: se actualiza con nueva evidencia.</li>
+<li>Llega un ensayo de fatiga &rarr; <span class="i-text">I baja</span>, <span class="t-text">T sube</span> (o <span class="f-text">F sube</span> si refuta).</li>
+<li>Se traza la trayectoria de una afirmaci&oacute;n a lo largo del tiempo.</li>
+<li class="hl-li">Auditable: queda registro de por qu&eacute; cambi&oacute; la confianza.</li>
+</ul>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide divider book-honest" data-i="16">
+<div class="slide-inner"><p class="block-n">03</p><p class="book-tag">Libro 2</p><h2 class="block-title">The Honest Classroom</h2><p class="block-sub">Del libro al aula de ingenier&iacute;a.</p></div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="17">
+<div class="slide-inner">
+<p class="kicker">Neutrosophic Logic in AI-Driven Education</p>
+<h2 class="title">De la m&aacute;quina honesta al aula honesta</h2>
+<ul class="bullets">
+<li>Si la IA no distingue lo que sabe de lo que no, los estudiantes <b>heredan esa falsa certeza</b>.</li>
+<li>El riesgo educativo: aprender a producir respuestas seguras, no a pensar con incertidumbre.</li>
+<li>La propuesta: un aula que ense&ntilde;a a reconocer y declarar la <span class="i-text">zona I</span>.</li>
+</ul>
+<blockquote class="pull">"Ense&ntilde;ar a pensar con IA exige ense&ntilde;ar a reconocer sus l&iacute;mites."</blockquote>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="18">
+<div class="slide-inner">
+<p class="kicker">Taxonom&iacute;a neutros&oacute;fica de la indeterminaci&oacute;n</p>
+<h2 class="title">Dar nombre a la incertidumbre para poder ense&ntilde;arla</h2>
+<div class="threecol">
+<div class="card i-card"><b>Por falta de informaci&oacute;n</b><span>vac&iacute;o</span></div>
+<div class="card i-card"><b>Por contradicci&oacute;n</b><span>fuentes en conflicto</span></div>
+<div class="card i-card"><b>Por ambig&uuml;edad</b><span>del enunciado</span></div>
+</div>
+<p class="lead hl">Nombrar el tipo de incertidumbre es el primer acto de pensamiento cr&iacute;tico.</p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="19">
+<div class="slide-inner">
+<p class="kicker">Evaluaci&oacute;n honesta</p>
+<h2 class="title">Calificar tambi&eacute;n la I &mdash; premiar el "no estoy seguro" fundamentado</h2>
+<ul class="bullets">
+<li><b>Modelo tradicional:</b> respuesta correcta / incorrecta (T/F).</li>
+<li><b>Modelo honesto:</b> se valora reconocer la incertidumbre y declarar supuestos.</li>
+<li>"No tengo datos para afirmarlo" demuestra <b>criterio</b>, no ignorancia.</li>
+<li class="hl-li">R&uacute;bricas que premian marcar la zona I, no solo acertar.</li>
+</ul>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="20">
+<div class="slide-inner">
+<p class="kicker">Fluidez en IA &mdash; Marco 4D</p>
+<h2 class="title">Competencia transversal para el ingeniero del futuro</h2>
+<div class="fourd">
+<div class="d"><span>D1</span><b>Delegar</b></div>
+<div class="d"><span>D2</span><b>Dialogar</b></div>
+<div class="d hot"><span>D3</span><b>Discernir</b><small>aplicar T, I, F</small></div>
+<div class="d hot"><span>D4</span><b>Declarar</b><small>qu&eacute; se deleg&oacute; y con qu&eacute; confianza</small></div>
+</div>
+<p class="lead">No basta con "usar" la IA: hay que usarla con criterio.</p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="21">
+<div class="slide-inner">
+<p class="kicker">Implicaciones para acreditaci&oacute;n y curr&iacute;culo</p>
+<h2 class="title">Un insumo para el aseguramiento de la calidad</h2>
+<ul class="bullets">
+<li>Resultados de aprendizaje con "uso cr&iacute;tico de la IA bajo incertidumbre".</li>
+<li>Criterios de evaluaci&oacute;n que valoren la declaraci&oacute;n de supuestos y l&iacute;mites.</li>
+<li>Trazabilidad: documentar c&oacute;mo y con qu&eacute; confianza se us&oacute; IA en proyectos.</li>
+<li class="hl-li">Aplicable directamente a la acreditaci&oacute;n de programas de ingenier&iacute;a.</li>
+</ul>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide divider book-typek" data-i="22">
+<div class="slide-inner"><p class="block-n">04</p><p class="book-tag">Libro 3</p><h2 class="block-title">Type-k Neutrosophic Sets</h2><p class="block-sub">El fundamento formal.</p></div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="23">
+<div class="slide-inner">
+<p class="kicker">&iquest;Por qu&eacute; necesitamos matem&aacute;tica nueva?</p>
+<h2 class="title">De la intuici&oacute;n al c&aacute;lculo</h2>
+<ul class="bullets">
+<li>Para que "declarar la incertidumbre" sea operativo, hay que poder <b>calcular</b> con ella.</li>
+<li>La probabilidad cl&aacute;sica no separa ignorancia de contradicci&oacute;n.</li>
+<li>Los conjuntos neutros&oacute;ficos modelan (T, I, F) como objeto matem&aacute;tico.</li>
+<li class="hl-li">Type-k lo extiende a capas &mdash; incertidumbre sobre la incertidumbre.</li>
+</ul>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="24">
+<div class="slide-inner">
+<p class="kicker">Type-k: estructuras tri&aacute;dicas recursivas</p>
+<h2 class="title">Cuando la incertidumbre tiene capas</h2>
+<ul class="bullets">
+<li>Un conjunto neutros&oacute;fico asigna a cada elemento una terna (T, I, F).</li>
+<li>Type-k aplica la triada de forma <b>recursiva</b>: la confianza sobre la confianza.</li>
+<li>Permite auditar fuentes que eval&uacute;an a otras fuentes (S2 eval&uacute;a a S1).</li>
+<li>Modela la incertidumbre en cadenas de decisi&oacute;n y de evidencia.</li>
+</ul>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="25">
+<div class="slide-inner">
+<p class="kicker">Extensiones tensoriales y auditor&iacute;a de LLMs</p>
+<h2 class="title">Medir lo que un detector est&aacute;ndar no puede medir</h2>
+<ul class="bullets">
+<li>Los tensores neutros&oacute;ficos capturan (T, I, F) en m&uacute;ltiples dimensiones a la vez.</li>
+<li>Aplicaci&oacute;n estrella: <b>auditar las salidas de los modelos de lenguaje</b>.</li>
+<li>Hallazgo: los detectores actuales derivan T y F del mismo softmax &rarr; no pueden medir contradicci&oacute;n (T+F&gt;1).</li>
+<li class="hl-li">Soluci&oacute;n (protocolo dual-NLI): medir T y F con modelos independientes.</li>
+</ul>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="26">
+<div class="slide-inner">
+<p class="kicker">Aplicaciones de ingenier&iacute;a</p>
+<h2 class="title">D&oacute;nde rinde el formalismo</h2>
+<div class="threecol four">
+<div class="card"><b>Decisi&oacute;n multicriterio</b><span>AHP / TOPSIS neutros&oacute;ficos</span></div>
+<div class="card"><b>Fusi&oacute;n de sensores</b><span>datos en conflicto</span></div>
+<div class="card"><b>Auditor&iacute;a de IA</b><span>antes de producci&oacute;n</span></div>
+<div class="card"><b>Gemelos digitales</b><span>representar lo que NO se sabe</span></div>
+</div>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="27">
+<div class="slide-inner">
+<p class="kicker">Caso real &middot; Gemelo digital Neutro-Safe (Guayaquil)</p>
+<h2 class="title">Un sistema que declara su propia incertidumbre</h2>
+<ul class="bullets">
+<li>Gemelo digital urbano que diagnostica violencia estructural por sectores.</li>
+<li>Cada capa de datos lleva su (T, I, F): qu&eacute; se sabe, qu&eacute; falta, qu&eacute; se contradice.</li>
+<li>No oculta los vac&iacute;os de informaci&oacute;n: los muestra como <span class="i-text">zona I</span>.</li>
+<li>Repositorio p&uacute;blico; pipeline de actualizaci&oacute;n automatizado.</li>
+</ul>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide divider dark" data-i="28">
+<div class="slide-inner"><p class="block-n">05</p><h2 class="block-title">S&iacute;ntesis</h2><p class="block-sub">Qu&eacute; cambia para la ingenier&iacute;a.</p></div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="29">
+<div class="slide-inner">
+<p class="kicker">Tres libros, una sola l&iacute;nea</p>
+<h2 class="title">Idea &rarr; aula &rarr; fundamento</h2>
+<div class="flow">
+<div class="step book-third"><b>The Third Answer</b><span>La idea: una l&oacute;gica que admite el "no s&eacute;" (T, I, F).</span></div>
+<div class="arrow">&rarr;</div>
+<div class="step book-honest"><b>The Honest Classroom</b><span>La pr&aacute;ctica: formar ingenieros que piensan con incertidumbre.</span></div>
+<div class="arrow">&rarr;</div>
+<div class="step book-typek"><b>Type-k Sets</b><span>El fundamento: calcular y auditar esa incertidumbre.</span></div>
+</div>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="30">
+<div class="slide-inner">
+<p class="kicker">Qu&eacute; cambia en la pr&aacute;ctica</p>
+<h2 class="title">Tres acciones &mdash; del concepto a la decisi&oacute;n cotidiana</h2>
+<div class="threecol">
+<div class="card"><span class="lbl">En el dise&ntilde;o</span><p>Exigir a la IA que declare su incertidumbre antes de confiar en ella.</p></div>
+<div class="card"><span class="lbl">En el aula</span><p>Evaluar el criterio para reconocer la zona I, no solo la respuesta correcta.</p></div>
+<div class="card"><span class="lbl">En la investigaci&oacute;n</span><p>Auditar la IA con herramientas que midan la contradicci&oacute;n.</p></div>
+</div>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="31">
+<div class="slide-inner">
+<p class="kicker">L&iacute;neas de tesis que abre &middot; PhD en IA</p>
+<h2 class="title">Material directo para un programa doctoral</h2>
+<ul class="bullets two-col-list">
+<li>Auditor&iacute;a epist&eacute;mica de LLMs con dual-NLI / tensores neutros&oacute;ficos.</li>
+<li>Cuantificaci&oacute;n de incertidumbre en gemelos digitales de infraestructura.</li>
+<li>Evaluaci&oacute;n educativa basada en (T, I, F) y su impacto en el aprendizaje.</li>
+<li>Decisi&oacute;n multicriterio neutros&oacute;fica para confiabilidad y mantenimiento.</li>
+<li>Sesgo y alineamiento: medir lo que el modelo no se&ntilde;ala.</li>
+</ul>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide statement dark" data-i="32">
+<div class="slide-inner">
+<p class="kicker">Mensaje final</p>
+<blockquote class="statement">Una IA confiable no es la que <em>m&aacute;s responde</em>&mdash;<br>es la que sabe decir <span class="hl">"no estoy seguro".</span></blockquote>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="33">
+<div class="slide-inner">
+<p class="kicker">Recursos &mdash; los tres libros &middot; acceso libre</p>
+<h2 class="title">Desc&aacute;rgalos y comp&aacute;rtelos</h2>
+<div class="qrrow">
+<div class="qrcard">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYwAAAGMAQAAAADhQqjnAAACn0lEQVR4nO1cS47sIAy0rd6T+99ubhBOwMg2n6Tf4rVnQdN0laIMRC6Jj1WAcQ8XCiJLlEEEShQSZhAoUUiYQaCsO2LccRAf+lULzFrK/GRAmMowBBRKxUFE5YcpcznJqxUXA8KIhSGgkCuVKRgldaRazkypVGXrBoQRi0K+m/J4qtsC6d51ciqczvIxfRFQPmPEkq2YZ100F2rY/yEv2IDyNh0r12/pZCIXMTZBuxvIlIYJKFuNWK6nxic1G4WbgcxrWAwStCdQaJaOlfsnr5bM+lj1biBTGiag7DRifI+J8aH7sS5lPTbWLGVaw4KQKIFAmbtWkoXFKvIIyfZAGdZKAzz5j2sla6RCt/q+RGpYTMtHXTebNesLgxyFhBm0HSVzD+93ePl2qVRDGWv3JQYJ2hMo9Ccd41bReMVduEzWDspH8bgZYZAFbhlF8WvKhquIaf3fi8sTgxyFhBm0LYUPO072E6VV6zFzBM1kfsNeg7xoB8q7dIw8ueIc5Spo7nWqYAQdI3hyHMX8qjvVQLr7XnO/grUyDAGFj5qL2FVLXeua2HMJzxJGLAz5bsqjxsc0OqEOVONjhlHwi/J66ly2LwLKsvsxhR8k2xWSLov+tF1ZtUlYK2XKvMhGFKrbsEuiRfeu7nvDMsHHZMq8yJZ5F8XeljBm6dZ9fbT8MX+v3RcBZWkdc7TgmCuYPyNiViMYmMoo5LspD301jdJ78Fblrmb9I+4r582LbEQh32XdRKzLV7tUuloW6Ng+sy9v+V1SMWfzJJ+hYy3JZ+2+CCgfM2K5hcWu10mex6jAVEYh3015+J/nlP58eMS1XBN+LEi7cF8ElHV9LI9fJHnJN/wVnkJmKPMaJqDsMmKM/w21y1QKKEFIlECghDEndvELRIBenHUdydwAAAAASUVORK5CYII=" alt="QR The Third Answer">
+<b>The Third Answer</b>
+<a href="https://fs.unm.edu/TheThirdAnswer-en.pdf" target="_blank" rel="noopener">fs.unm.edu/TheThirdAnswer-en.pdf</a>
+</div>
+<div class="qrcard">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYwAAAGMAQAAAADhQqjnAAACq0lEQVR4nO1c243jMAwkB/mXOrj+y9oO7Ap4kKiXg11smDsotsxBYDgOB9ZjQNGkHBYyYoeVQeQUK2BmkFOsgJlBTjnniJHI4MmCpI+e/GAgm0+lFTAzaDlKEEVS1JYuyBenr01pgwGdvC82wGhPTqF3R4yZOdZrQfiPcCxK0+uDAXxejMC9KY+n7xyyI9tZ0rlw2OQyfYFTLqExIhIVWFba5xoGpyymMWkXdpbqvjjrjbJnkwv0BU4574jtKdpizl4r1AAslsDs2YB8Kq3AvSmPo4/KfiwvkaJOTE8+0DA4ZZURI81R9ExFTVPIlvIYY3KsWG6n7QucclqNSZaTJseaqPRKkV9DcI1hyrxgPQrnuCsd9yH7WnOw1bXJ/IZZAJN1hlNm+TGFejMtJ1X31Y7tV/G10gzcm0LFOzXHlVTUl8gSleU1tB4xpWFwyiojRmVlHNRVTqrwPB67yFTirBTqq2F9wGyR/zeSC+7HMGVesGA8tvUF8bjLYojQPB6bNy9Ysl7JuSCuZcqWrSgVpZqGlXkNg1NWGjGO6dPD+60Uj1ruIhnkQhLHs/fFCFgJ5JS3a0lh0508PKbFqlE3IB9k2AcZ96ZQC71KPDagP1qOodp22r7AKRfIj1EtIQ3qOlgG1ximzAsWotCz7xpzYrVWfjhup+0LnHLemL+hbunXCF++uIf6u+/nV7iS38pdhLIiappCIXvM+2Bji/nrLzDfhJxiBdajcHVimrIYS5Ylj9H39mNmwyyAyTrDKR8YMcnJsbTLOqtOhXfcrIh/v8sLwCtGTrnkiIVanczoG37Um12rL78DL9g45b+/lxRLYLbH/FKS1NRric3I58UM3JvyoON7lJxcVmwRvpS3SMoDp8xrGJyyyoix/zfUKlMJpxgBK4GcYsacPP9fUa3Ct+2ELXEAAAAASUVORK5CYII=" alt="QR The Honest Classroom">
+<b>The Honest Classroom</b>
+<a href="https://fs.unm.edu/TheHonestClassroom.pdf" target="_blank" rel="noopener">fs.unm.edu/TheHonestClassroom.pdf</a>
+</div>
+<div class="qrcard">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAbwAAAG8AQAAAACNyy1yAAADG0lEQVR4nO1cYW7zMAjF0f47N9j9j9UbJCfgE8bGTrqRNPro1u49VS1xQd3wE8HgODFdwjpdsyOCoQM4xwGc4wDO+XXOSYa5yDOlmWgVsWqtaaeGeXQBkoc5J7OCiOS9MJMyd5Z+svBzUMN0uABXA52TarQUcgodb0kFYaxSd6eG6fAArkY452N3nYScM2cWgq6zBdi7JRimwwGc8xTnrKnG0lyCqo4MofX//+JZTKc1d4DhW8VVtoG8SHQtI6nIRWCTf+5PnWD4Pf6Mc9a6vtchXUYlzUtN2Ku92v94BdMlK4JhXFzlcWBNesnl1s9FkNc+ZcU8OoBzwuqrs0haXK056rZmJdG1oeljOhzAORHOoVozXYqwEEtaSlXIsryycRWqyYLpcADnBK6tkhapCjlTXqRyReXu3/R0pAxq/orpcADnRMVVUmZq2Mz1nUp07SmBtbeqDqbDAZwTyFW2m74OKiG1nTp2YJsauOoCXA3jKg2BtA3ywOHNq+a3mA4HcE5sDiAYEgCyGGtrrhZpwdUjgKuBcZUbFTt1c131q2wC4uoJTGeUvgIMH8lXWzLAPTXtavUr5AAHAOXC6qtLEVo6KhfD8n+TqVr4Rb7qAVyN7QVUbOtXpO2A++UVuOoBXA3fv8pESbr/s25hJd0VYJ2CxuSy5wrT4QDOCcwBeKgG7Bb+bFmBhVzE1QOAq5E1q9zu9dvLsZBl2Sy4egRwNTBfpd16agit1iPorSvE1QOAq4HOYXuIVbev9L1/PRlIqT4tiD2BRwBXY3usPO4H0KKr1QfQC3gM04P6Bhh6aI2o3rTqhdbcEtdG3aGiBa86gHMi46rirm/FYxEAfauzmE5r7gDDR85duW0er06aspZB6w4gXz0CKBe8zyr3m37/ioaNrDqI/avHAFefce4K12dXZ+lhjUJ519MDCnExHQ7gnCc6Jw8V1zVJLNUHWvU8lohfPAYM/7hzPvRje0SAHmO11M0AbT8Azgd4RwJML2a4Ds/+f7aq1K2eDGBB1Q5gwdrq3QjwGoYJZ7C/xTxOMPwecI4DOMfB5ZrVP6i0hP7nBMjZAAAAAElFTkSuQmCC" alt="QR Type-k Neutrosophic Sets">
+<b>Type-k Neutrosophic Sets</b>
+<a href="https://fs.unm.edu/Type-K-NeutrosophicSets.pdf" target="_blank" rel="noopener">fs.unm.edu/Type-K-NeutrosophicSets.pdf</a>
+</div>
+</div>
+<p class="foot-note">Biblioteca cient&iacute;fica &middot; University of New Mexico &middot; Leyva-V&aacute;zquez &amp; Smarandache &middot; NSIA Publishing House, 2026</p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide cover end" data-i="34">
+<div class="slide-inner">
+<p class="kicker">Gracias</p>
+<h2 class="title big">&iquest;Conversamos sobre una colaboraci&oacute;n con la Facultad de Ingenier&iacute;a?</h2>
+<p class="contact">Dr. Maikel Leyva-V&aacute;zquez &nbsp;&middot;&nbsp; <a href="mailto:mleyvaz@gmail.com">mleyvaz@gmail.com</a> &nbsp;&middot;&nbsp; <a href="https://mleyvaz.github.io" target="_blank" rel="noopener">mleyvaz.github.io</a></p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+</div>
+<div class="counter"><b id="cur">1</b> / 35</div>
+<div class="nav"><button id="prev" aria-label="Anterior">&lsaquo;</button><button id="next" aria-label="Siguiente">&rsaquo;</button></div>
+<script>
+const slides=[].slice.call(document.querySelectorAll('.slide'));const N=slides.length;let cur=0;
+const prog=document.getElementById('progress'),curEl=document.getElementById('cur');
+function go(i){cur=Math.max(0,Math.min(N-1,i));slides.forEach(function(s,k){s.classList.toggle('active',k===cur)});
+prog.style.width=((cur+1)/N*100)+'%';curEl.textContent=cur+1;
+if(location.hash!=='#'+(cur+1)){history.replaceState(null,'','#'+(cur+1))}}
+function next(){go(cur+1)}function prev(){go(cur-1)}
+document.getElementById('next').onclick=next;document.getElementById('prev').onclick=prev;
+document.addEventListener('keydown',function(e){
+if(['ArrowRight',' ','PageDown'].indexOf(e.key)>-1){e.preventDefault();next()}
+else if(['ArrowLeft','PageUp'].indexOf(e.key)>-1){e.preventDefault();prev()}
+else if(e.key==='Home'){go(0)}else if(e.key==='End'){go(N-1)}
+else if(e.key==='f'||e.key==='F'){if(!document.fullscreenElement){document.documentElement.requestFullscreen()}else{document.exitFullscreen()}}});
+var sx=0;document.addEventListener('touchstart',function(e){sx=e.touches[0].clientX},{passive:true});
+document.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50){dx<0?next():prev()}},{passive:true});
+window.addEventListener('hashchange',function(){var n=parseInt(location.hash.replace('#',''));if(!isNaN(n)&&n-1!==cur){go(n-1)}});
+var h=parseInt(location.hash.replace('#',''));go(isNaN(h)?0:h-1);
+</script>
+</body>
+</html>
