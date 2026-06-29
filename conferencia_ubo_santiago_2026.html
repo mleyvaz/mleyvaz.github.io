@@ -129,8 +129,36 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 .bullets.two-col-list{grid-template-columns:1fr}.bignum{border-left:none;border-top:1px solid var(--rule);padding:1rem 0 0}
 .flow{flex-direction:column}.flow .arrow{transform:rotate(90deg)}.nav,.hint{display:none}.brandline{display:none}
 .slide{padding:7vh 6vw}
+.votecards,.voteqr{grid-template-columns:1fr!important}.votewrap{grid-template-columns:1fr!important}
 }
+.votewrap{display:grid;grid-template-columns:1fr 280px;gap:1.4rem;margin:1.4rem 0;align-items:start}
+.votecards{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+.votecard{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:1.1rem}
+.vlabel{font-family:var(--mono);font-size:.64rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:.4rem}
+.vtitle{font-family:var(--serif);font-size:1.25rem;margin-bottom:.8rem}
+.vbtns{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.9rem}
+.vbtn{padding:.8rem .4rem;border-radius:10px;border:1.5px solid var(--rule);background:rgba(255,255,255,.05);color:var(--ink);font-size:.92rem;font-weight:600;cursor:pointer;transition:.18s}
+.vbtn:hover{border-color:var(--gold)}
+.vbtn.chosen{border-color:var(--gold);background:rgba(217,183,121,.18);color:var(--gold)}
+.vbtn.unchosen{opacity:.4}
+.vbar{margin-bottom:.5rem}
+.vbar i{display:flex;justify-content:space-between;font-style:normal;font-size:.78rem;color:var(--ink-soft);margin-bottom:.2rem}
+.vbar s{text-decoration:none;font-family:var(--mono);font-size:.74rem}
+.vbar u{display:block;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;text-decoration:none}
+.vbar em{display:block;height:100%;width:0;border-radius:3px;transition:width .55s ease}
+.vtot{font-family:var(--mono);font-size:.66rem;color:var(--ink-faint);text-align:right;margin-top:.3rem}
+.voteqr{background:#fff;border-radius:14px;padding:1.1rem;display:flex;flex-direction:column;align-items:center;gap:.5rem;text-align:center}
+.voteqr img{width:100%;max-width:170px}
+.voteqr b{color:#0a0f1c;font-size:1rem}
+.voteqr span{color:#2156c9;font-family:monospace;font-size:.8rem}
+.voteqr a{color:#555;font-size:.72rem;text-decoration:none;word-break:break-all}
 </style>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+var _FB_CFG={apiKey:"AIzaSyCY_2HXB1uTn_nD1WaOXbKpvtEByIGtMqM",authDomain:"coffee-shop-17348.firebaseapp.com",databaseURL:"https://coffee-shop-17348.firebaseio.com",projectId:"coffee-shop-17348",storageBucket:"coffee-shop-17348.firebasestorage.app",messagingSenderId:"522259253309",appId:"1:522259253309:web:d27c431a7626e795454254"};
+try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebase.database();}catch(e){window.FBDB=null;}
+</script>
 </head>
 <body>
 <div class="progress" id="progress"></div>
@@ -179,11 +207,49 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide divider dark" data-i="4">
+<section class="slide vote" data-i="4">
+<div class="slide-inner">
+<p class="kicker">Antes de empezar &middot; vota desde tu tel&eacute;fono</p>
+<h2 class="title">&iquest;Lo que ves est&aacute; en la imagen&mdash;o en ti?</h2>
+<div class="votewrap">
+<div class="votecards">
+<div class="votecard">
+<div class="vlabel">Ilusi&oacute;n cl&aacute;sica &middot; Wittgenstein &sect;XI</div>
+<div class="vtitle">&iquest;Pato o conejo?</div>
+<div class="vbtns">
+<button class="vbtn" id="v_pato" onclick="uboVote('duck','pato',this,'v_conejo')">&#129414; Pato</button>
+<button class="vbtn" id="v_conejo" onclick="uboVote('duck','conejo',this,'v_pato')">&#128007; Conejo</button>
+</div>
+<div class="vbars"><div class="vbar"><i><b>Pato</b><s id="d_pato_lbl">0%</s></i><u><em id="d_pato_b" style="width:0%;background:var(--I)"></em></u></div>
+<div class="vbar"><i><b>Conejo</b><s id="d_conejo_lbl">0%</s></i><u><em id="d_conejo_b" style="width:0%;background:var(--cyan)"></em></u></div>
+<div class="vtot" id="d_total">0 votos</div></div>
+</div>
+<div class="votecard">
+<div class="vlabel">Fen&oacute;meno viral 2015 &middot; Nature 2017</div>
+<div class="vtitle">&iquest;De qu&eacute; color es el vestido?</div>
+<div class="vbtns">
+<button class="vbtn" id="v_azul" onclick="uboVote('dress','azul',this,'v_blanco')">&#128309; Azul/Negro</button>
+<button class="vbtn" id="v_blanco" onclick="uboVote('dress','blanco',this,'v_azul')">&#9898; Blanco/Dorado</button>
+</div>
+<div class="vbars"><div class="vbar"><i><b>Azul/Negro</b><s id="dr_azul_lbl">0%</s></i><u><em id="dr_azul_b" style="width:0%;background:#3c78dc"></em></u></div>
+<div class="vbar"><i><b>Blanco/Dorado</b><s id="dr_blanco_lbl">0%</s></i><u><em id="dr_blanco_b" style="width:0%;background:var(--gold)"></em></u></div>
+<div class="vtot" id="dr_total">0 votos</div></div>
+</div>
+</div>
+<div class="voteqr">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYwAAAGMAQAAAADhQqjnAAAC1klEQVR4nO1cbW7DMAiFp/53b7D7H6s3aE7AZLAdt5WmsE6e6/BUZY7LU/yBgGA6FnJig5dBFBQv4GZQULyAm0FBmXPFSKSzZEkoidy7Tu3pBeQeW+kF3AxajpLEkFXuxpSEmYuy3fhJgCafiw9wylNQ6Lcrxsx81VYSvmY7JvciYY1dgGJfvICbQStT2BRpyxrFX8Jf8rlzOQAcEQrKeyt2ee2SLftH2dgaL4D/KQjKiVfsYn96a8VJsm4lyY2N5VkAQwaGoCy1YluOtnKc36BR2d54EMC4gfkApzwFhUbZMek71HCVT/WVjzEZhgwMQVlpxVhNVg7yqykz22WpDLntRoyvs8/FCXgJFJTfxWObqlM2XKptemX7dAnY6krhfwqCcuIVI0uF9dn+Pd1qaX8p19K4TzsXBGXmPD9bYl9Vq3jMJGbfcoSm7rLcUmylFzg35WJO0Lwkp5rc71ynKVaXwcCQgSEoi+XHWOMue500TWuJjNxTbzl/Ne1cEJT5V4w15C/n4K0kYyvn47UAA+MHdgw4KBeUf6ztEVOkVuHT39opeYqYH0P2BavmYLnlMdR2cT21bAIybmAIymJ2TOq1v93Nl0mGHRu3L1iIQiXz9eoWTdPsXcASaMWHTjsXBGVmHaOHSteiVP21hf0SOuYGzk2hh9L96h9b+etT/p9Cx2jarcTMFKnusuT5r1nBrAJ2z//vB5cYNjAn4CVQUIbVXTSUin21ZvrjEbsrJWRRz//GIp89z5/Kq2NOVtQSMiuCtf7cme5xXjn3VmJyClcjxswiekSuyFGZFsFatp+GD8wDuKQVQfmHFRNVqhyBma+s75td8I/3n3IAOCIUlA9esa0Uwe4lPWbNPnEuPwE/fhuUv6y7kNahDtF+mmThWSuFLVWyFPviBc5NueRL9ztKK+wpZ5RFqeq7QJxXjtsXLETh+N9Qq2wlguIEvAQKihtjzpK+AYTUeJQmE14dAAAAAElFTkSuQmCC" alt="QR para votar">
+<div><b>Vota en vivo</b><span id="ubo_vote_count">0 votos</span><a href="https://mleyvaz.github.io/votar_ubo.html" target="_blank" rel="noopener">mleyvaz.github.io/votar_ubo.html</a></div>
+</div>
+</div>
+<p class="lead">El mismo dato, dos lecturas v&aacute;lidas. No es error: es <span class="i-text">indeterminaci&oacute;n</span> &mdash; y un LLM la colapsa en una sola respuesta segura.</p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide divider dark" data-i="5">
 <div class="slide-inner"><p class="block-n">01</p><h2 class="block-title">El problema</h2><p class="block-sub">La m&aacute;quina que no puede decir "no s&eacute;".</p></div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="5">
+<section class="slide " data-i="6">
 <div class="slide-inner">
 <p class="kicker">Caso de apertura &middot; Mata v. Avianca</p>
 <h2 class="title">Un abogado, seis casos, <span class="f-text">cero existencia real</span></h2>
@@ -199,7 +265,32 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="6">
+<section class="slide " data-i="7">
+<div class="slide-inner">
+<p class="kicker">Un experimento mental</p>
+<h2 class="title">Un bate y una pelota cuestan $1.10</h2>
+<p class="lead">El bate cuesta $1.00 m&aacute;s que la pelota. <b>&iquest;Cu&aacute;nto cuesta la pelota?</b> Resp&oacute;ndelo en silencio &mdash; qu&eacute;date con tu primera intuici&oacute;n.</p>
+<div class="twocard">
+<div class="card f-card"><span class="lbl">Lo que responde la mayor&iacute;a</span><p><b>10&cent;</b> &mdash; pero entonces el bate costar&iacute;a $1.10 y el total $1.20. <b>Incorrecto.</b></p></div>
+<div class="card t-card"><span class="lbl">La respuesta correcta</span><p><b>5&cent;</b> &mdash; pelota 5&cent; + bate $1.05 = $1.10. Exige <b>parar y pensar</b>.</p></div>
+</div>
+<p class="lead hl">Tu cerebro tom&oacute; el atajo. Esa es la trampa del pensamiento r&aacute;pido &mdash; y la IA la alimenta.</p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="8">
+<div class="slide-inner">
+<p class="kicker">Kahneman &middot; Dunning-Kruger</p>
+<h2 class="title">El humano tambi&eacute;n colapsa la incertidumbre</h2>
+<div class="twocard">
+<div class="card"><span class="lbl">Dos sistemas (Kahneman)</span><p><b>Sistema 1</b> &mdash; r&aacute;pido, intuitivo, cae en la trampa del bate. <b>Sistema 2</b> &mdash; lento, cr&iacute;tico: el razonamiento que un profesional no puede delegar.</p></div>
+<div class="card"><span class="lbl">Doble punto ciego (Dunning-Kruger)</span><p>A menor competencia, mayor exceso de confianza. <b>El humano</b> conf&iacute;a justo donde es m&aacute;s vulnerable; <b>la m&aacute;quina</b> no tiene metacognici&oacute;n: no sabe cu&aacute;ndo se equivoca.</p></div>
+</div>
+<p class="lead hl">El ant&iacute;doto neutros&oacute;fico: hacer expl&iacute;cita la indeterminaci&oacute;n (I) que el modelo &mdash;y el usuario&mdash; colapsan en falsa certeza.</p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="9">
 <div class="slide-inner">
 <p class="kicker">La ra&iacute;z del problema</p>
 <h2 class="title">Confianza uniforme</h2>
@@ -213,7 +304,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="7">
+<section class="slide " data-i="10">
 <div class="slide-inner">
 <p class="kicker">No es solo "alucinaci&oacute;n"</p>
 <h2 class="title">Cuatro modos de fallo &mdash; distinta severidad y detectabilidad</h2>
@@ -228,7 +319,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="8">
+<section class="slide " data-i="11">
 <div class="slide-inner">
 <p class="kicker">Por qu&eacute; importa en ingenier&iacute;a</p>
 <h2 class="title">De la an&eacute;cdota legal al riesgo de dise&ntilde;o</h2>
@@ -241,11 +332,28 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide divider book-third" data-i="9">
+<section class="slide divider book-third" data-i="12">
 <div class="slide-inner"><p class="block-n">02</p><p class="book-tag">Libro 1</p><h2 class="block-title">The Third Answer</h2><p class="block-sub">La l&oacute;gica que s&iacute; puede decir "no s&eacute;".</p></div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="10">
+<section class="slide " data-i="13">
+<div class="slide-inner">
+<p class="kicker">El creador de la neutrosof&iacute;a</p>
+<h2 class="title">Florentin Smarandache</h2>
+<div class="split">
+<ul class="bullets">
+<li>Matem&aacute;tico rumano-estadounidense, <b>Profesor Em&eacute;rito</b> de la University of New Mexico (EE. UU.).</li>
+<li>En <b>1995</b> funda la <b>neutrosof&iacute;a</b>: generaliza la l&oacute;gica difusa al a&ntilde;adir la <span class="i-text">indeterminaci&oacute;n (I)</span> como componente independiente de la verdad y la falsedad.</li>
+<li>De ah&iacute; nacen la l&oacute;gica, los conjuntos y la probabilidad neutros&oacute;ficos &mdash; hoy aplicados en IA, decisi&oacute;n multicriterio, medicina y rob&oacute;tica.</li>
+<li>Coautor, con Leyva-V&aacute;zquez, de los <b>tres libros</b> de esta charla.</li>
+</ul>
+<div class="bignum"><span class="big">180+</span><span class="cap">libros</span><span class="big">650+</span><span class="cap">art&iacute;culos</span></div>
+</div>
+<p class="lead">Su aporte cambia la pregunta de fondo: no "&iquest;es verdad o mentira?", sino <span class="hl">"&iquest;cu&aacute;nto sabemos, cu&aacute;nto ignoramos y cu&aacute;nto nos contradice?"</span></p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="14">
 <div class="slide-inner">
 <p class="kicker">La tercera respuesta</p>
 <h2 class="title">Ni verdadero, ni falso &mdash; hay un tercer lugar l&oacute;gico</h2>
@@ -257,7 +365,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="11">
+<section class="slide " data-i="15">
 <div class="slide-inner">
 <p class="kicker">La distinci&oacute;n que lo cambia todo</p>
 <h2 class="title">Dos indeterminaciones distintas, dos respuestas distintas</h2>
@@ -269,7 +377,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="12">
+<section class="slide " data-i="16">
 <div class="slide-inner">
 <p class="kicker">Cinco siglos, una sola estructura</p>
 <h2 class="title">La genealog&iacute;a intelectual de la Tercera Respuesta</h2>
@@ -283,7 +391,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="13">
+<section class="slide " data-i="17">
 <div class="slide-inner">
 <p class="kicker">Tres preguntas, cuatro zonas epist&eacute;micas</p>
 <h2 class="title">La terna (T, I, F) define en qu&eacute; zona estamos y qu&eacute; hacer</h2>
@@ -298,7 +406,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="14">
+<section class="slide " data-i="18">
 <div class="slide-inner">
 <p class="kicker">Ejemplo trabajado &mdash; una decisi&oacute;n real</p>
 <h2 class="title">La misma pregunta, dos respuestas</h2>
@@ -311,7 +419,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="15">
+<section class="slide " data-i="19">
 <div class="slide-inner">
 <p class="kicker">El conocimiento evoluciona</p>
 <h2 class="title">Trayectoria epist&eacute;mica &mdash; de la foto al video</h2>
@@ -324,11 +432,11 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide divider book-honest" data-i="16">
+<section class="slide divider book-honest" data-i="20">
 <div class="slide-inner"><p class="block-n">03</p><p class="book-tag">Libro 2</p><h2 class="block-title">The Honest Classroom</h2><p class="block-sub">Del libro al aula de ingenier&iacute;a.</p></div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="17">
+<section class="slide " data-i="21">
 <div class="slide-inner">
 <p class="kicker">Neutrosophic Logic in AI-Driven Education</p>
 <h2 class="title">De la m&aacute;quina honesta al aula honesta</h2>
@@ -341,7 +449,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="18">
+<section class="slide " data-i="22">
 <div class="slide-inner">
 <p class="kicker">Taxonom&iacute;a neutros&oacute;fica de la indeterminaci&oacute;n</p>
 <h2 class="title">Dar nombre a la incertidumbre para poder ense&ntilde;arla</h2>
@@ -354,7 +462,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="19">
+<section class="slide " data-i="23">
 <div class="slide-inner">
 <p class="kicker">Evaluaci&oacute;n honesta</p>
 <h2 class="title">Calificar tambi&eacute;n la I &mdash; premiar el "no estoy seguro" fundamentado</h2>
@@ -367,7 +475,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="20">
+<section class="slide " data-i="24">
 <div class="slide-inner">
 <p class="kicker">Fluidez en IA &mdash; Marco 4D</p>
 <h2 class="title">Competencia transversal para el ingeniero del futuro</h2>
@@ -381,7 +489,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="21">
+<section class="slide " data-i="25">
 <div class="slide-inner">
 <p class="kicker">Implicaciones para acreditaci&oacute;n y curr&iacute;culo</p>
 <h2 class="title">Un insumo para el aseguramiento de la calidad</h2>
@@ -394,11 +502,11 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide divider book-typek" data-i="22">
+<section class="slide divider book-typek" data-i="26">
 <div class="slide-inner"><p class="block-n">04</p><p class="book-tag">Libro 3</p><h2 class="block-title">Type-k Neutrosophic Sets</h2><p class="block-sub">El fundamento formal.</p></div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="23">
+<section class="slide " data-i="27">
 <div class="slide-inner">
 <p class="kicker">&iquest;Por qu&eacute; necesitamos matem&aacute;tica nueva?</p>
 <h2 class="title">De la intuici&oacute;n al c&aacute;lculo</h2>
@@ -411,7 +519,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="24">
+<section class="slide " data-i="28">
 <div class="slide-inner">
 <p class="kicker">Type-k: estructuras tri&aacute;dicas recursivas</p>
 <h2 class="title">Cuando la incertidumbre tiene capas</h2>
@@ -424,7 +532,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="25">
+<section class="slide " data-i="29">
 <div class="slide-inner">
 <p class="kicker">Extensiones tensoriales y auditor&iacute;a de LLMs</p>
 <h2 class="title">Medir lo que un detector est&aacute;ndar no puede medir</h2>
@@ -437,7 +545,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="26">
+<section class="slide " data-i="30">
 <div class="slide-inner">
 <p class="kicker">Aplicaciones de ingenier&iacute;a</p>
 <h2 class="title">D&oacute;nde rinde el formalismo</h2>
@@ -450,7 +558,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="27">
+<section class="slide " data-i="31">
 <div class="slide-inner">
 <p class="kicker">Caso real &middot; Gemelo digital Neutro-Safe (Guayaquil)</p>
 <h2 class="title">Un sistema que declara su propia incertidumbre</h2>
@@ -463,11 +571,11 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide divider dark" data-i="28">
+<section class="slide divider dark" data-i="32">
 <div class="slide-inner"><p class="block-n">05</p><h2 class="block-title">S&iacute;ntesis</h2><p class="block-sub">Qu&eacute; cambia para la ingenier&iacute;a.</p></div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="29">
+<section class="slide " data-i="33">
 <div class="slide-inner">
 <p class="kicker">Tres libros, una sola l&iacute;nea</p>
 <h2 class="title">Idea &rarr; aula &rarr; fundamento</h2>
@@ -481,7 +589,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="30">
+<section class="slide " data-i="34">
 <div class="slide-inner">
 <p class="kicker">Qu&eacute; cambia en la pr&aacute;ctica</p>
 <h2 class="title">Tres acciones &mdash; del concepto a la decisi&oacute;n cotidiana</h2>
@@ -493,7 +601,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="31">
+<section class="slide " data-i="35">
 <div class="slide-inner">
 <p class="kicker">L&iacute;neas de tesis que abre &middot; PhD en IA</p>
 <h2 class="title">Material directo para un programa doctoral</h2>
@@ -507,14 +615,14 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide statement dark" data-i="32">
+<section class="slide statement dark" data-i="36">
 <div class="slide-inner">
 <p class="kicker">Mensaje final</p>
 <blockquote class="statement">Una IA confiable no es la que <em>m&aacute;s responde</em>&mdash;<br>es la que sabe decir <span class="hl">"no estoy seguro".</span></blockquote>
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="33">
+<section class="slide " data-i="37">
 <div class="slide-inner">
 <p class="kicker">Recursos &mdash; los tres libros &middot; acceso libre</p>
 <h2 class="title">Desc&aacute;rgalos y comp&aacute;rtelos</h2>
@@ -539,7 +647,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide cover end" data-i="34">
+<section class="slide cover end" data-i="38">
 <div class="slide-inner">
 <p class="kicker">Gracias</p>
 <h2 class="title big">&iquest;Conversamos sobre una colaboraci&oacute;n con la Facultad de Ingenier&iacute;a?</h2>
@@ -548,7 +656,7 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
 </div>
-<div class="counter"><b id="cur">1</b> / 35</div>
+<div class="counter"><b id="cur">1</b> / 39</div>
 <div class="nav"><button id="prev" aria-label="Anterior">&lsaquo;</button><button id="next" aria-label="Siguiente">&rsaquo;</button></div>
 <script>
 const slides=[].slice.call(document.querySelectorAll('.slide'));const N=slides.length;let cur=0;
@@ -567,6 +675,17 @@ var sx=0;document.addEventListener('touchstart',function(e){sx=e.touches[0].clie
 document.addEventListener('touchend',function(e){var dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50){dx<0?next():prev()}},{passive:true});
 window.addEventListener('hashchange',function(){var n=parseInt(location.hash.replace('#',''));if(!isNaN(n)&&n-1!==cur){go(n-1)}});
 var h=parseInt(location.hash.replace('#',''));go(isNaN(h)?0:h-1);
+/* ---- votacion en vivo (pato/conejo + vestido) ---- */
+(function(){var SESSION='ubo_santiago_2026';var voted={duck:false,dress:false};
+function rB(which,c){var keys=which==='duck'?['pato','conejo']:['azul','blanco'];var pre=which==='duck'?'d':'dr';
+var total=keys.reduce(function(s,k){return s+(c[k]||0)},0);if(total===0)return;
+keys.forEach(function(k){var pct=Math.round((c[k]||0)/total*100);var b=document.getElementById(pre+'_'+k+'_b');var l=document.getElementById(pre+'_'+k+'_lbl');if(b)b.style.width=pct+'%';if(l)l.textContent=pct+'% ('+(c[k]||0)+')'});
+var t=document.getElementById(which==='duck'?'d_total':'dr_total');if(t)t.textContent=total+' voto'+(total!==1?'s':'')}
+window.uboVote=function(which,opt,btn,other){if(voted[which])return;voted[which]=true;btn.classList.add('chosen');var o=document.getElementById(other);if(o){o.classList.add('unchosen');o.disabled=true}btn.disabled=true;
+if(window.FBDB){FBDB.ref('votos/'+SESSION+'/'+which+'/'+opt).transaction(function(v){return (v||0)+1})}};
+if(window.FBDB){FBDB.ref('votos/'+SESSION).on('value',function(snap){var d=snap.val()||{};if(d.duck)rB('duck',d.duck);if(d.dress)rB('dress',d.dress);
+var n=((d.duck&&(d.duck.pato||0)+(d.duck.conejo||0))||0)+((d.dress&&(d.dress.azul||0)+(d.dress.blanco||0))||0);var bc=document.getElementById('ubo_vote_count');if(bc)bc.textContent=n+' voto'+(n!==1?'s':'')})}
+})();
 </script>
 </body>
 </html>

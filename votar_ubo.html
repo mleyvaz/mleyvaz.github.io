@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0f1c">
+<title>Vota · La Tercera Respuesta · UBO</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    background: #0a0f1c; color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 100dvh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 20px 16px; gap: 16px;
+  }
+  .header { text-align: center; margin-bottom: 4px; }
+  .header h1 { font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(217,183,121,0.75); font-weight: 400; }
+  .header p  { font-size: 20px; font-weight: 700; margin-top: 4px; color: rgba(255,255,255,0.9); }
+  .card {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 18px; padding: 22px 18px 18px; width: 100%; max-width: 400px; transition: opacity .3s;
+  }
+  .card.voted-card { opacity: 0.6; }
+  .card-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 10px; font-family: 'Courier New', monospace; }
+  .card h2 { font-size: 17px; line-height: 1.35; margin-bottom: 16px; color: rgba(255,255,255,0.92); text-align: center; }
+  .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .vote-btn { padding: 20px 10px; background: rgba(255,255,255,0.07); border: 2px solid rgba(255,255,255,0.18); border-radius: 14px; color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; transition: all .18s; line-height: 1.3; text-align: center; }
+  .vote-btn:disabled { cursor: default; }
+  .vote-btn.chosen { border-color: #d9b779; background: rgba(217,183,121,0.18); color: #d9b779; }
+  .vote-btn.unchosen { opacity: 0.4; }
+  .results { display: none; }
+  .bar-row { margin-bottom: 9px; }
+  .bar-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+  .bar-meta span:first-child { font-size: 11px; color: rgba(255,255,255,0.55); }
+  .bar-meta span:last-child  { font-size: 11px; color: rgba(255,255,255,0.75); font-family: 'Courier New', monospace; }
+  .bar-track { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+  .bar-fill  { height: 100%; border-radius: 3px; transition: width 0.55s ease; }
+  .bar-total { font-size: 9px; color: rgba(255,255,255,0.28); text-align: right; margin-top: 5px; font-family: 'Courier New', monospace; }
+  .thanks-banner { display: none; background: rgba(0,200,160,0.08); border: 1px solid rgba(0,200,160,0.25); border-radius: 12px; padding: 16px 20px; text-align: center; width: 100%; max-width: 400px; }
+  .thanks-banner .icon { font-size: 32px; margin-bottom: 6px; }
+  .thanks-banner p { font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.5; }
+  .footer { font-size: 10px; color: rgba(255,255,255,0.2); text-align: center; letter-spacing: 0.08em; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>La Tercera Respuesta · Universidad Bernardo O'Higgins</h1>
+  <p>Vota antes de que el profesor revele el punto</p>
+</div>
+
+<div class="card" id="card_duck">
+  <div class="card-label">Ilusión clásica · Wittgenstein §XI</div>
+  <h2>¿Qué ves <em>primero</em>?</h2>
+  <div class="btn-grid">
+    <button class="vote-btn" id="v_pato"   onclick="doVote('duck','pato',  this,'v_conejo')">🦆<br>PATO</button>
+    <button class="vote-btn" id="v_conejo" onclick="doVote('duck','conejo',this,'v_pato'  )">🐇<br>CONEJO</button>
+  </div>
+  <div class="results" id="duck_res">
+    <div class="bar-row">
+      <div class="bar-meta"><span>🦆 Pato</span><span id="d_pato_lbl">0%</span></div>
+      <div class="bar-track"><div class="bar-fill" id="d_pato_b"   style="width:0%;background:rgba(217,183,121,0.9);"></div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-meta"><span>🐇 Conejo</span><span id="d_conejo_lbl">0%</span></div>
+      <div class="bar-track"><div class="bar-fill" id="d_conejo_b" style="width:0%;background:rgba(90,209,230,0.9);"></div></div>
+    </div>
+    <div class="bar-total" id="d_total">0 votos</div>
+  </div>
+</div>
+
+<div class="card" id="card_dress">
+  <div class="card-label">Fenómeno viral 2015 · Nature 2017</div>
+  <h2>¿De qué color es el vestido?</h2>
+  <div class="btn-grid">
+    <button class="vote-btn" id="v_azul"   onclick="doVote('dress','azul',  this,'v_blanco')" style="border-color:rgba(60,120,220,0.45);">🔵<br>AZUL/<br>NEGRO</button>
+    <button class="vote-btn" id="v_blanco" onclick="doVote('dress','blanco',this,'v_azul'  )" style="border-color:rgba(217,183,121,0.45);">⚪<br>BLANCO/<br>DORADO</button>
+  </div>
+  <div class="results" id="dress_res">
+    <div class="bar-row">
+      <div class="bar-meta"><span>🔵 Azul/Negro</span><span id="dr_azul_lbl">0%</span></div>
+      <div class="bar-track"><div class="bar-fill" id="dr_azul_b"   style="width:0%;background:rgba(60,120,220,0.9);"></div></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-meta"><span>⚪ Blanco/Dorado</span><span id="dr_blanco_lbl">0%</span></div>
+      <div class="bar-track"><div class="bar-fill" id="dr_blanco_b" style="width:0%;background:rgba(217,183,121,0.9);"></div></div>
+    </div>
+    <div class="bar-total" id="dr_total">0 votos</div>
+  </div>
+</div>
+
+<div class="thanks-banner" id="thanks">
+  <div class="icon">✓</div>
+  <p>¡Gracias! Mira la pantalla del profesor —<br>los resultados aparecen en tiempo real.</p>
+</div>
+
+<div class="footer">mleyvaz.github.io · La Tercera Respuesta · UBO 2026</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script>
+var _FB_CFG = {
+  apiKey:            "AIzaSyCY_2HXB1uTn_nD1WaOXbKpvtEByIGtMqM",
+  authDomain:        "coffee-shop-17348.firebaseapp.com",
+  databaseURL:       "https://coffee-shop-17348.firebaseio.com",
+  projectId:         "coffee-shop-17348",
+  storageBucket:     "coffee-shop-17348.firebasestorage.app",
+  messagingSenderId: "522259253309",
+  appId:             "1:522259253309:web:d27c431a7626e795454254"
+};
+var db = null;
+try { if (!firebase.apps.length) firebase.initializeApp(_FB_CFG); db = firebase.database(); }
+catch(e) { console.warn('Firebase no configurado', e.message); }
+
+var SESSION = 'ubo_santiago_2026';
+var voted = { duck: false, dress: false };
+
+function doVote(which, option, btn, otherId) {
+  if (voted[which]) return;
+  voted[which] = true;
+  btn.classList.add('chosen');
+  document.getElementById(otherId).classList.add('unchosen');
+  document.getElementById(otherId).disabled = true;
+  btn.disabled = true;
+  document.getElementById(which === 'duck' ? 'card_duck' : 'card_dress').classList.add('voted-card');
+  if (db) { db.ref('votos/' + SESSION + '/' + which + '/' + option).transaction(function(v){ return (v || 0) + 1; }); }
+  document.getElementById(which === 'duck' ? 'duck_res' : 'dress_res').style.display = 'block';
+  if (voted.duck && voted.dress) { document.getElementById('thanks').style.display = 'block'; }
+}
+function renderBars(which, c) {
+  var keys = which === 'duck' ? ['pato','conejo'] : ['azul','blanco'];
+  var prefix = which === 'duck' ? 'd' : 'dr';
+  var total = keys.reduce(function(s,k){ return s + (c[k]||0); }, 0);
+  if (total === 0) return;
+  document.getElementById(which === 'duck' ? 'duck_res' : 'dress_res').style.display = 'block';
+  keys.forEach(function(k) {
+    var pct = Math.round((c[k]||0) / total * 100);
+    var bar = document.getElementById(prefix + '_' + k + '_b');
+    var lbl = document.getElementById(prefix + '_' + k + '_lbl');
+    if (bar) bar.style.width = pct + '%';
+    if (lbl) lbl.textContent = pct + '% (' + (c[k]||0) + ')';
+  });
+  var tot = document.getElementById(which === 'duck' ? 'd_total' : 'dr_total');
+  if (tot) tot.textContent = total + ' voto' + (total !== 1 ? 's' : '');
+}
+if (db) {
+  db.ref('votos/' + SESSION).on('value', function(snap) {
+    var data = snap.val() || {};
+    if (data.duck && voted.duck)   renderBars('duck',  data.duck);
+    if (data.dress && voted.dress) renderBars('dress', data.dress);
+  });
+}
+</script>
+</body>
+</html>
