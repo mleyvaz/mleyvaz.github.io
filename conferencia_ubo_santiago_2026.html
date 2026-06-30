@@ -158,7 +158,10 @@ background:linear-gradient(180deg,#fff 0%,#cdd7f0 100%);-webkit-background-clip:
 .fsphoto img{width:100%;max-width:220px;border-radius:14px;border:1px solid var(--rule);box-shadow:0 8px 30px rgba(0,0,0,.4)}
 .fscap{font-family:var(--mono);font-size:.78rem;color:var(--ink-soft);letter-spacing:.04em}
 .fscap b{color:var(--gold)}
-@media(max-width:760px){.fsphoto{border-left:none;border-top:1px solid var(--rule);padding:1rem 0 0}}
+.coverqr{position:absolute;top:5.5vh;right:7vw;display:flex;flex-direction:column;align-items:center;gap:.35rem;background:#fff;padding:.55rem .55rem .45rem;border-radius:10px;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+.coverqr img{width:96px;height:96px;display:block}
+.coverqr span{color:#0a0f1c;font-size:.6rem;text-align:center;font-family:var(--mono);line-height:1.25}
+@media(max-width:760px){.fsphoto{border-left:none;border-top:1px solid var(--rule);padding:1rem 0 0}.coverqr{display:none}}
 </style>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -177,17 +180,26 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 <p class="cover-sub">Inteligencia Artificial, Incertidumbre y el Futuro de la Educaci&oacute;n en Ingenier&iacute;a</p>
 <div class="triad-mini"><span class="t">T</span><span class="sep">&middot;</span><span class="i">I</span><span class="sep">&middot;</span><span class="f">F</span></div>
 <p class="cover-by">Dr. Maikel Yelandi Leyva-V&aacute;zquez &nbsp;&middot;&nbsp; con Florentin Smarandache</p>
+<div class="coverqr"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAbwAAAG8AQAAAACNyy1yAAADD0lEQVR4nO1cUY7jMAjF0f67N5j73845ASuMIU5mS6KOiKbd9xSlroMVFT9RwNiF6SWsy2vjiDAwAJQTAMoJAOX8OuUUx4NolU/pfPT2Q4TGfRbDPEYAydOUU1khhPxiqqx0pdp7nLqTGKYjBLiaoZw/+iF0rE1aa5GLiImK9hDxWvgghumIAK7eopzaWVl5I22Tr+oGpLzxKpbLkgdg4EfZVYcwtbbi7W5Ri7bf9TcuGPhJXOWpi/ufPolpfchdLe1R7I1+44KBn6OcdcT3GkPJ9WVxlvdYimCEXW/3G1/B8tIowsA8u8r7LjGq3mlR1TcxzGMAKCdDOSQ5KE9GWWCl8RT3u15bTx/CDdMRAMrJ4iq3HuxbyC+tftdU6hDwzKoSG1yNAK4mcpXMwErLDSntbKwLgKtnAFdvsasdbkJpWquan8KuhgBX8/1V2swsuafqruzUBldDgKuZPkCdXFP3Wkna4zLTai4BpiMAlJNpV9sWVe24ymZOLScw4ixwNQK4mrZuteoqVeF1W/XnftfV1bHkKgIi2WtaMB0BoJy0tYBVKFqMk6Vy0SWA9aGPtK2PfvzGBQOfA8q5mrPaZ1Bp57XOrgL81ROAcum1K8Vqq7RIlSeTK3Z1Wm/FdIQAV5NzVm1vP8mS/5at2q8UYDoCQDl5/mqRZuXNZdWHU6glvms3s3L/0RsXDHwOKOeSXd2WUxXNU6lDbHNWkbM6ASiXm1/libRb7Uo91lkhv3oByxWhfwEDL+1hscDK/vdrK7WNWtYeVY34ayQHoNUAUE6aXXWoObV1VXJ/YJIxDwHTEQDKSasHmDDnVAfcm90VY2M6AkA5d9hV/lb+R16DPfmx4GoIcPWOc1dIawNsrUqPW1FRYWx3X3FG0BnA1cQ8AE2V1fNmFp62Awx51FmdA1y9Tzml77D2DdeH3Viwq2cAV29Rztp9gKmW9bC9xQ4LwnQEgHJuOneFRp1q02/FjgzqFSzej+kIAOVk1lobjvUAdcdiP+EK0xECXM1QTsEZ7M8BygWAcgJAOQH+B+X8BZFsZ/D0pr5sAAAAAElFTkSuQmCC" alt="QR presentaci&oacute;n"><span>Escanea para abrir<br>esta presentaci&oacute;n</span></div>
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
 <section class="slide statement dark" data-i="1">
+<div class="slide-inner">
+<p class="kicker">Universidad Bernardo O'Higgins</p>
+<blockquote class="statement" style="font-size:clamp(1.4rem,3.3vw,2.5rem);line-height:1.2;max-width:26ch;">"Las luces, las riquezas y el poder anduvieron siempre reunidas en las naciones; sin estos elementos, que los unos nacen de los otros, Chile no ser&aacute; naci&oacute;n ni lograr&aacute; el fruto de sus sacrificios."</blockquote>
+<p class="cover-by" style="margin-top:1.4rem;">&mdash; Bernardo O'Higgins</p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide statement dark" data-i="2">
 <div class="slide-inner">
 <p class="kicker">La tesis en una frase</p>
 <blockquote class="statement">El problema no es que la IA <em>se equivoque</em>;<br>es que no sabe <span class="hl">cu&aacute;ndo no sabe</span>.</blockquote>
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide vote" data-i="2">
+<section class="slide vote" data-i="3">
 <div class="slide-inner">
 <p class="kicker">Antes de empezar &middot; vota desde tu tel&eacute;fono</p>
 <h2 class="title">&iquest;Lo que ves est&aacute; en la imagen&mdash;o en ti?</h2>
@@ -227,7 +239,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="3">
+<section class="slide " data-i="4">
 <div class="slide-inner">
 <p class="kicker">Qui&eacute;n les habla</p>
 <h2 class="title">Una l&iacute;nea de investigaci&oacute;n entre la l&oacute;gica, la IA y la educaci&oacute;n</h2>
@@ -240,7 +252,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="4">
+<section class="slide " data-i="5">
 <div class="slide-inner">
 <p class="kicker">Qu&eacute; van a escuchar</p>
 <h2 class="title">Cinco bloques &mdash; de la idea a la pr&aacute;ctica al fundamento</h2>
@@ -254,11 +266,11 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide divider dark" data-i="5">
+<section class="slide divider dark" data-i="6">
 <div class="slide-inner"><p class="block-n">01</p><h2 class="block-title">El problema</h2><p class="block-sub">La m&aacute;quina que no puede decir "no s&eacute;".</p></div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="6">
+<section class="slide " data-i="7">
 <div class="slide-inner">
 <p class="kicker">Caso de apertura &middot; Mata v. Avianca</p>
 <h2 class="title">Un abogado, seis casos, <span class="f-text">cero existencia real</span></h2>
@@ -274,7 +286,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="7">
+<section class="slide " data-i="8">
 <div class="slide-inner">
 <p class="kicker">La ra&iacute;z del problema</p>
 <h2 class="title">Confianza uniforme</h2>
@@ -288,7 +300,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="8">
+<section class="slide " data-i="9">
 <div class="slide-inner">
 <p class="kicker">No es solo "alucinaci&oacute;n"</p>
 <h2 class="title">Cuatro modos de fallo &mdash; distinta severidad y detectabilidad</h2>
@@ -303,7 +315,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="9">
+<section class="slide " data-i="10">
 <div class="slide-inner">
 <p class="kicker">Un experimento mental</p>
 <h2 class="title">Un bate y una pelota cuestan $1.10</h2>
@@ -313,7 +325,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="10">
+<section class="slide " data-i="11">
 <div class="slide-inner">
 <p class="kicker">La trampa del pensamiento r&aacute;pido</p>
 <h2 class="title">La respuesta</h2>
@@ -325,7 +337,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="11">
+<section class="slide " data-i="12">
 <div class="slide-inner">
 <p class="kicker">Kahneman &middot; Dunning-Kruger</p>
 <h2 class="title">El humano tambi&eacute;n colapsa la incertidumbre</h2>
@@ -337,7 +349,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="12">
+<section class="slide " data-i="13">
 <div class="slide-inner">
 <p class="kicker">Por qu&eacute; importa en ingenier&iacute;a</p>
 <h2 class="title">De la an&eacute;cdota legal al riesgo de dise&ntilde;o</h2>
@@ -350,11 +362,11 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide divider book-third" data-i="13">
+<section class="slide divider book-third" data-i="14">
 <div class="slide-inner"><p class="block-n">02</p><p class="book-tag">Libro 1</p><h2 class="block-title">The Third Answer</h2><p class="block-sub">La l&oacute;gica que s&iacute; puede decir "no s&eacute;".</p></div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="14">
+<section class="slide " data-i="15">
 <div class="slide-inner">
 <p class="kicker">El creador de la neutrosof&iacute;a</p>
 <h2 class="title">Florentin Smarandache</h2>
@@ -371,7 +383,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="15">
+<section class="slide " data-i="16">
 <div class="slide-inner">
 <p class="kicker">La tercera respuesta</p>
 <h2 class="title">Ni verdadero, ni falso &mdash; hay un tercer lugar l&oacute;gico</h2>
@@ -383,7 +395,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="16">
+<section class="slide " data-i="17">
 <div class="slide-inner">
 <p class="kicker">La distinci&oacute;n que lo cambia todo</p>
 <h2 class="title">Dos indeterminaciones distintas, dos respuestas distintas</h2>
@@ -396,7 +408,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="17">
+<section class="slide " data-i="18">
 <div class="slide-inner">
 <p class="kicker">Tres preguntas, cuatro zonas epist&eacute;micas</p>
 <h2 class="title">La terna (T, I, F) define en qu&eacute; zona estamos y qu&eacute; hacer</h2>
@@ -411,7 +423,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="18">
+<section class="slide " data-i="19">
 <div class="slide-inner">
 <p class="kicker">Ejemplo trabajado &mdash; una decisi&oacute;n real</p>
 <h2 class="title">La misma pregunta, dos respuestas</h2>
@@ -424,7 +436,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="19">
+<section class="slide " data-i="20">
 <div class="slide-inner">
 <p class="kicker">El conocimiento evoluciona</p>
 <h2 class="title">Trayectoria epist&eacute;mica &mdash; de la foto al video</h2>
@@ -437,11 +449,11 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide divider book-honest" data-i="20">
+<section class="slide divider book-honest" data-i="21">
 <div class="slide-inner"><p class="block-n">03</p><p class="book-tag">Libro 2</p><h2 class="block-title">The Honest Classroom</h2><p class="block-sub">Del libro al aula de ingenier&iacute;a.</p></div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="21">
+<section class="slide " data-i="22">
 <div class="slide-inner">
 <p class="kicker">Neutrosophic Logic in AI-Driven Education</p>
 <h2 class="title">De la m&aacute;quina honesta al aula honesta</h2>
@@ -454,7 +466,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="22">
+<section class="slide " data-i="23">
 <div class="slide-inner">
 <p class="kicker">Taxonom&iacute;a neutros&oacute;fica de la indeterminaci&oacute;n</p>
 <h2 class="title">Dar nombre a la incertidumbre para poder ense&ntilde;arla</h2>
@@ -467,7 +479,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="23">
+<section class="slide " data-i="24">
 <div class="slide-inner">
 <p class="kicker">Evaluaci&oacute;n honesta</p>
 <h2 class="title">Calificar tambi&eacute;n la I &mdash; premiar el "no estoy seguro" fundamentado</h2>
@@ -480,21 +492,37 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="24">
+<section class="slide " data-i="25">
 <div class="slide-inner">
 <p class="kicker">Fluidez en IA &mdash; Marco 4D</p>
 <h2 class="title">Competencia transversal para el ingeniero del futuro</h2>
 <div class="fourd">
-<div class="d"><span>D1</span><b>Delegar</b></div>
-<div class="d"><span>D2</span><b>Dialogar</b></div>
-<div class="d hot"><span>D3</span><b>Discernir</b><small>aplicar T, I, F</small></div>
-<div class="d hot"><span>D4</span><b>Declarar</b><small>qu&eacute; se deleg&oacute; y con qu&eacute; confianza</small></div>
+<div class="d"><span>D1</span><b>Delegaci&oacute;n</b><small>qu&eacute; haces t&uacute; y qu&eacute; delegas a la IA</small></div>
+<div class="d hot"><span>D2</span><b>Descripci&oacute;n</b><small>comunicar con claridad: contexto, formato, ejemplos</small></div>
+<div class="d hot"><span>D3</span><b>Discernimiento</b><small>evaluar cr&iacute;ticamente la salida &mdash; aplicar T, I, F</small></div>
+<div class="d"><span>D4</span><b>Diligencia</b><small>responsabilidad: propiedad final, sesgos, datos, transparencia</small></div>
 </div>
-<p class="lead">No basta con "usar" la IA: hay que usarla con criterio.</p>
+<p class="lead">Juntas convierten a la IA en un <span class="hl">socio de pensamiento</span>, no un buscador. <b>Descripci&oacute;n</b> y <b>Discernimiento</b> son las que m&aacute;s faltan hoy.</p>
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="25">
+<section class="slide " data-i="26">
+<div class="slide-inner">
+<p class="kicker">S&iacute;ntesis &middot; propiedades del modelo &times; (T, I, F)</p>
+<h2 class="title">Cuatro propiedades del LLM, cuatro firmas de incertidumbre</h2>
+<table class="grid">
+<thead><tr><th>Propiedad del LLM</th><th>Fallo t&iacute;pico</th><th>Firma (T, I, F)</th><th>Competencia 4D</th></tr></thead>
+<tbody>
+<tr><td><b>Next-token prediction</b></td><td>Alucinaci&oacute;n fluida</td><td class="f-text">I suprimida &mdash; T falso alto</td><td>Discernimiento</td></tr>
+<tr><td><b>Knowledge</b></td><td>Vac&iacute;o o dato obsoleto</td><td class="i-text">I genuinamente alta</td><td>Delegaci&oacute;n</td></tr>
+<tr><td><b>Working memory</b></td><td>Olvido, autocontradicci&oacute;n</td><td>el estado deriva en el tiempo</td><td>Descripci&oacute;n</td></tr>
+<tr><td><b>Steerability</b></td><td>Sicofancia, jailbreak</td><td class="f-text">T+I+F &gt; 1 &nbsp;(H &gt; 0)</td><td>Descripci&oacute;n / Discernimiento</td></tr>
+</tbody></table>
+<p class="lead hl">Alucinar y "no saber" parecen el mismo error &mdash; son opuestos: uno <b>esconde</b> la I, el otro la <b>disfraza</b> de T. Medir la I expl&iacute;cita los separa; la l&oacute;gica bivalente no puede.</p>
+</div>
+<div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
+</section>
+<section class="slide " data-i="27">
 <div class="slide-inner">
 <p class="kicker">Implicaciones para acreditaci&oacute;n y curr&iacute;culo</p>
 <h2 class="title">Un insumo para el aseguramiento de la calidad</h2>
@@ -507,11 +535,11 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide divider book-typek" data-i="26">
+<section class="slide divider book-typek" data-i="28">
 <div class="slide-inner"><p class="block-n">04</p><p class="book-tag">Libro 3</p><h2 class="block-title">Type-k Neutrosophic Sets</h2><p class="block-sub">El fundamento formal.</p></div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="27">
+<section class="slide " data-i="29">
 <div class="slide-inner">
 <p class="kicker">&iquest;Por qu&eacute; necesitamos matem&aacute;tica nueva?</p>
 <h2 class="title">De la intuici&oacute;n al c&aacute;lculo</h2>
@@ -524,7 +552,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="28">
+<section class="slide " data-i="30">
 <div class="slide-inner">
 <p class="kicker">Type-k: estructuras tri&aacute;dicas recursivas</p>
 <h2 class="title">Cuando la incertidumbre tiene capas</h2>
@@ -537,7 +565,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="29">
+<section class="slide " data-i="31">
 <div class="slide-inner">
 <p class="kicker">Extensiones tensoriales y auditor&iacute;a de LLMs</p>
 <h2 class="title">Medir lo que un detector est&aacute;ndar no puede medir</h2>
@@ -550,7 +578,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="30">
+<section class="slide " data-i="32">
 <div class="slide-inner">
 <p class="kicker">Aplicaciones de ingenier&iacute;a</p>
 <h2 class="title">D&oacute;nde rinde el formalismo</h2>
@@ -563,7 +591,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="31">
+<section class="slide " data-i="33">
 <div class="slide-inner">
 <p class="kicker">Caso real &middot; Gemelo digital Neutro-Safe (Guayaquil)</p>
 <h2 class="title">Un sistema que declara su propia incertidumbre</h2>
@@ -576,11 +604,11 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide divider dark" data-i="32">
+<section class="slide divider dark" data-i="34">
 <div class="slide-inner"><p class="block-n">05</p><h2 class="block-title">S&iacute;ntesis</h2><p class="block-sub">Qu&eacute; cambia para la ingenier&iacute;a.</p></div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="33">
+<section class="slide " data-i="35">
 <div class="slide-inner">
 <p class="kicker">Tres libros, una sola l&iacute;nea</p>
 <h2 class="title">Idea &rarr; aula &rarr; fundamento</h2>
@@ -594,7 +622,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="34">
+<section class="slide " data-i="36">
 <div class="slide-inner">
 <p class="kicker">Qu&eacute; cambia en la pr&aacute;ctica</p>
 <h2 class="title">Tres acciones &mdash; del concepto a la decisi&oacute;n cotidiana</h2>
@@ -606,7 +634,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="35">
+<section class="slide " data-i="37">
 <div class="slide-inner">
 <p class="kicker">L&iacute;neas de tesis que abre &middot; PhD en IA</p>
 <h2 class="title">Material directo para un programa doctoral</h2>
@@ -620,14 +648,14 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide statement dark" data-i="36">
+<section class="slide statement dark" data-i="38">
 <div class="slide-inner">
 <p class="kicker">Mensaje final</p>
 <blockquote class="statement">Una IA confiable no es la que <em>m&aacute;s responde</em>&mdash;<br>es la que sabe decir <span class="hl">"no estoy seguro".</span></blockquote>
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide " data-i="37">
+<section class="slide " data-i="39">
 <div class="slide-inner">
 <p class="kicker">Recursos &mdash; los tres libros &middot; acceso libre</p>
 <h2 class="title">Desc&aacute;rgalos y comp&aacute;rtelos</h2>
@@ -652,7 +680,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 </div>
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
-<section class="slide cover end" data-i="38">
+<section class="slide cover end" data-i="40">
 <div class="slide-inner">
 <p class="kicker">Gracias</p>
 <h2 class="title big">&iquest;Conversamos sobre una colaboraci&oacute;n con la Facultad de Ingenier&iacute;a?</h2>
@@ -661,7 +689,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 <div class="brandline">La Tercera Respuesta &middot; UBO &middot; 2026</div>
 </section>
 </div>
-<div class="counter"><b id="cur">1</b> / 39</div>
+<div class="counter"><b id="cur">1</b> / 41</div>
 <div class="nav"><button id="prev" aria-label="Anterior">&lsaquo;</button><button id="next" aria-label="Siguiente">&rsaquo;</button></div>
 <script>
 const slides=[].slice.call(document.querySelectorAll('.slide'));const N=slides.length;let cur=0;
