@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plataforma de Análisis Predictivo de la Violencia · FCI-018-2024 · Universidad de Guayaquil</title>
+<style>
+:root{
+  --bg:#0d1726; --bg2:#0a121e; --card:#16243a; --card2:#1c2d47;
+  --text:#f4f7fb; --muted:#a9b7c9;
+  --cyan:#38bdf8; --teal:#2dd4a7; --amber:#f5a623; --coral:#f25c54;
+  --radius:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--text);
+  font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;overflow:hidden}
+.deck{position:relative;width:100vw;height:100vh}
+.slide{position:absolute;inset:0;display:none;overflow:hidden}
+.slide.is-active{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.wrap{width:min(1180px,92vw);max-height:92vh;overflow-y:auto;padding:2.2rem 0}
+.wrap::-webkit-scrollbar{width:0}
+/* chrome */
+#progress{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--cyan),var(--teal));width:0;z-index:50;transition:width .35s ease}
+#counter{position:fixed;bottom:1.1rem;right:1.4rem;font-size:.85rem;color:var(--muted);z-index:50;letter-spacing:.06em}
+.navbtn{position:fixed;top:50%;transform:translateY(-50%);z-index:50;border:0;cursor:pointer;
+  width:2.6rem;height:2.6rem;border-radius:50%;background:#16243acc;color:var(--muted);font-size:1.15rem;
+  transition:.2s}
+.navbtn:hover{background:var(--cyan);color:#0d1726}
+#prev{left:1rem}#next{right:1rem}
+/* type */
+.kicker{color:var(--cyan);font-weight:700;font-size:clamp(.75rem,1.3vw,.95rem);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.8rem}
+h1{font-size:clamp(2rem,5.2vw,4rem);line-height:1.05;font-weight:700}
+h2{font-size:clamp(1.5rem,3.2vw,2.4rem);font-weight:700;margin-bottom:.4rem}
+.rule{width:64px;height:4px;background:var(--cyan);border-radius:2px;margin:1rem 0 1.8rem}
+.muted{color:var(--muted)}
+a{color:var(--cyan);text-decoration:none;word-break:break-all}
+/* components */
+.grid{display:grid;gap:1rem}
+.card{background:var(--card);border-radius:var(--radius);padding:1.4rem 1.5rem;position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:5px;border-radius:3px;background:var(--accent,var(--cyan))}
+.card .tag{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent,var(--cyan));margin-bottom:.45rem}
+.card h3{font-size:1.1rem;margin-bottom:.5rem}
+.card p{font-size:.92rem;color:var(--muted);line-height:1.5}
+.t-cyan{--accent:var(--cyan)}.t-teal{--accent:var(--teal)}.t-amber{--accent:var(--amber)}.t-coral{--accent:var(--coral)}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1rem}
+.stat{background:var(--card);border-radius:var(--radius);padding:1.5rem 1.2rem;text-align:center}
+.stat .n{font-size:clamp(2.2rem,4.5vw,3.4rem);font-weight:700;line-height:1}
+.stat .l{font-size:.85rem;color:var(--muted);margin-top:.55rem;line-height:1.35}
+/* triad */
+.triad{display:flex;gap:.9rem}
+.triad span{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:1.25rem;color:#0d1726}
+/* layers */
+.layer{display:grid;grid-template-columns:70px 1.4fr 1.6fr 100px;gap:1rem;align-items:center;
+  background:var(--card);border-radius:14px;padding:.85rem 1.2rem;margin-bottom:.7rem;border-left:6px solid var(--accent,var(--teal))}
+.layer .id{font-weight:700;font-size:1.25rem;color:var(--accent,var(--teal))}
+.layer .t{font-weight:700;font-size:1rem}
+.layer .d{font-size:.88rem;color:var(--muted)}
+.layer .st{font-size:.75rem;font-weight:700;letter-spacing:.1em;color:var(--accent,var(--teal));text-align:right}
+/* lists */
+ul.marks{list-style:none}
+ul.marks li{padding:.4rem 0 .4rem 1.5rem;position:relative;color:var(--muted);font-size:1rem;line-height:1.5}
+ul.marks li::before{content:"▸";position:absolute;left:0;color:var(--mark,var(--cyan))}
+ul.marks li b{color:var(--text)}
+/* two col */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+@media(max-width:820px){.cols{grid-template-columns:1fr}.layer{grid-template-columns:50px 1fr;grid-auto-rows:auto}}
+/* imgs */
+.frame{background:#fff;border-radius:12px;padding:8px;box-shadow:0 12px 40px #0008}
+.frame img{width:100%;display:block;border-radius:6px}
+figcaption{font-size:.8rem;color:var(--muted);text-align:center;margin-top:.6rem}
+/* people */
+.person{display:flex;gap:1rem;align-items:center;background:var(--card);border-radius:14px;padding:1rem 1.2rem}
+.person .av{flex:0 0 52px;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:1.05rem;background:var(--accent,var(--cyan));color:#0d1726}
+.person .nm{font-weight:700;font-size:1rem}
+.person .rl{font-size:.83rem;color:var(--muted)}
+/* pubs */
+.pub{background:var(--card);border-radius:14px;padding:1rem 1.3rem;margin-bottom:.8rem;border-left:6px solid var(--accent,var(--teal))}
+.pub .w{display:flex;justify-content:space-between;gap:1rem;align-items:baseline}
+.pub h3{font-size:1rem;line-height:1.35}
+.pub .src{font-size:.82rem;color:var(--muted);margin-top:.3rem}
+.pub .badge{flex:none;font-size:.72rem;font-weight:700;letter-spacing:.12em;color:var(--accent,var(--teal))}
+/* forbidden */
+.no{display:flex;align-items:center;gap:.9rem;background:var(--card);border-radius:14px;padding:.95rem 1.2rem;margin-bottom:.75rem}
+.no .x{color:var(--coral);font-size:1.4rem;font-weight:700}
+.quote{background:var(--card);border-radius:var(--radius);padding:1.3rem 1.6rem;color:var(--amber);font-size:1.05rem;line-height:1.55;font-style:italic}
+/* anims */
+.is-active .a1,.is-active .a2,.is-active .a3,.is-active .a4{opacity:0;animation:up .6s ease forwards}
+.is-active .a2{animation-delay:.12s}.is-active .a3{animation-delay:.24s}.is-active .a4{animation-delay:.36s}
+@keyframes up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.footer-line{position:fixed;bottom:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--teal),var(--cyan),var(--amber),var(--coral));z-index:40}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="counter"></div>
+<button class="navbtn" id="prev" aria-label="Anterior">‹</button>
+<button class="navbtn" id="next" aria-label="Siguiente">›</button>
+<div class="footer-line"></div>
+
+<main class="deck">
+
+<!-- 1 · PORTADA -->
+<section class="slide is-active">
+  <div class="wrap">
+    <div class="triad a1" style="margin-bottom:2rem">
+      <span style="background:var(--teal)">T</span>
+      <span style="background:var(--amber)">I</span>
+      <span style="background:var(--coral)">F</span>
+    </div>
+    <div class="kicker a1">Universidad de Guayaquil · Facultad de Ciencias Matemáticas y Físicas</div>
+    <h1 class="a2">Plataforma de Análisis<br>Predictivo de la Violencia</h1>
+    <p class="a3" style="font-size:1.25rem;margin-top:1rem" >
+      Proyecto FCI · Código <b style="color:var(--amber)">FCI-018-2024</b> · Gemelo digital <b>Guayaquil Neutro-Safe</b>
+    </p>
+    <div class="quote a4" style="margin-top:1.8rem">
+      “No predice el delito futuro (predictive policing): diagnostica la vulnerabilidad estructural actual,
+      preservando la indeterminación epistémica.”
+    </div>
+    <p class="muted a4" style="margin-top:1.6rem">Dataset · Modelos computacionales · Publicaciones · Plataforma — Fondos Concursables de Investigación · 2024–2026</p>
+  </div>
+</section>
+
+<!-- 2 · EN CIFRAS -->
+<section class="slide">
+  <div class="wrap">
+    <div class="kicker">Infografía</div>
+    <h2>El proyecto en cifras</h2>
+    <div class="rule"></div>
+    <div class="stats">
+      <div class="stat a1"><div class="n" style="color:var(--cyan)">5</div><div class="l">capas de datos<br>del gemelo digital</div></div>
+      <div class="stat a1"><div class="n" style="color:var(--teal)">151</div><div class="l">encuestas estructurales<br>originales (2023–2024)</div></div>
+      <div class="stat a2"><div class="n" style="color:var(--teal)">28</div><div class="l">sectores urbanos<br>georreferenciados</div></div>
+      <div class="stat a2"><div class="n" style="color:var(--amber)">20</div><div class="l">zonas de riesgo oculto<br>(“Cisnes Grises”)</div></div>
+      <div class="stat a3"><div class="n" style="color:var(--cyan)">11</div><div class="l">módulos Python<br>de código abierto</div></div>
+      <div class="stat a3"><div class="n" style="color:var(--teal)">31</div><div class="l">artículos de prensa<br>procesados con 4 LLMs</div></div>
+      <div class="stat a4"><div class="n" style="color:var(--amber)">Q1</div><div class="l">Frontiers in Sociology<br>artículo del proyecto</div></div>
+      <div class="stat a4"><div class="n" style="color:var(--coral)">6</div><div class="l">publicaciones y ponencias<br>internacionales + regionales</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · INTEGRANTES -->
+<section class="slide">
+  <div class="wrap">
+    <div class="kicker">Proyecto FCI-018-2024</div>
+    <h2>Integrantes del proyecto</h2>
+    <div class="rule"></div>
+    <p class="muted" style="margin-bottom:1rem">Facultad interviniente: <b style="color:var(--text)">Ciencias Matemáticas y Físicas</b> · Carrera de Software · Ingreso 01/10/2024</p>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr))">
+      <div class="person t-cyan a1"><div class="av">ML</div><div><div class="nm">Maikel Y. Leyva Vázquez</div><div class="rl">Director · Universidad de Guayaquil · Software</div></div></div>
+      <div class="person t-cyan a1"><div class="av">LC</div><div><div class="nm">Lorenzo Cevallos-Torres</div><div class="rl">Universidad de Guayaquil · Software</div></div></div>
+      <div class="person t-cyan a2"><div class="av">AG</div><div><div class="nm">Alfonso Aníbal Guijarro Rodríguez</div><div class="rl">Universidad de Guayaquil · Software</div></div></div>
+      <div class="person t-teal a2" style="--accent:var(--teal)"><div class="av" style="background:var(--teal)">NB</div><div><div class="nm">Noel Batista Hernández</div><div class="rl">Investigador externo · Universidad Bolivariana del Ecuador</div></div></div>
+      <div class="person t-teal a3" style="--accent:var(--teal)"><div class="av" style="background:var(--teal)">FS</div><div><div class="nm">Florentin Smarandache</div><div class="rl">Investigador externo · University of New Mexico (EE. UU.)</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · POSICIONAMIENTO -->
+<section class="slide">
+  <div class="wrap">
+    <div class="kicker">Posicionamiento</div>
+    <h2>Diagnóstico estructural, no predicción policial</h2>
+    <div class="rule"></div>
+    <div class="cols">
+      <div class="card t-coral a1">
+        <div class="tag">Lo que NO es</div>
+        <ul class="marks" style="--mark:var(--coral)">
+          <li>Predictive policing: no anticipa delitos individuales.</li>
+          <li>No genera scoring de personas ni de hogares.</li>
+          <li>No orienta despliegue táctico-policial.</li>
+          <li>No colapsa la incertidumbre en un solo número.</li>
+        </ul>
+      </div>
+      <div class="card t-teal a2">
+        <div class="tag">Lo que SÍ es</div>
+        <ul class="marks" style="--mark:var(--teal)">
+          <li>Diagnóstico de <b>vulnerabilidad estructural actual</b> por sector.</li>
+          <li>Representación explícita de la indeterminación <b>(T, I, F)</b>.</li>
+          <li>Análisis causal de condiciones necesarias <b>(N-fsQCA + NCA)</b>.</li>
+          <li>Evidencia para <b>política social</b>, no para represión.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · CAPAS -->
+<section class="slide">
+  <div class="wrap">
+    <div class="kicker">Evidencia empírica</div>
+    <h2>Dataset: arquitectura de cinco capas</h2>
+    <div class="rule"></div>
+    <div class="layer a1"><div class="id">L1</div><div class="t">Encuesta estructural original</div><div class="d">Guayaquil 2023–2024 · n = 151 observaciones anonimizadas</div><div class="st">REAL</div></div>
+    <div class="layer a1"><div class="id">L2</div><div class="t">N-fsQCA de narrativa mediática</div><div class="d">31 artículos de prensa procesados con 4 LLMs (OpenRouter)</div><div class="st">REAL</div></div>
+    <div class="layer a2"><div class="id">L3</div><div class="t">Violencia de género / femicidios</div><div class="d">INEC ENVIGMU 2019 + Fiscalía 2022–2023 · 28 sectores</div><div class="st">REAL</div></div>
+    <div class="layer a3"><div class="id">L4</div><div class="t">Luminosidad nocturna</div><div class="d">NASA VIIRS VNP46A3, junio 2023 · 28 sectores</div><div class="st">REAL</div></div>
+    <div class="layer a4" style="--accent:var(--amber)"><div class="id">L5</div><div class="t">Percepción comunitaria participativa</div><div class="d">Registro abierto en la plataforma</div><div class="st">ACTIVA</div></div>
+    <p class="muted a4" style="font-size:.85rem;margin-top:.6rem">Licencias: datos CC BY 4.0 · código MIT · depósito Zenodo preparado.</p>
+  </div>
+</section>
+
+<!-- 6 · MARCO TECNICO -->
+<section class="slide">
+  <div class="wrap">
+    <div class="kicker">Modelos y métodos</div>
+    <h2>Marco técnico neutrosófico</h2>
+    <div class="rule"></div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(310px,1fr))">
+      <div class="card t-teal a1"><div class="tag">Representación</div><h3>Neutrosofía SVN</h3><p>Cada señal se modela con la terna (Verdad, Indeterminación, Falsedad): la incertidumbre no se colapsa en un escalar.</p></div>
+      <div class="card t-cyan a1"><div class="tag">Índice</div><h3>IPVE triádico</h3><p>Índice Pluriversal de Vulnerabilidad Estructural en [0,1]³, agregado con SVNWA (media ponderada neutrosófica).</p></div>
+      <div class="card t-cyan a2"><div class="tag">Causalidad</div><h3>N-fsQCA + NCA</h3><p>Condiciones necesarias sobre conjuntos difusos neutrosóficos: qué factores estructurales son imprescindibles.</p></div>
+      <div class="card t-amber a2"><div class="tag">Opacidad</div><h3>Métrica IOI</h3><p>I = 1 − 2|V − 0.5| cuantifica la indeterminación de cada zona y alimenta el Mapa de la Penumbra.</p></div>
+      <div class="card t-coral a3"><div class="tag">Prensa</div><h3>Stance detection LLM</h3><p>Detección de postura sobre la prensa para construir un prior neutrosófico basado en literatura.</p></div>
+      <div class="card t-teal a3"><div class="tag">Código</div><h3>11 módulos Python</h3><p>neutrosophic_core · ipve_engine · digital_twin · narrativa_mediatica · paraconsistency_detector · interventions_db…</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · PENUMBRA -->
+<section class="slide">
+  <div class="wrap">
+    <div class="kicker">Salidas interpretables</div>
+    <h2>Cisnes Grises y el Mapa de la Penumbra</h2>
+    <div class="rule"></div>
+    <div class="cols">
+      <ul class="marks a1">
+        <li><b>20 zonas de riesgo oculto (“Cisnes Grises”):</b> sectores donde los indicadores tradicionales lucen tranquilos pero la estructura causal indica vulnerabilidad.</li>
+        <li><b>Mapa de la Penumbra:</b> visualiza dónde el sistema sabe que no sabe — la indeterminación (IOI) como capa cartográfica de primera clase.</li>
+        <li><b>Prior mediático:</b> la narrativa de prensa silencia drivers estructurales; el gemelo lo corrige con evidencia multicapa.</li>
+      </ul>
+      <figure class="a2">
+        <div class="frame"><img src="img/mapa_penumbra.png" alt="Mapa de la Penumbra"></div>
+        <figcaption>Mapa de la Penumbra — riesgo (T) vs. indeterminación institucional (IOI), Guayaquil</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · Q1 -->
+<section class="slide">
+  <div class="wrap">
+    <div class="kicker">Producción de alto impacto</div>
+    <h2>Artículo Q1 del proyecto</h2>
+    <div class="rule"></div>
+    <div class="card t-cyan a1" style="background:var(--card2);padding:1.8rem 2rem">
+      <div class="tag">Q1 · Frontiers in Sociology · 2026</div>
+      <h3 style="font-size:1.35rem;line-height:1.35">Measuring Social Emergencies Through Fuzzy Qualitative Comparative Analysis: A Calibration Framework Using Normalized General Continuous Linguistic Variables</h3>
+      <p style="margin-top:.7rem">Marco de calibración fsQCA para medir emergencias sociales con variables lingüísticas normalizadas (NGCLV) — exactamente la etapa de calibración que emplea el gemelo digital.</p>
+      <p style="margin-top:.7rem"><a href="https://doi.org/10.3389/fsoc.2026.1824793" target="_blank">doi.org/10.3389/fsoc.2026.1824793</a></p>
+    </div>
+    <div class="card t-amber a2" style="margin-top:1rem">
+      <div class="tag">Metodología trasladable</div>
+      <h3>Generative AI and Probabilistic Trees for Linguistic Data Summarization — MAKE (MDPI), Q1, IF 6.0</h3>
+      <p>Convierte las salidas neutrosóficas del gemelo (IPVE, IOI, condiciones necesarias) en narrativa verificable para decisores.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · PUBLICACIONES -->
+<section class="slide">
+  <div class="wrap">
+    <div class="kicker">Producción científica</div>
+    <h2>Publicaciones del proyecto</h2>
+    <div class="rule"></div>
+    <div class="pub a1"><div class="w"><h3>Causal Modeling of Violence in the Metropolitan Area of Guayaquil: Neutrosophic Evidence and Analysis of Necessary Conditions</h3><span class="badge">PUBLICADO</span></div><div class="src">Neutrosophic Computing and Machine Learning</div></div>
+    <div class="pub a2"><div class="w"><h3>Empirical Pragmatics of Violent Silence: Press Narratives about Guayaquil (2025) as Illocutionary Acts of Structural Erasure</h3><span class="badge">PUBLICADO</span></div><div class="src">Leyva · Batista · Smarandache</div></div>
+    <div class="pub a3"><div class="w"><h3>Neutrosophic Framework for Violence Prediction in Urban Environments</h3><span class="badge">PUBLICADO</span></div><div class="src">Neutrosophic Sets and Systems, Vol. 92, art. 030</div></div>
+    <div class="pub a4" style="--accent:var(--teal);background:var(--card2)"><div class="w"><h3>Smart Urban Security Diagnosis via LLM-Assisted Neutrosophic Fuzzy Set QCA: Evidence from Guayaquil</h3><span class="badge">ACEPTADO · WORLDS4 2026 · LONDRES</span></div><div class="src">Pipeline adicional: IEEE ETCM 2026 (en revisión) · IHTC 2026 (preparado)</div></div>
+  </div>
+</section>
+
+<!-- 10 · REGIONALES -->
+<section class="slide">
+  <div class="wrap">
+    <div class="kicker">Producción científica</div>
+    <h2>Artículos científicos regionales</h2>
+    <div class="rule"></div>
+    <div class="pub a1" style="--accent:var(--amber);padding:1.3rem 1.5rem">
+      <div class="tag" style="color:var(--amber);font-size:.72rem;font-weight:700;letter-spacing:.14em;margin-bottom:.4rem">MAESTRO Y SOCIEDAD · 22(4), 3799–3810 · 2025</div>
+      <h3 style="font-size:1.12rem">Enseñar a medir la duda con inteligencia artificial: propuesta educativa para analizar las causas de la violencia en Guayaquil desde la indeterminación y la incertidumbre</h3>
+      <div class="src">Leyva-Vázquez · Cevallos-Torres · Domínguez · Iturburu-Salvador · Smarandache</div>
+      <div class="src"><a href="https://maestroysociedad.uo.edu.cu/index.php/MyS/article/view/7301" target="_blank">maestroysociedad.uo.edu.cu/index.php/MyS/article/view/7301</a></div>
+    </div>
+    <div class="pub a2" style="--accent:var(--amber);padding:1.3rem 1.5rem">
+      <div class="tag" style="color:var(--amber);font-size:.72rem;font-weight:700;letter-spacing:.14em;margin-bottom:.4rem">NCML · VOL. 42, 167–177 · ISSN 2574-1101 · 2026</div>
+      <h3 style="font-size:1.12rem">Neutrosophic Analysis of Competing Hypotheses (NACH): A Novel Framework for Complex Causal Modeling with Applications to Climate Change and Urban Violence</h3>
+      <div class="src">Leyva · Smarandache</div>
+      <div class="src"><a href="https://fs.unm.edu/NCML2/index.php/112/article/view/93" target="_blank">fs.unm.edu/NCML2/index.php/112/article/view/93</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · PRENSA -->
+<section class="slide">
+  <div class="wrap">
+    <div class="kicker">Repercusión pública</div>
+    <h2>El proyecto en la prensa nacional</h2>
+    <div class="rule"></div>
+    <div class="cols">
+      <div class="a1">
+        <ul class="marks">
+          <li><b>Diario Expreso (Buenavida):</b> “Universidad de Guayaquil desarrolla plataforma para predecir la violencia”.</li>
+          <li><b>Cobertura del equipo:</b> “Un equipo liderado por la Universidad de Guayaquil impulsa una herramienta digital basada en lógica neutrosófica, IA y datos abiertos para mapear y anticipar hechos violentos.”</li>
+          <li><b>Visibilidad institucional:</b> el proyecto FCI posiciona a la FCMF-UG en la conversación pública sobre seguridad y ciencia de datos.</li>
+        </ul>
+        <p style="margin-top:1rem;font-size:.82rem"><a href="https://www.expreso.ec/buenavida/universidad-guayaquil-desarrolla-plataforma-predecir-violencia-247987.html" target="_blank">expreso.ec › buenavida › universidad-guayaquil-desarrolla-plataforma-predecir-violencia</a></p>
+      </div>
+      <figure class="a2">
+        <div class="frame"><img src="img/expreso_clip.png" alt="Recorte Diario Expreso"></div>
+        <figcaption>Diario Expreso · sección Buenavida</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · ETICA -->
+<section class="slide">
+  <div class="wrap">
+    <div class="kicker">Salvaguardas éticas</div>
+    <h2>“Camino B”: anti-predictive-policing por diseño</h2>
+    <div class="rule"></div>
+    <div class="cols">
+      <div>
+        <div class="no a1"><span class="x">✕</span><b>Scoring de seguros o crédito por lugar de residencia</b></div>
+        <div class="no a2"><span class="x">✕</span><b>Segmentación inmobiliaria</b></div>
+        <div class="no a3"><span class="x">✕</span><b>Despliegue táctico-policial</b></div>
+        <div class="no a4"><span class="x">✕</span><b>Reventa comercial de datos</b></div>
+      </div>
+      <div class="card t-teal a2" style="background:var(--card2)">
+        <div class="tag">Garantías activas</div>
+        <ul class="marks" style="--mark:var(--teal)">
+          <li><b>Granularidad mínima a nivel de sector:</b> nunca individuos ni hogares.</li>
+          <li><b>Bitácora de auditoría inmutable:</b> toda consulta queda registrada (ethical_safeguards.py).</li>
+          <li><b>Prohibiciones codificadas</b> en la propia plataforma, no solo declaradas.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · CIERRE -->
+<section class="slide">
+  <div class="wrap" style="text-align:left">
+    <div class="kicker a1">Plataforma de Análisis Predictivo de la Violencia · FCI-018-2024</div>
+    <h1 class="a2" style="font-size:clamp(1.8rem,4.5vw,3.4rem)">Diagnosticar la estructura,<br>no perseguir el síntoma.</h1>
+    <p class="muted a3" style="font-size:1.15rem;margin-top:1.4rem;max-width:56ch">Un gemelo digital que trata la indeterminación como información — y la ética como arquitectura, no como apéndice.</p>
+    <p class="a4" style="margin-top:2rem;font-weight:700">Universidad de Guayaquil · Facultad de Ciencias Matemáticas y Físicas</p>
+    <p class="muted a4">Leyva · Cevallos · Guijarro · Batista (UBE) · Smarandache (UNM)</p>
+    <p class="a4" style="margin-top:.6rem"><a href="https://github.com/mleyvaz/guayaquil-neutrosafe" target="_blank">github.com/mleyvaz/guayaquil-neutrosafe</a></p>
+  </div>
+</section>
+
+</main>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let cur=0;
+function go(n){
+  n=Math.max(0,Math.min(slides.length-1,n));
+  slides[cur].classList.remove('is-active');
+  cur=n;
+  slides[cur].classList.add('is-active');
+  document.getElementById('progress').style.width=((cur+1)/slides.length*100)+'%';
+  document.getElementById('counter').textContent=(cur+1)+' / '+slides.length;
+  location.hash='/'+(cur+1);
+}
+document.getElementById('next').onclick=()=>go(cur+1);
+document.getElementById('prev').onclick=()=>go(cur-1);
+document.addEventListener('keydown',e=>{
+  if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(cur+1);}
+  else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(cur-1);}
+  else if(e.key==='Home')go(0);
+  else if(e.key==='End')go(slides.length-1);
+  else if(e.key.toLowerCase()==='f'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+});
+let tx=null;
+document.addEventListener('touchstart',e=>tx=e.touches[0].clientX);
+document.addEventListener('touchend',e=>{
+  if(tx===null)return;
+  const dx=e.changedTouches[0].clientX-tx;
+  if(dx<-50)go(cur+1); else if(dx>50)go(cur-1);
+  tx=null;
+});
+const m=location.hash.match(/^#\/(\d+)/);
+go(m?+m[1]-1:0);
+</script>
+</body>
+</html>
