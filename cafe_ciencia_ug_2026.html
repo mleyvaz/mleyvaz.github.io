@@ -238,7 +238,7 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 <h2 class="title">Una l&iacute;nea de investigaci&oacute;n entre la l&oacute;gica, la IA y la educaci&oacute;n</h2>
 <ul class="bullets">
 <li><strong>Dr. Maikel Leyva-V&aacute;zquez</strong> &mdash; PhD en Ciencias T&eacute;cnicas (IA y Ciencia de Datos).</li>
-<li>Coordinador de Posgrado (UBE) &middot; Editor-in-Chief de <em>Neutrosophic Sets and Systems</em> y <em>NCML</em>.</li>
+<li>Docente de la Facultad de Ciencias Matem&aacute;ticas y F&iacute;sicas &middot; Universidad de Guayaquil &middot; Editor-in-Chief de <em>Neutrosophic Sets and Systems</em> y <em>NCML</em>.</li>
 <li>Director de la Asociaci&oacute;n Latinoamericana de Ciencias Neutros&oacute;ficas (ALCN).</li>
 <li>L&iacute;nea: l&oacute;gica neutros&oacute;fica, IA, incertidumbre y su aplicaci&oacute;n a la educaci&oacute;n y la decisi&oacute;n.</li>
 </ul>
@@ -526,12 +526,8 @@ try{if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);window.FBDB=firebas
 <section class="slide cover end" data-i="40">
 <div class="slide-inner">
 <p class="kicker">Gracias</p>
-<h2 class="title big">Tres formas de colaborar con la Facultad de Ciencias Matem&aacute;ticas y F&iacute;sicas</h2>
-<div class="threecol">
-<div class="card"><span class="lbl">Formaci&oacute;n</span><p>Seminario y co-dise&ntilde;o curricular de <b>Fluidez en IA (4D)</b> para ingenier&iacute;a bajo incertidumbre.</p></div>
-<div class="card"><span class="lbl">Investigaci&oacute;n</span><p>S&uacute;mate al <b>proyecto FCI-018-2024</b>. Gemelo digital Neutro-Safe, datos abiertos y auditor&iacute;a neutros&oacute;fica de LLMs.</p></div>
-<div class="card"><span class="lbl">Tesis</span><p><b>Trabajos de titulaci&oacute;n</b> sobre el gemelo digital (nuevas capas, NLP, visualizaci&oacute;n), con publicaci&oacute;n indexada (NSS / NCML).</p></div>
-</div>
+<blockquote class="statement" style="font-size:clamp(1.25rem,2.9vw,2.1rem);line-height:1.3;max-width:34ch;margin:0 0 1.6rem;">"Lo contrario de una verdad profunda<br>puede ser <span class="hl">otra verdad profunda</span>."<br><span style="font-size:.6em;opacity:.75;">&mdash; Niels Bohr</span></blockquote>
+<blockquote class="statement" style="font-size:clamp(1.1rem,2.5vw,1.8rem);line-height:1.35;max-width:40ch;margin:0;">"El test de una inteligencia de primera clase es la capacidad de sostener <span class="hl">dos ideas opuestas</span> en la mente al mismo tiempo, y a&uacute;n as&iacute; conservar la capacidad de funcionar."<br><span style="font-size:.65em;opacity:.75;">&mdash; F. Scott Fitzgerald</span></blockquote>
 <p class="contact">Dr. Maikel Leyva-V&aacute;zquez &nbsp;&middot;&nbsp; <a href="mailto:mleyvaz@gmail.com">mleyvaz@gmail.com</a> &nbsp;&middot;&nbsp; <a href="https://mleyvaz.github.io" target="_blank" rel="noopener">mleyvaz.github.io</a></p>
 </div>
 <div class="brandline">La Tercera Respuesta &middot; Caf&eacute; de la Ciencia &middot; UG 2026</div>
@@ -563,7 +559,10 @@ var total=keys.reduce(function(s,k){return s+(c[k]||0)},0);if(total===0)return;
 keys.forEach(function(k){var pct=Math.round((c[k]||0)/total*100);var b=document.getElementById(pre+'_'+k+'_b');var l=document.getElementById(pre+'_'+k+'_lbl');if(b)b.style.width=pct+'%';if(l)l.textContent=pct+'% ('+(c[k]||0)+')'});
 var t=document.getElementById(which==='duck'?'d_total':'dr_total');if(t)t.textContent=total+' voto'+(total!==1?'s':'')}
 window.uboVote=function(which,opt,btn,other){if(voted[which])return;voted[which]=true;btn.classList.add('chosen');var o=document.getElementById(other);if(o){o.classList.add('unchosen');o.disabled=true}btn.disabled=true;
-if(window.FBDB){FBDB.ref('votos/'+SESSION+'/'+which+'/'+opt).transaction(function(v){return (v||0)+1})}};
+if(window.FBDB){FBDB.ref('votos/'+SESSION+'/'+which+'/'+opt).transaction(function(v){return (v||0)+1})}setTimeout(pollOnce,900);setTimeout(pollOnce,2500)};
+var REST='https://coffee-shop-17348.firebaseio.com/votos/'+SESSION+'.json';
+function pollOnce(){fetch(REST).then(function(r){return r.json()}).then(function(d){d=d||{};if(d.duck)rB('duck',d.duck);if(d.dress)rB('dress',d.dress);var n=((d.duck&&(d.duck.pato||0)+(d.duck.conejo||0))||0)+((d.dress&&(d.dress.azul||0)+(d.dress.blanco||0))||0);var bc=document.getElementById('ubo_vote_count');if(bc)bc.textContent=n+' voto'+(n!==1?'s':'')}).catch(function(){})}
+setInterval(pollOnce,4000);pollOnce();
 if(window.FBDB){FBDB.ref('votos/'+SESSION).on('value',function(snap){var d=snap.val()||{};if(d.duck)rB('duck',d.duck);if(d.dress)rB('dress',d.dress);
 var n=((d.duck&&(d.duck.pato||0)+(d.duck.conejo||0))||0)+((d.dress&&(d.dress.azul||0)+(d.dress.blanco||0))||0);var bc=document.getElementById('ubo_vote_count');if(bc)bc.textContent=n+' voto'+(n!==1?'s':'')})}
 })();
