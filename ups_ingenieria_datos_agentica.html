@@ -1,0 +1,897 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ingeniería de datos agéntica — pipelines de punta a punta con IA</title>
+<meta name="author" content="Dr. Maikel Y. Leyva-Vázquez">
+<style>
+/* ============================================================ tokens */
+:root{
+  --bg:#0B2027; --card:#143A44; --card-2:#17454f;
+  --ink:#EAF2F1; --mute:#A9C2C6;
+  --teal:#02C39A; --blue:#2FA8B8; --amber:#E8A33D;
+  --ups-blue:#003976; --ups-gold:#FCC000;
+  --serif:Cambria,"Times New Roman",Georgia,serif;
+  --sans:Calibri,"Segoe UI",system-ui,-apple-system,sans-serif;
+  --r:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:#05141a;color:var(--ink);font-family:var(--sans);
+  overflow:hidden;display:grid;place-items:center;
+}
+
+/* ============================================================ stage */
+#stage{position:relative;width:100vw;height:100vh;display:grid;place-items:center}
+#deck{
+  position:relative;width:1280px;height:720px;flex:none;
+  transform-origin:center center;background:var(--bg);
+  box-shadow:0 24px 80px rgba(0,0,0,.6);overflow:hidden;
+}
+.slide{
+  position:absolute;inset:0;padding:48px 67px 40px;
+  opacity:0;visibility:hidden;pointer-events:none;
+  display:flex;flex-direction:column;
+}
+.slide.is-active{opacity:1;visibility:visible;pointer-events:auto}
+.slide.is-active > *{animation:rise .42s cubic-bezier(.2,.7,.3,1) both}
+.slide.is-active > *:nth-child(2){animation-delay:.05s}
+.slide.is-active > *:nth-child(3){animation-delay:.10s}
+.slide.is-active > *:nth-child(4){animation-delay:.14s}
+.slide.is-active > *:nth-child(5){animation-delay:.18s}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .slide.is-active > *{animation:none}
+}
+/* barras institucionales */
+#deck::before,#deck::after{content:"";position:absolute;left:0;right:0;z-index:5}
+#deck::before{top:0;height:10px;background:var(--ups-blue)}
+#deck::after{top:10px;height:4px;background:var(--ups-gold)}
+
+/* ============================================================ tipografía */
+h1{font-family:var(--serif);font-size:41px;line-height:1.12;font-weight:700;letter-spacing:-.4px}
+.sub{color:var(--mute);font-size:17px;margin-top:9px;line-height:1.35}
+.foot{color:var(--mute);font-size:15px;line-height:1.4;margin-top:auto;padding-top:16px}
+.foot.amber{color:var(--amber)}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.10em;text-transform:uppercase}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;padding:22px 0 4px}
+strong{color:var(--ink)}
+em{font-style:italic;color:inherit}
+code{font-family:Consolas,"Cascadia Mono",monospace;font-size:.92em;background:rgba(2,195,154,.12);color:var(--teal);padding:1px 6px;border-radius:4px}
+
+/* ============================================================ primitivas */
+.card{background:var(--card);border-radius:var(--r);padding:22px 24px;position:relative;overflow:hidden}
+.card .t{font-family:var(--serif);font-size:20px;font-weight:700;line-height:1.15}
+.card .k{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin-top:6px}
+.card p,.card li{font-size:14px;line-height:1.5;color:var(--ink)}
+.card p.m,.card li.m{color:var(--mute)}
+.card ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.card ul li{padding-left:15px;position:relative}
+.card ul li::before{content:"";position:absolute;left:0;top:.62em;width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.55}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g5{grid-template-columns:repeat(5,1fr)}
+.band{background:var(--card);border-radius:var(--r);padding:16px 24px;font-size:15px;line-height:1.45}
+.dot{width:14px;height:14px;border-radius:50%;display:inline-block;flex:none}
+.top-rule{position:absolute;left:0;right:0;top:0;height:5px}
+.side-rule{position:absolute;left:0;top:0;bottom:0;width:5px}
+.t-blue{color:var(--blue)} .t-teal{color:var(--teal)} .t-amber{color:var(--amber)}
+.b-blue{background:var(--blue)} .b-teal{background:var(--teal)} .b-amber{background:var(--amber)}
+.num{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;
+     font-weight:700;font-size:14px;color:var(--bg);flex:none}
+
+/* ============================================================ portada */
+.cover{background:var(--ups-blue);padding:0}
+.cover .in{padding:0 67px;display:flex;flex-direction:column;justify-content:center;height:100%}
+.cover .kick{color:var(--ups-gold);font-size:15px;font-weight:700;letter-spacing:.06em}
+.cover h1{font-size:56px;color:#fff;margin-top:14px;font-family:var(--sans);font-weight:300}
+.cover .rule{width:250px;height:5px;background:var(--teal);margin:34px 0 26px}
+.cover .l{color:#BBCCE0;font-size:16px;line-height:1.55}
+.cover .meta{color:#BBCCE0;font-size:13px;line-height:1.55;margin-top:38px}
+.closing{justify-content:center}
+.closing h1{font-size:52px;line-height:1.22;max-width:900px}
+.closing .k{color:var(--teal);font-size:19px;margin-top:34px;font-family:var(--sans)}
+
+/* ============================================================ específicas */
+.rows{display:flex;flex-direction:column;gap:11px}
+.row{background:var(--card);border-radius:var(--r);padding:15px 24px 15px 28px;position:relative;
+     display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:center}
+.row .lhs .k{font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:700}
+.row .lhs .v{font-family:var(--serif);font-size:16px;font-weight:700;margin-top:4px}
+.row .rhs{font-size:14px;line-height:1.5;color:var(--mute)}
+
+.matrix{width:100%;border-collapse:separate;border-spacing:0 7px;font-size:14px}
+.matrix th{font-family:var(--serif);font-size:16px;font-weight:700;text-align:left;padding:0 16px 8px}
+.matrix th:first-child{width:190px}
+.matrix td{background:var(--card);padding:13px 16px;color:var(--ink)}
+.matrix td:first-child{color:var(--mute);font-weight:700;border-radius:var(--r) 0 0 var(--r)}
+.matrix td:last-child{border-radius:0 var(--r) var(--r) 0}
+.matrix tr.hl td{background:var(--card-2)}
+
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.flow .head{border-radius:8px;padding:13px 8px;text-align:center;font-family:var(--serif);
+            font-weight:700;font-size:17px;color:var(--bg)}
+.flow .cell{background:var(--card);border-radius:var(--r);padding:15px 18px;font-size:13.5px;line-height:1.45;min-height:74px}
+.lane{font-size:11px;font-weight:700;letter-spacing:.10em;color:var(--mute);margin:14px 0 8px}
+
+.steps{display:flex;flex-direction:column;gap:10px}
+.step{background:var(--card);border-radius:var(--r);padding:14px 22px;display:grid;
+      grid-template-columns:30px 210px 1fr;gap:20px;align-items:center}
+.step .s-t{font-family:var(--serif);font-size:16px;font-weight:700}
+.step .s-d{font-size:14px;line-height:1.45;color:var(--mute)}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.split .card{padding:26px 28px}
+.split .q{font-family:var(--serif);font-size:26px;font-weight:700;margin:6px 0 16px}
+.split .tag{margin-top:16px;border-radius:8px;padding:9px 14px;font-size:13.5px;font-weight:700;text-align:center;color:var(--bg)}
+
+/* gráfico Berkeley */
+.chart{background:var(--card);border-radius:var(--r);padding:22px 24px 14px;display:flex;flex-direction:column}
+.plot{display:grid;grid-template-columns:repeat(7,1fr);gap:14px;align-items:end;height:290px}
+.grp{display:flex;align-items:flex-end;justify-content:center;gap:7px;height:100%}
+.bar{width:26px;border-radius:3px 3px 0 0;position:relative;display:flex;justify-content:center}
+.bar span{position:absolute;top:-19px;font-size:11.5px;color:var(--mute)}
+.bar.h{background:var(--blue)} .bar.m{background:var(--amber)}
+.xaxis{display:grid;grid-template-columns:repeat(7,1fr);gap:14px;margin-top:9px;
+       border-top:1px solid rgba(169,194,198,.25);padding-top:8px}
+.xaxis div{text-align:center;font-size:12px;color:var(--mute)}
+.xaxis div.tot{color:var(--ink);font-weight:700}
+.legend{display:flex;gap:22px;margin-top:12px;font-size:12.5px;color:var(--mute);align-items:center}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block;margin-right:7px;vertical-align:-1px}
+
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.kpi{background:var(--card);border-radius:12px;padding:12px 6px;text-align:center}
+.kpi b{display:block;font-family:var(--serif);font-size:20px;color:var(--teal)}
+.kpi span{display:block;font-size:11.5px;color:var(--mute);margin-top:3px}
+
+.links a{color:var(--teal);text-decoration:none;font-size:13.5px;border-bottom:1px solid rgba(2,195,154,.35)}
+.links a:hover{border-bottom-color:var(--teal)}
+.links .k{font-size:10px;letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:var(--mute)}
+.links > div{margin-bottom:10px}
+
+.notes{display:none}
+
+/* ============================================================ chrome */
+#bar{position:fixed;left:0;bottom:0;height:3px;background:var(--teal);width:0;
+     transition:width .3s ease;z-index:40}
+#pager{position:fixed;right:18px;bottom:14px;font-size:12px;color:#5d7d86;z-index:40;
+       font-variant-numeric:tabular-nums;letter-spacing:.04em}
+#help{position:fixed;left:18px;bottom:12px;font-size:11px;color:#456570;z-index:40}
+#help b{color:#7fa3ac;font-weight:600}
+
+#grid{position:fixed;inset:0;background:rgba(5,20,26,.97);z-index:60;display:none;
+      grid-template-columns:repeat(5,1fr);gap:12px;padding:26px;overflow:auto;align-content:start}
+#grid.on{display:grid}
+#grid button{background:var(--card);border:2px solid transparent;border-radius:8px;color:var(--ink);
+  font-family:var(--serif);font-size:12px;line-height:1.3;padding:12px;text-align:left;cursor:pointer;min-height:74px}
+#grid button:hover,#grid button.cur{border-color:var(--teal)}
+#grid button i{display:block;font-style:normal;font-size:10px;color:var(--mute);margin-bottom:5px}
+
+#drawer{position:fixed;left:0;right:0;bottom:0;max-height:44vh;overflow:auto;z-index:55;
+  background:#0e2a33;border-top:3px solid var(--teal);padding:20px 30px;display:none;
+  font-size:15px;line-height:1.6;color:var(--ink);white-space:pre-wrap}
+#drawer.on{display:block}
+#drawer h4{font-family:var(--serif);color:var(--teal);margin-bottom:10px;font-size:14px;
+  letter-spacing:.08em;text-transform:uppercase}
+
+@media print{
+  body{overflow:visible;display:block;background:#fff}
+  #stage{display:block;width:auto;height:auto}
+  #deck{width:100%;height:auto;box-shadow:none;transform:none!important}
+  .slide{position:relative;opacity:1;visibility:visible;page-break-after:always;
+         width:1280px;height:720px;transform-origin:top left}
+  .slide.is-active > *{animation:none}
+  #bar,#pager,#help,#grid,#drawer{display:none!important}
+}
+</style>
+</head>
+<body>
+<div id="stage"><div id="deck">
+
+<!-- 1 ---------------------------------------------------------------- -->
+<section class="slide cover">
+  <div class="in">
+    <div class="kick">INGENIERÍA DE DATOS AGÉNTICA</div>
+    <h1>Pipelines de punta a punta</h1>
+    <div class="rule"></div>
+    <div class="l">Del ETL al data pipeline agéntico<br>— y las tres superficies para conducir el mismo motor</div>
+    <div class="meta">Maestría en Analítica de Datos<br>Dr. Maikel Y. Leyva-Vázquez · Universidad Politécnica Salesiana · agosto de 2026</div>
+  </div>
+</section>
+
+<!-- 2 ---------------------------------------------------------------- -->
+<section class="slide">
+  <h1>Quién los va a acompañar</h1>
+  <div class="sub">Y por dónde pueden verificar cualquier cosa que yo afirme en clase</div>
+  <div class="body">
+    <div class="grid" style="grid-template-columns:1.85fr 1fr">
+      <div class="card">
+        <div class="t" style="font-size:25px">Dr. Maikel Yelandi Leyva Vázquez</div>
+        <div class="k t-blue" style="margin-top:18px">Formación</div>
+        <p style="margin-top:6px">Doctor en Ciencias Técnicas — Universidad de las Ciencias Informáticas, La Habana (2013)<br>
+           Máster en Bioinformática (INSTEC) · Ingeniero en Ciencias Informáticas</p>
+        <div class="k t-teal" style="margin-top:16px">Docencia e investigación</div>
+        <p style="margin-top:6px">Coordinador Académico de Posgrado — Universidad Bolivariana del Ecuador<br>
+           Investigador colaborador — Universidad de Guayaquil · Universidad Bernardo O'Higgins, Chile</p>
+        <div class="k t-amber" style="margin-top:16px">Dirección editorial</div>
+        <p style="margin-top:6px">Editor-in-Chief — <em>Neutrosophic Sets and Systems</em> (University of New Mexico, Scopus Q1)<br>
+           Editor-in-Chief — <em>Neutrosophic Computing and Machine Learning</em></p>
+      </div>
+      <div class="card links">
+        <div class="t" style="font-size:15px;margin-bottom:18px">Perfiles públicos</div>
+        <div><div class="k">ORCID</div><a href="https://orcid.org/0000-0001-7911-5879" target="_blank" rel="noopener">0000-0001-7911-5879</a></div>
+        <div><div class="k">Google Scholar</div><a href="https://scholar.google.com.ec/citations?user=5VlnGwcAAAAJ" target="_blank" rel="noopener">290+ publicaciones indexadas</a></div>
+        <div><div class="k">Scopus</div><a href="https://www.scopus.com/authid/detail.uri?authorId=55907610800" target="_blank" rel="noopener">Author ID 55907610800</a></div>
+        <div><div class="k">Hugging Face</div><a href="https://huggingface.co/mleyvaz" target="_blank" rel="noopener">Dataset geo-bias-llm</a></div>
+        <div><div class="k">GitHub</div><a href="https://github.com/mleyvaz" target="_blank" rel="noopener">github.com/mleyvaz</a></div>
+        <div><div class="k">Sitio personal</div><a href="https://mleyvaz.github.io" target="_blank" rel="noopener">mleyvaz.github.io</a></div>
+        <div><div class="k">LinkedIn</div><a href="https://www.linkedin.com/in/mleyvaz" target="_blank" rel="noopener">linkedin.com/in/mleyvaz</a></div>
+      </div>
+    </div>
+    <div class="band t-amber">«La herramienta se elige por el problema, nunca al revés.» Es lo único que les voy a pedir desde el primer día.</div>
+  </div>
+  <div class="notes">No leer la diapositiva. El punto de ponerla no es el currículum: es que sepan dónde verificar. En una materia cuyo eje es «no acepte una salida sin auditarla», sería incoherente pedir que me crean a mí sin darles la fuente.
+
+Decirlo así, en voz alta: todo lo que yo afirme en clase se puede contrastar en esos enlaces, y si encuentran una discrepancia, quiero saberla.
+
+Deliberadamente no hay índice h en la diapositiva. Ante estudiantes de maestría el índice h no construye autoridad; la construye el criterio de trabajo que anuncia la línea de abajo. Quien quiera el número lo tiene a un clic.</div>
+</section>
+
+<!-- 3 ---------------------------------------------------------------- -->
+<section class="slide">
+  <h1>La materia</h1>
+  <div class="sub">Análisis, Explotación y Visualización de Datos · 409754 · Maestría en Analítica de Datos</div>
+  <div class="body">
+    <div class="grid g2">
+      <div class="card"><div class="top-rule b-blue"></div>
+        <div class="k t-blue">Unidad 1</div>
+        <div class="t" style="margin-top:8px">Captura y extracción con procesos ETL</div>
+        <p class="m" style="margin-top:14px">Del portal de datos abiertos al tablero. Pentaho para el pipeline declarado, DuckDB para verificarlo y agentes para acelerarlo.</p>
+        <p class="m" style="margin-top:8px">Termina en un dato limpio del que usted responde.</p>
+      </div>
+      <div class="card"><div class="top-rule b-teal"></div>
+        <div class="k t-teal">Unidad 2</div>
+        <div class="t" style="margin-top:8px">Fundamentos de IA en gestión documental</div>
+        <p class="m" style="margin-top:14px">Enseñarle a una máquina a leer: OCR, extracción estructurada, clasificación y un archivo al que se le pregunta en lenguaje natural.</p>
+        <p class="m" style="margin-top:8px">Termina en un expediente que cita su fuente.</p>
+      </div>
+    </div>
+    <div class="band" style="font-family:var(--serif);font-weight:700;font-size:17px">
+      El recorrido completo:&nbsp; documento o portal &nbsp;→&nbsp; OCR o ETL &nbsp;→&nbsp; base de datos &nbsp;→&nbsp; archivo consultable
+    </div>
+    <div class="kpis">
+      <div class="kpi"><b>25 %</b><span>Arquitectura</span></div>
+      <div class="kpi"><b>20 %</b><span>Calidad</span></div>
+      <div class="kpi"><b>20 %</b><span>Gobernanza</span></div>
+      <div class="kpi"><b>15 %</b><span>Reproducibilidad</span></div>
+      <div class="kpi"><b>10 %</b><span>Eficiencia</span></div>
+      <div class="kpi"><b>10 %</b><span>Criterio</span></div>
+    </div>
+  </div>
+  <div class="foot">Fíjense en el reparto: arquitectura, gobernanza y criterio pesan más que el hecho de que el proceso corra. Correr es el mínimo, no el logro.</div>
+  <div class="notes">Dos cosas que conviene que queden dichas hoy y no en la semana seis.
+
+La primera: las dos unidades no son dos materias pegadas. Es un solo recorrido, del documento crudo al dato consultable, y el proyecto integrador lo atraviesa entero.
+
+La segunda: mirar la fila de porcentajes en voz alta. Que el pipeline corra no da puntos: es la condición de entrada. Los puntos están en por qué eligió esa arquitectura, qué hizo con los datos personales y qué decidió no automatizar.</div>
+</section>
+
+<!-- 4 ---------------------------------------------------------------- -->
+<section class="slide">
+  <h1>Ocho palabras que vamos a usar todo el semestre</h1>
+  <div class="sub">No hace falta memorizarlas hoy. Sí hace falta que ninguna les suene rara en la semana tres</div>
+  <div class="body">
+    <div class="grid g4">
+      <div class="card"><div class="top-rule b-blue"></div><div class="t" style="font-size:16px">Data pipeline</div><p class="m" style="margin-top:11px;font-size:13px">El género. Traer datos, procesarlos y dejarlos donde generen un producto.</p></div>
+      <div class="card"><div class="top-rule b-blue"></div><div class="t" style="font-size:16px">ETL / ELT</div><p class="m" style="margin-top:11px;font-size:13px">Dos secuencias posibles de ese pipeline. Cambia dónde se transforma, no qué se hace.</p></div>
+      <div class="card"><div class="top-rule b-teal"></div><div class="t" style="font-size:16px">Bronze · silver · gold</div><p class="m" style="margin-top:11px;font-size:13px">Tres estados del dato: crudo, conformado y listo para decidir. No son tres carpetas.</p></div>
+      <div class="card"><div class="top-rule b-teal"></div><div class="t" style="font-size:16px">Completitud ≠ validez</div><p class="m" style="margin-top:11px;font-size:13px">Una columna sin un solo hueco puede estar llena de valores que no son datos.</p></div>
+      <div class="card"><div class="top-rule b-amber"></div><div class="t" style="font-size:16px">Centinela</div><p class="m" style="margin-top:11px;font-size:13px">Un valor que finge ser dato: «SIN DATO», «N/A», 9999-12-31. Pasa cualquier control de nulos.</p></div>
+      <div class="card"><div class="top-rule b-amber"></div><div class="t" style="font-size:16px">Integridad referencial</div><p class="m" style="margin-top:11px;font-size:13px">Un pago a nombre de alguien que no aparece matriculado es un huérfano. Alguien decide qué hacer con él.</p></div>
+      <div class="card"><div class="top-rule b-blue"></div><div class="t" style="font-size:16px">Reproducibilidad</div><p class="m" style="margin-top:11px;font-size:13px">Si no se puede volver a correr y dar lo mismo, no es un pipeline: es una anécdota.</p></div>
+      <div class="card"><div class="top-rule b-teal"></div><div class="t" style="font-size:16px">Harness</div><p class="m" style="margin-top:11px;font-size:13px">Lo que le da manos al modelo: abrir archivos, ejecutar, verificar. Antigravity y agy son harnesses.</p></div>
+    </div>
+  </div>
+  <div class="foot">Las tres primeras ordenan el vocabulario. Las cinco restantes son las que más veces vamos a discutir: son las que separan un pipeline correcto de una conclusión correcta.</div>
+  <div class="notes">No explicar las ocho ahora: se quema la clase. Leerlas rápido y anunciar que cada una va a aparecer con un caso concreto.
+
+Las dos que conviene marcar hoy son «completitud ≠ validez» y «centinela», porque el Taller 1 se juega ahí: la columna de fecha de matrícula no tiene un solo nulo y aun así cinco de sus valores no son fechas. Si entienden eso, entendieron el curso.
+
+«Harness» está en la lista para que la palabra no les suene rara cuando aparezca en la diapositiva del ecosistema.</div>
+</section>
+
+<!-- 5 ---------------------------------------------------------------- -->
+<section class="slide" style="justify-content:center">
+  <div style="max-width:900px">
+    <h1 style="font-size:48px">Ingeniería de datos agéntica</h1>
+    <p class="sub" style="font-size:19px;margin-top:22px">Construir pipelines de punta a punta con IA:<br>qué automatiza cada superficie y qué sigue siendo suyo</p>
+    <div style="display:inline-block;margin-top:36px;background:var(--card);border-radius:8px;padding:10px 20px;font-size:14px;color:var(--teal);font-weight:700">Ecosistema para Analítica de Datos</div>
+  </div>
+  <div class="notes">Encuadre: no vamos a aprender una herramienta, vamos a discutir un cambio en la división del trabajo entre analista y máquina.</div>
+</section>
+
+<!-- 6 ---------------------------------------------------------------- -->
+<section class="slide">
+  <h1>El ecosistema, en cuatro capas</h1>
+  <div class="sub">Sale una herramienta casi todos los días. No hace falta conocerlas: hace falta saber en qué capa caen</div>
+  <div class="body">
+    <div class="grid g4">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px"><span class="dot b-blue"></span><span class="t">Modelos</span></div>
+        <div class="k t-blue" style="margin-left:26px">El cerebro</div>
+        <p style="margin-top:16px">Reciben texto, imagen o audio y devuelven texto.</p>
+        <p class="m" style="margin-top:14px">Claude · GPT · Grok<br>Kimi · Gemini</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px"><span class="dot b-teal"></span><span class="t">Harnesses</span></div>
+        <div class="k t-teal" style="margin-left:26px">Las manos</div>
+        <p style="margin-top:16px">Le dan al modelo acceso real: abrir, ejecutar, verificar.</p>
+        <p class="m" style="margin-top:14px">Claude Code · Codex<br>OpenCode · Gemini CLI<br>Antigravity · agy</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px"><span class="dot b-amber"></span><span class="t">Asistentes</span></div>
+        <div class="k t-amber" style="margin-left:26px">El acompañamiento</div>
+        <p style="margin-top:16px">Agentes que siguen el trabajo de forma continua.</p>
+        <p class="m" style="margin-top:14px">Hermes · OpenClaw</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px"><span class="dot b-blue"></span><span class="t">Orquestadores</span></div>
+        <div class="k t-blue" style="margin-left:26px">La coordinación</div>
+        <p style="margin-top:16px">Coordinan varios agentes a la vez.</p>
+        <p class="m" style="margin-top:14px">Orca · Herder · Crowbot</p>
+      </div>
+    </div>
+    <div class="band t-amber">Un pipeline ETL no es ninguna de las cuatro: es una <strong style="color:var(--amber)">aplicación</strong> — lo que usted construye usando las capas.</div>
+  </div>
+  <div class="notes">Taxonomía tomada del video de Fazt Code, «Cómo categorizo todas las herramientas de IA que surgen» (25-ago-2026).
+
+El valor no está en la lista de nombres, que caduca en semanas, sino en el criterio: de cualquier herramienta nueva, preguntar si piensa, si actúa, si acompaña o si coordina.
+
+Insistir en la caja inferior: la pregunta «¿el ETL agéntico reemplaza a Pentaho?» está mal planteada, porque compara una aplicación con una herramienta.</div>
+</section>
+
+<!-- 7 ---------------------------------------------------------------- -->
+<section class="slide">
+  <h1>Qué vamos a usar en esta materia</h1>
+  <div class="sub">Cada elección es de disponibilidad y de gobernanza, no de moda</div>
+  <div class="body">
+    <div class="rows">
+      <div class="row"><span class="side-rule b-blue"></span>
+        <div class="lhs"><div class="k t-blue">Modelo</div><div class="v">Familia Gemini</div></div>
+        <div class="rhs">El motor por defecto de Antigravity. Contexto largo y multimodal: hace falta para leer un PDF escaneado y un CSV en la misma sesión.</div></div>
+      <div class="row"><span class="side-rule b-teal"></span>
+        <div class="lhs"><div class="k t-teal">Harness</div><div class="v">Antigravity 2.0 · IDE · agy CLI</div></div>
+        <div class="rhs">Las tres superficies del mismo motor, y las tres se instalan: se despacha en la app, se verifica en el IDE, se automatiza en la terminal.</div></div>
+      <div class="row"><span class="side-rule b-amber"></span>
+        <div class="lhs"><div class="k t-amber">Asistentes</div><div class="v">Ninguno</div></div>
+        <div class="rhs">Se explican para que reconozcan la capa. Hermes y OpenClaw acompañan trabajo continuo; en diez semanas no hay continuidad que acompañar.</div></div>
+      <div class="row"><span class="side-rule b-blue"></span>
+        <div class="lhs"><div class="k t-blue">Orquestadores</div><div class="v">Ninguno</div></div>
+        <div class="rhs">Orca, Herder o Crowbot coordinan flotas de agentes. Con 18 estudiantes y un portátil cada uno, la coordinación la hacen ustedes.</div></div>
+    </div>
+    <div class="band t-amber">Y una quinta cosa que no es capa: <strong style="color:var(--amber)">OpenRouter</strong>. Es una pasarela de modelos — un conmutador que deja cambiar de cerebro sin tocar el harness.</div>
+  </div>
+  <div class="notes">Dos confusiones frecuentes que conviene decir en voz alta:
+
+1) agy NO es un orquestador. Es un harness, la misma capa que Antigravity y que Gemini CLI: lo que hace es darle manos a un modelo. Que pueda lanzar subagentes no lo mueve de capa.
+
+2) OpenRouter tampoco es un orquestador. Es una pasarela: un único punto de acceso a muchos modelos. No coordina agentes, conmuta cerebros.
+
+Si algún estudiante los ubica en la capa 4, ésta es la corrección. La prueba es la pregunta del criterio: ¿coordina a otros agentes? No.</div>
+</section>
+
+<!-- 8 ---------------------------------------------------------------- -->
+<section class="slide">
+  <h1>ETL ya no es el marco. Es un caso particular</h1>
+  <div class="sub">El género es el data pipeline; ETL y ELT son dos de sus secuencias posibles</div>
+  <div class="body">
+    <div class="grid g3">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px"><span class="dot b-blue"></span><span class="t">ETL</span></div>
+        <div class="k t-blue" style="margin-left:26px">Transformar antes de guardar</div>
+        <p style="margin-top:18px">Se extrae, se transforma en un motor aparte y recién después se carga.</p>
+        <p class="m" style="margin-top:14px">Es lo que dice el sílabo y lo que hace Pentaho. Sigue siendo válido.</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px"><span class="dot b-teal"></span><span class="t">ELT</span></div>
+        <div class="k t-teal" style="margin-left:26px">Guardar y transformar dentro</div>
+        <p style="margin-top:18px">Se carga primero al almacén y la transformación ocurre allí, en SQL.</p>
+        <p class="m" style="margin-top:14px">Es lo que haremos con DuckDB: el archivo se consulta donde está.</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px"><span class="dot b-amber"></span><span class="t">Pipeline agéntico</span></div>
+        <div class="k t-amber" style="margin-left:26px">Objetivo declarado</div>
+        <p style="margin-top:18px">El orden deja de fijarse por adelantado: se declara el resultado y el agente arma el camino.</p>
+        <p class="m" style="margin-top:14px">No siempre cabe en tres letras.</p>
+      </div>
+    </div>
+    <div class="band">
+      «El flujo extraer-transformar-cargar es una <strong>subcategoría</strong> de un data pipeline.»<br>
+      <span style="color:var(--mute);font-size:14px">Needham, Hunger y Simons, <em>DuckDB in Action</em>, cap. 8 — el libro obligatorio de la materia</span>
+    </div>
+  </div>
+  <div class="notes">Aquí se corrige la letra del sílabo sin contradecirla. El sílabo dice ETL porque ETL fue el nombre de la práctica durante veinte años. El libro del curso dice, textualmente, que ETL es una SUBCATEGORÍA de un data pipeline.
+
+Pregunta para la clase: si cargamos el CSV en DuckDB y transformamos allí, ¿qué letra va primero? La respuesta correcta es que la pregunta está mal planteada. Elegir entre ETL y ELT es decidir dónde gastar el cómputo, no qué es el trabajo.
+
+No presentarlo como que el sílabo está equivocado: presentarlo como que ETL es el caso que le dio nombre a la familia.</div>
+</section>
+
+<!-- 9 ---------------------------------------------------------------- -->
+<section class="slide">
+  <h1>Un pipeline de punta a punta, con IA en cada tramo</h1>
+  <div class="sub">El agente entra en los cuatro tramos. La decisión de la fila de abajo, en ninguno</div>
+  <div class="body" style="justify-content:flex-start">
+    <div>
+      <div class="flow">
+        <div class="head b-blue">Ingestión</div><div class="head b-teal">Transformación</div>
+        <div class="head b-amber">Orquestación</div><div class="head b-blue">Producto</div>
+      </div>
+      <div class="lane">EL AGENTE EJECUTA</div>
+      <div class="flow">
+        <div class="cell">Descarga, APIs, PDF, XLSX</div><div class="cell">SQL en DuckDB, joins, reglas</div>
+        <div class="cell">Orden, dependencias, reejecución</div><div class="cell">Tablero, informe, archivo consultable</div>
+      </div>
+      <div class="lane">USTED DECIDE</div>
+      <div class="flow">
+        <div class="cell t-blue">Elegir la fuente y su licencia</div><div class="cell t-teal">Definir la unidad de análisis</div>
+        <div class="cell t-amber">Fijar qué corre y cuándo</div><div class="cell t-blue">Juzgar si el resultado tiene sentido</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">El agente cubre la fila de arriba de punta a punta. La de abajo no depende del archivo: depende de la pregunta.</div>
+  <div class="notes">Esta es la diapositiva que da nombre a la sesión. «De punta a punta» no significa «sin humano»: significa que ya no queda un tramo del pipeline donde el agente no pueda entrar. Lo que no cambia es quién firma.
+
+Conectar con la Fase 0: el diagnóstico con DuckDB es lo que convierte la fila de abajo en algo verificable y no en una opinión. Sin línea base, cuando el agente afirme cuántos duplicados hay, usted no tiene con qué contradecirlo.</div>
+</section>
+
+<!-- 10 --------------------------------------------------------------- -->
+<section class="slide">
+  <h1>Tres formas de conducir al mismo agente</h1>
+  <div class="sub">Cambia la interfaz y el ritmo de trabajo, no el motor que ejecuta</div>
+  <div class="body">
+    <div class="grid g3">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px"><span class="dot b-blue"></span><span class="t">Agent Manager</span></div>
+        <div class="k t-blue" style="margin-left:26px">Asíncrono</div>
+        <ul><li>Usted define objetivos, no escribe código</li><li>Hasta 5 agentes en paralelo</li><li>Avisa cuando necesita input</li><li>Entrega Artifacts revisables</li></ul>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px"><span class="dot b-teal"></span><span class="t">Editor / IDE</span></div>
+        <div class="k t-teal" style="margin-left:26px">Síncrono</div>
+        <ul><li>Fork de VS Code: extensiones y atajos</li><li>Árbol de archivos, terminal, diffs</li><li>Autocompletado y comandos en lenguaje natural</li><li>Agente contextual en panel lateral</li></ul>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:12px"><span class="dot b-amber"></span><span class="t">agy · CLI</span></div>
+        <div class="k t-amber" style="margin-left:26px">Terminal / headless</div>
+        <ul><li>Binario único, sin interfaz gráfica</li><li>Subagentes y comandos de barra</li><li>Invocable desde un script o pipeline</li><li>Sesiones exportables a la app</li></ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot amber">Las tres leen y escriben los mismos archivos, y comparten permisos y skills. El Manager migra a una app autónoma: Antigravity 2.0.</div>
+  <div class="notes">Insistir: no son herramientas rivales. Apunte las tres a la misma carpeta y lo que escribe una aparece en las otras. Lo que no se comparte es el historial de conversación.</div>
+</section>
+
+<!-- 11 --------------------------------------------------------------- -->
+<section class="slide">
+  <h1>Cuatro superficies, un solo motor</h1>
+  <div class="sub">Todas comparten el mismo agent harness: los permisos y las skills se sincronizan entre ellas</div>
+  <div class="body">
+    <div class="grid g4">
+      <div class="card"><div class="t" style="font-size:18px">Antigravity 2.0</div><div class="k" style="color:var(--mute)">App de escritorio</div>
+        <p style="margin-top:16px">Torre de control. Agentes en paralelo, tareas programadas.</p>
+        <div class="tagx" style="margin-top:20px;display:inline-block;background:var(--teal);color:var(--bg);border-radius:6px;padding:6px 14px;font-size:11.5px;font-weight:700;letter-spacing:.06em">INSTALADO</div></div>
+      <div class="card"><div class="t" style="font-size:18px">Antigravity IDE</div><div class="k" style="color:var(--mute)">Editor</div>
+        <p style="margin-top:16px">Fork de VS Code. Inspección, diffs, terminal, extensiones.</p>
+        <div style="margin-top:20px;display:inline-block;background:var(--teal);color:var(--bg);border-radius:6px;padding:6px 14px;font-size:11.5px;font-weight:700;letter-spacing:.06em">INSTALADO</div></div>
+      <div class="card"><div class="t" style="font-size:18px">agy</div><div class="k" style="color:var(--mute)">CLI en terminal</div>
+        <p style="margin-top:16px">Mismo motor sin GUI. Subagentes y comandos de barra.</p>
+        <div style="margin-top:20px;display:inline-block;background:var(--amber);color:var(--bg);border-radius:6px;padding:6px 14px;font-size:11.5px;font-weight:700;letter-spacing:.06em">PENDIENTE</div></div>
+      <div class="card"><div class="t" style="font-size:18px">SDK</div><div class="k" style="color:var(--mute)">Librería Python</div>
+        <p style="margin-top:16px">Construir agentes propios sobre el mismo runtime.</p>
+        <div style="margin-top:20px;display:inline-block;background:var(--blue);color:var(--bg);border-radius:6px;padding:6px 14px;font-size:11.5px;font-weight:700;letter-spacing:.06em">OPCIONAL</div></div>
+    </div>
+  </div>
+  <div class="foot">Existen dos superficies más — Managed Agents API y Gemini Enterprise — orientadas a despliegue en servidor.</div>
+  <div class="notes">El punto conceptual: el agente ya no vive dentro de una aplicación. La aplicación es solo la ventana por la que uno lo mira. Mencionar que el Agent Manager dentro del IDE será descontinuado en favor de la app 2.0.</div>
+</section>
+
+<!-- 12 --------------------------------------------------------------- -->
+<section class="slide">
+  <h1>En qué cambia el trabajo</h1>
+  <div class="body">
+    <table class="matrix">
+      <thead><tr><th></th><th class="t-blue">Agent Manager</th><th class="t-teal">Editor / IDE</th><th class="t-amber">agy · CLI</th></tr></thead>
+      <tbody>
+        <tr><td>Su rol</td><td>Arquitecto, supervisor</td><td>Analista, revisor</td><td>Operador, automatizador</td></tr>
+        <tr><td>Ritmo</td><td>Asíncrono, en paralelo</td><td>Síncrono, secuencial</td><td>Síncrono o headless</td></tr>
+        <tr><td>Unidad de trabajo</td><td>Tarea completa</td><td>Archivo, celda, línea</td><td>Comando o sesión</td></tr>
+        <tr><td>Ve el detalle</td><td>No — resumen y artefactos</td><td>Sí — todo el estado</td><td>Sí — diffs y logs en texto</td></tr>
+        <tr class="hl"><td>Reproducible</td><td>Conversación: no se re-ejecuta</td><td>Script: determinista</td><td>Invocable desde un pipeline</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="foot amber">La última fila es la que decide si un análisis es publicable: un chat no se versiona ni se audita.</div>
+  <div class="notes">La última fila es la que más importa para producción académica: un chat no se versiona ni se audita.</div>
+</section>
+
+<!-- 13 --------------------------------------------------------------- -->
+<section class="slide">
+  <h1>Cuánta correa darle al agente</h1>
+  <div class="sub">Cuatro modos configurables — la decisión no es técnica, es de gobernanza</div>
+  <div class="body">
+    <div class="grid g2">
+      <div class="card"><div style="display:flex;align-items:center;gap:14px"><span class="num b-blue">1</span><span class="t">Strict</span></div>
+        <p class="m" style="margin-top:14px">Pide permiso antes de casi cada acción. Lento, pero nada ocurre sin que usted lo vea.</p></div>
+      <div class="card"><div style="display:flex;align-items:center;gap:14px"><span class="num b-teal">2</span><span class="t">Review-driven</span></div>
+        <p class="m" style="margin-top:14px">Trabaja solo y se detiene en los puntos de decisión. <strong>Es el modo recomendado por defecto.</strong></p></div>
+      <div class="card"><div style="display:flex;align-items:center;gap:14px"><span class="num b-amber">3</span><span class="t">Agent-driven</span></div>
+        <p class="m" style="margin-top:14px">Nunca solicita revisión. Corre de principio a fin y presenta el resultado.</p></div>
+      <div class="card"><div style="display:flex;align-items:center;gap:14px"><span class="num b-blue">4</span><span class="t">Custom</span></div>
+        <p class="m" style="margin-top:14px">Usted define qué clases de acción requieren aprobación explícita.</p></div>
+    </div>
+  </div>
+  <div class="foot amber">Más autonomía no es mejor ni peor: mueve el punto donde usted asume el riesgo.</div>
+  <div class="notes">Demo: mostrar esta misma pantalla en vivo. Preguntar a la clase cuál elegirían para un análisis que va a publicarse.</div>
+</section>
+
+<!-- 14 --------------------------------------------------------------- -->
+<section class="slide">
+  <h1>La asimetría del oráculo</h1>
+  <div class="sub">Por qué la autonomía rinde distinto en desarrollo que en analítica</div>
+  <div class="body">
+    <div class="split">
+      <div class="card"><div class="k t-blue">Desarrollo de software</div>
+        <div class="q">¿Funciona?</div>
+        <ul style="color:var(--ink)"><li>El código compila o no compila</li><li>Los tests pasan o fallan</li><li>La página carga o no carga</li><li>El agente cierra su propio ciclo</li></ul>
+        <div class="tag b-blue">Verificación automatizable</div></div>
+      <div class="card"><div class="k t-amber">Analítica de datos</div>
+        <div class="q">¿Es verdad?</div>
+        <ul style="color:var(--ink)"><li>Un análisis equivocado corre perfectamente</li><li>Un modelo mal especificado da R² alto</li><li>Una muestra truncada da coeficientes limpios</li><li>Nadie cierra el ciclo salvo usted</li></ul>
+        <div class="tag b-amber">Verificación irreductiblemente humana</div></div>
+    </div>
+  </div>
+  <div class="notes">Esta es la diapositiva bisagra. El navegador integrado de Antigravity verifica que el botón funcione. Nada verifica que la inferencia sea válida.</div>
+</section>
+
+<!-- 15 --------------------------------------------------------------- -->
+<section class="slide">
+  <h1>El código corre. La conclusión está invertida.</h1>
+  <div class="sub">Admisiones de posgrado, UC Berkeley, 1973 — tasa de admisión (%)</div>
+  <div class="body">
+    <div class="grid" style="grid-template-columns:1.9fr 1fr">
+      <div class="chart">
+        <div class="plot" id="plot"></div>
+        <div class="xaxis"><div class="tot">TOTAL</div><div>Depto A</div><div>Depto B</div><div>Depto C</div><div>Depto D</div><div>Depto E</div><div>Depto F</div></div>
+        <div class="legend"><span><i class="b-blue"></i>Hombres</span><span><i class="b-amber"></i>Mujeres</span></div>
+      </div>
+      <div class="card">
+        <div class="k t-blue">Agregado</div>
+        <p style="margin-top:8px">Los hombres son admitidos más que las mujeres.</p>
+        <div class="k t-teal" style="margin-top:22px">Por departamento</div>
+        <p style="margin-top:8px">En cuatro de seis, las mujeres son admitidas más. El sesgo estaba en <strong>a qué departamento se postulaba</strong>.</p>
+        <p class="t-amber" style="margin-top:24px;font-family:var(--serif);font-size:17px;font-weight:700">Ningún test unitario atrapa esto.</p>
+      </div>
+    </div>
+  </div>
+  <div class="notes">Paradoja de Simpson. Cada paso del cómputo es correcto. El agente puede ejecutarlo todo bien y reportar lo contrario de lo que ocurre. Aquí es donde se abre el IDE.</div>
+</section>
+
+<!-- 16 --------------------------------------------------------------- -->
+<section class="slide">
+  <h1>Lo que el agente no le va a decir</h1>
+  <div class="sub">Cinco preguntas que ningún resumen automático contesta solo</div>
+  <div class="body">
+    <div class="steps">
+      <div class="step"><span class="num b-blue">1</span><span class="s-t">¿Cuántos nulos por columna?</span><span class="s-d">El agente reporta la salida final, no lo que descartó en el camino.</span></div>
+      <div class="step"><span class="num b-teal">2</span><span class="s-t">¿Cambió la N?</span><span class="s-d">Un <code>dropna()</code> silencioso altera la muestra sin aparecer en el reporte.</span></div>
+      <div class="step"><span class="num b-amber">3</span><span class="s-t">¿Hay censura a la derecha?</span><span class="s-d">Datos que siguen actualizándose sesgan cualquier tasa calculada sobre ellos.</span></div>
+      <div class="step"><span class="num b-blue">4</span><span class="s-t">¿Qué versión del archivo usó?</span><span class="s-d">Solo el árbol de archivos y el diff lo confirman.</span></div>
+      <div class="step"><span class="num b-teal">5</span><span class="s-t">¿Qué imputó y con qué supuesto?</span><span class="s-d">El agente reporta todo con confianza uniforme: no separa lo que sabe de lo que supuso.</span></div>
+    </div>
+  </div>
+  <div class="notes">La quinta es la más profunda: colapsar la indeterminación en el reporte. El agente no distingue entre dato observado y valor imputado.</div>
+</section>
+
+<!-- 17 --------------------------------------------------------------- -->
+<section class="slide">
+  <h1>El agente dentro del pipeline</h1>
+  <div class="sub">La captura y extracción dejan de ser scripts que se escriben y pasan a ser objetivos que se declaran</div>
+  <div class="body" style="justify-content:flex-start">
+    <div>
+      <div class="flow" style="grid-template-columns:repeat(5,1fr)">
+        <div class="head b-blue">Extracción</div><div class="head b-teal">Limpieza</div><div class="head b-amber">Transformación</div>
+        <div class="head b-blue">Carga</div><div class="head b-teal">Verificación</div>
+      </div>
+      <div class="lane">▸ EL AGENTE EJECUTA</div>
+      <div class="flow" style="grid-template-columns:repeat(5,1fr)">
+        <div class="cell">Descarga, paginación de API, scraping, lectura de PDF y XLSX</div>
+        <div class="cell">Tipos, duplicados, encoding, normalización de nombres</div>
+        <div class="cell">Joins, agregaciones, derivación de variables</div>
+        <div class="cell">Escritura a CSV, Parquet, base de datos</div>
+        <div class="cell">Conteos, rangos, pruebas de integridad</div>
+      </div>
+      <div class="lane">▸ USTED DECIDE</div>
+      <div class="flow" style="grid-template-columns:repeat(5,1fr)">
+        <div class="cell t-blue">Elegir la fuente y su licencia</div>
+        <div class="cell t-teal">Decidir qué hacer con los nulos</div>
+        <div class="cell t-amber">Definir la unidad de análisis</div>
+        <div class="cell t-blue">Fijar el esquema final</div>
+        <div class="cell t-teal">Juzgar si el resultado tiene sentido</div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">Ninguna decisión de la banda inferior es automatizable: todas dependen de la pregunta, no del archivo.</div>
+  <div class="notes">El punto: ninguna de las decisiones de la fila inferior es automatizable, porque todas dependen de la pregunta de investigación, no del archivo.</div>
+</section>
+
+<!-- 18 --------------------------------------------------------------- -->
+<section class="slide">
+  <h1>Caso: Datos Abiertos Ecuador</h1>
+  <div class="sub">datosabiertos.gob.ec — cerca de 400 conjuntos de datos de unas 70 instituciones públicas</div>
+  <div class="body">
+    <div class="grid" style="grid-template-columns:1.1fr 1fr">
+      <div class="card">
+        <div class="k t-teal">Un solo objetivo</div>
+        <p style="margin-top:16px;font-size:15.5px;line-height:1.65">Descarga el conjunto de personas desaparecidas del portal de datos abiertos. Perfila nulos por columna, normaliza provincias, calcula tasa de localización por año y provincia, y entrega un dashboard HTML con el script reproducible.</p>
+        <p class="m" style="margin-top:20px">Un objetivo en lenguaje natural sustituye a un pipeline de varios archivos.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card" style="padding:16px 20px;display:grid;grid-template-columns:30px 1fr;gap:16px;align-items:center">
+          <span class="num b-blue">1</span><div><div class="k t-blue">Subagente 1</div><p style="margin-top:5px;font-size:13.5px">Descarga y perfila: filas, columnas, nulos, rangos de fecha</p></div></div>
+        <div class="card" style="padding:16px 20px;display:grid;grid-template-columns:30px 1fr;gap:16px;align-items:center">
+          <span class="num b-teal">2</span><div><div class="k t-teal">Subagente 2</div><p style="margin-top:5px;font-size:13.5px">Normaliza y transforma: provincias, tipos, variables derivadas</p></div></div>
+        <div class="card" style="padding:16px 20px;display:grid;grid-template-columns:30px 1fr;gap:16px;align-items:center">
+          <span class="num b-amber">3</span><div><div class="k t-amber">Subagente 3</div><p style="margin-top:5px;font-size:13.5px">Visualiza y documenta: gráficos, dashboard, script final</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="foot">Los tres corren en paralelo con contextos aislados. Ninguno contamina la ventana del agente principal.</div>
+  <div class="notes">El dataset de personas desaparecidas del Ministerio del Interior está publicado en ese portal. Advertir la censura a la derecha: los registros recientes siguen actualizándose, lo que sesga la tasa de localización.</div>
+</section>
+
+<!-- 19 --------------------------------------------------------------- -->
+<section class="slide">
+  <h1>Gestión documental y analítica de texto</h1>
+  <div class="sub">El mismo motor aplicado a información que no viene en filas y columnas</div>
+  <div class="body">
+    <div class="grid g3">
+      <div class="card"><div style="display:flex;align-items:center;gap:11px"><span class="dot b-blue" style="width:10px;height:10px"></span><span class="t" style="font-size:17px">Extracción estructurada</span></div>
+        <p class="m" style="margin-top:12px">De PDF, actas y oficios a un CSV con campos definidos por usted</p></div>
+      <div class="card"><div style="display:flex;align-items:center;gap:11px"><span class="dot b-teal" style="width:10px;height:10px"></span><span class="t" style="font-size:17px">Clasificación y etiquetado</span></div>
+        <p class="m" style="margin-top:12px">Asignar categorías a un corpus según un esquema propio, no genérico</p></div>
+      <div class="card"><div style="display:flex;align-items:center;gap:11px"><span class="dot b-amber" style="width:10px;height:10px"></span><span class="t" style="font-size:17px">Resumen con trazabilidad</span></div>
+        <p class="m" style="margin-top:12px">Síntesis que cita el documento y la página de cada afirmación</p></div>
+      <div class="card"><div style="display:flex;align-items:center;gap:11px"><span class="dot b-teal" style="width:10px;height:10px"></span><span class="t" style="font-size:17px">Análisis de sentimiento</span></div>
+        <p class="m" style="margin-top:12px">Sobre respuestas abiertas de encuestas o reclamos ciudadanos</p></div>
+      <div class="card"><div style="display:flex;align-items:center;gap:11px"><span class="dot b-amber" style="width:10px;height:10px"></span><span class="t" style="font-size:17px">Búsqueda semántica</span></div>
+        <p class="m" style="margin-top:12px">Preguntar al archivo en lenguaje natural en vez de abrir carpetas</p></div>
+      <div class="card"><div style="display:flex;align-items:center;gap:11px"><span class="dot b-blue" style="width:10px;height:10px"></span><span class="t" style="font-size:17px">Detección de divergencias</span></div>
+        <p class="m" style="margin-top:12px">Contrastar versiones de un mismo documento y señalar diferencias</p></div>
+    </div>
+  </div>
+  <div class="foot">La cautela cambia de forma: en texto no hay una N que verificar. Lo que hay que auditar es <strong>qué quedó fuera del corpus</strong>.</div>
+  <div class="notes">Enlazar con el encuentro previsto sobre análisis de texto y sentimientos. La pregunta de control en texto no es cuántos nulos, sino qué documentos no llegaron al corpus y por qué.</div>
+</section>
+
+<!-- 20 --------------------------------------------------------------- -->
+<section class="slide">
+  <h1>El IDE no desaparece: cambia de función</h1>
+  <div class="body">
+    <div class="split">
+      <div class="card" style="text-align:center;padding:34px 28px">
+        <div class="k" style="color:var(--mute)">Antes</div>
+        <div style="font-family:var(--serif);font-size:34px;font-weight:700;margin-top:16px;line-height:1.3">80 % escribir<br>20 % inspeccionar</div>
+        <p class="m" style="margin-top:20px">Mucho tiempo dentro del editor,<br>bajo valor por minuto.</p>
+      </div>
+      <div class="card" style="text-align:center;padding:34px 28px">
+        <div class="k t-teal">Ahora</div>
+        <div style="font-family:var(--serif);font-size:34px;font-weight:700;margin-top:16px;line-height:1.3;color:var(--teal)">~0 % escribir<br>100 % inspeccionar</div>
+        <p class="m" style="margin-top:20px">Poco tiempo dentro del editor,<br>valor por minuto altísimo.</p>
+      </div>
+    </div>
+    <div class="band" style="text-align:center;font-family:var(--serif);font-size:19px;font-weight:700;padding:22px">
+      Cuanto más autónomo el agente, más necesaria la superficie de inspección humana.
+    </div>
+  </div>
+  <div class="notes">El tiempo total en el IDE baja mucho. El valor por minuto dentro del IDE sube muchísimo. No es lo mismo que volverse irrelevante.</div>
+</section>
+
+<!-- 21 --------------------------------------------------------------- -->
+<section class="slide">
+  <h1>Cómo llevarlo al aula</h1>
+  <div class="sub">Un recorrido de 25 minutos que atraviesa las tres superficies</div>
+  <div class="body">
+    <div class="steps">
+      <div class="step"><span class="num b-blue">1</span><span class="s-t">Despachar</span><span class="s-d">En Antigravity 2.0: lanzar una tarea real sobre el CSV. Mientras corre, explicar la anatomía del prompt analítico usando el que se acaba de escribir.</span></div>
+      <div class="step"><span class="num b-teal">2</span><span class="s-t">Revisar el Artifact</span><span class="s-d">Volver al resultado y preguntar a la clase: quién confía en esto, y qué verificaría antes de firmarlo.</span></div>
+      <div class="step"><span class="num b-amber">3</span><span class="s-t">Abrir el IDE</span><span class="s-d">Buscar en los datos lo que el agente no reportó. Con el caso Berkeley el hallazgo está garantizado.</span></div>
+      <div class="step"><span class="num b-blue">4</span><span class="s-t">Cerrar en terminal</span><span class="s-d">Correr <code>agy</code> sobre la misma carpeta: mismo motor, sin interfaz. Deja planteado el encuentro de agentes CLI.</span></div>
+    </div>
+  </div>
+  <div class="foot amber">Tener una conversación ya ejecutada de respaldo: las cuotas del plan gratuito se agotan rápido.</div>
+  <div class="notes">El paso 3 es el núcleo de la clase: el agente hizo todo bien y la conclusión estaba invertida. El paso 4 solo necesita 2 minutos.</div>
+</section>
+
+<!-- 22 --------------------------------------------------------------- -->
+<section class="slide">
+  <h1>Instalación de las tres superficies</h1>
+  <div class="sub">Todo sale de antigravity.google/download — cada producto se descarga por separado</div>
+  <div class="body">
+    <div class="grid g3">
+      <div class="card"><div class="t" style="font-size:18px">Antigravity 2.0</div><div class="k t-blue">Agent Manager</div>
+        <ul style="margin-top:18px"><li>Instalador para su sistema desde la página de descarga</li><li>Iniciar sesión con cuenta Google</li><li>Open Folder → apuntar a la carpeta del proyecto</li></ul>
+        <p class="m" style="margin-top:16px;font-size:12.5px">Ícono con fondo blanco</p></div>
+      <div class="card"><div class="t" style="font-size:18px">Antigravity IDE</div><div class="k t-teal">Editor</div>
+        <ul style="margin-top:18px"><li>Sección Antigravity IDE de la misma página</li><li>Se instala junto a la 2.0, no la reemplaza</li><li>Botón Open IDE salta entre ambas</li></ul>
+        <p class="m" style="margin-top:16px;font-size:12.5px">Ícono con rejilla negra</p></div>
+      <div class="card"><div class="t" style="font-size:18px">agy</div><div class="k t-amber">CLI</div>
+        <ul style="margin-top:18px"><li>PowerShell: <code>irm .../cli/install.ps1 | iex</code></li><li>macOS/Linux: <code>curl -fsSL .../cli/install.sh | bash</code></li><li>Abrir terminal nueva → <code>agy --version</code></li></ul>
+        <p class="m" style="margin-top:16px;font-size:12.5px">Binario único, sin admin</p></div>
+    </div>
+  </div>
+  <div class="foot">Requisitos: Windows 10 (64 bits) o superior, macOS 12+, Linux con glibc 2.28+. Chrome instalado y cuenta Gmail personal para el agente de navegador.</div>
+  <div class="notes">Si ya tenían Antigravity 1.x, la actualización convierte la app en 2.0 y pregunta si desean conservar el IDE: hay que responder que sí. Los dos íconos se distinguen por el fondo.</div>
+</section>
+
+<!-- 23 --------------------------------------------------------------- -->
+<section class="slide closing">
+  <h1>El agente automatizó<br>la producción,<br>no la responsabilidad.</h1>
+  <div class="k">Despache en el Manager. Verifique en el IDE. Firme usted.</div>
+  <div class="notes">Cierre. Enlazar con los tres modos de uso del LLM: delegación, auditable, revisor. La herramienta cambia el modo por defecto; la elección sigue siendo del analista.</div>
+</section>
+
+</div></div>
+
+<div id="bar"></div>
+<div id="pager"></div>
+<div id="help"><b>← →</b> avanzar · <b>N</b> notas · <b>S</b> vista docente · <b>O</b> índice · <b>F</b> pantalla completa</div>
+<div id="grid"></div>
+<div id="drawer"><h4>Notas del orador</h4><div id="drawer-body"></div></div>
+
+<script>
+(function(){
+  const deck   = document.getElementById('deck');
+  const slides = Array.from(deck.querySelectorAll('.slide'));
+  const bar    = document.getElementById('bar');
+  const pager  = document.getElementById('pager');
+  const grid   = document.getElementById('grid');
+  const drawer = document.getElementById('drawer');
+  const dbody  = document.getElementById('drawer-body');
+  const N = slides.length;
+  let i = 0, presenter = null;
+  const chan = ('BroadcastChannel' in window) ? new BroadcastChannel('deck-agentica') : null;
+
+  const notesOf = n => { const e = slides[n].querySelector('.notes'); return e ? e.textContent.trim() : ''; };
+  const titleOf = n => { const e = slides[n].querySelector('h1'); return e ? e.textContent.trim() : 'Portada'; };
+
+  /* ---------- escala al viewport ---------- */
+  function fit(){
+    const pad = 24;
+    const s = Math.min((innerWidth-pad)/1280, (innerHeight-pad)/720);
+    deck.style.transform = 'scale(' + s + ')';
+  }
+  addEventListener('resize', fit); fit();
+
+  /* ---------- gráfico Berkeley ---------- */
+  (function(){
+    const plot = document.getElementById('plot');
+    if(!plot) return;
+    const H=[44,62,63,37,33,28,6], M=[35,82,68,34,35,24,7], MAX=90;
+    plot.innerHTML = H.map((h,k)=>
+      '<div class="grp">' +
+        '<div class="bar h" style="height:'+(h/MAX*100)+'%"><span>'+h+'</span></div>' +
+        '<div class="bar m" style="height:'+(M[k]/MAX*100)+'%"><span>'+M[k]+'</span></div>' +
+      '</div>').join('');
+  })();
+
+  /* ---------- índice ---------- */
+  grid.innerHTML = slides.map((s,k)=>
+    '<button data-k="'+k+'"><i>'+(k+1)+'</i>'+titleOf(k)+'</button>').join('');
+  grid.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    go(+b.dataset.k); grid.classList.remove('on');
+  });
+
+  /* ---------- navegación ---------- */
+  function go(n, quiet){
+    i = Math.max(0, Math.min(N-1, n));
+    slides.forEach((s,k)=> s.classList.toggle('is-active', k===i));
+    bar.style.width = ((i+1)/N*100) + '%';
+    pager.textContent = (i+1) + ' / ' + N;
+    dbody.textContent = notesOf(i) || '(sin notas para esta diapositiva)';
+    Array.from(grid.children).forEach((b,k)=> b.classList.toggle('cur', k===i));
+    if(location.hash !== '#/'+(i+1)) history.replaceState(null,'','#/'+(i+1));
+    if(!quiet) push();
+  }
+  function push(){
+    const msg = {type:'sync', i:i, n:N, title:titleOf(i),
+                 next:(i+1<N? titleOf(i+1):'— fin —'), notes:notesOf(i)};
+    if(chan) chan.postMessage(msg);
+    if(presenter && !presenter.closed) presenter.postMessage(msg,'*');
+  }
+  if(chan) chan.onmessage = e => { if(e.data && e.data.type==='goto') go(e.data.i, true); };
+  addEventListener('message', e => { if(e.data && e.data.type==='goto') go(e.data.i, true); });
+
+  /* ---------- vista docente ---------- */
+  function openPresenter(){
+    if(presenter && !presenter.closed){ presenter.focus(); return; }
+    presenter = open('', 'docente', 'width=880,height=680');
+    if(!presenter){ alert('El navegador bloqueó la ventana. Permita las ventanas emergentes para esta página.'); return; }
+    presenter.document.write(PRESENTER_HTML);
+    presenter.document.close();
+    setTimeout(push, 260);
+  }
+  const PRESENTER_HTML = `<!doctype html><html lang="es"><head><meta charset="utf-8">
+<title>Vista del docente</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0B2027;color:#EAF2F1;font-family:Calibri,"Segoe UI",system-ui,sans-serif;padding:18px;
+     display:grid;grid-template-rows:auto auto 1fr auto;gap:14px;height:100vh}
+.hdr{display:flex;justify-content:space-between;align-items:baseline}
+.hdr b{font-family:Cambria,serif;font-size:21px}
+.hdr span{color:#A9C2C6;font-size:13px}
+#timer{font-size:34px;font-variant-numeric:tabular-nums;color:#02C39A;font-weight:700}
+.nx{background:#143A44;border-radius:9px;padding:11px 15px;font-size:13.5px;color:#A9C2C6}
+.nx b{color:#E8A33D;letter-spacing:.08em;font-size:10.5px;text-transform:uppercase;display:block;margin-bottom:4px}
+#notes{background:#143A44;border-radius:9px;padding:20px 24px;font-size:18px;line-height:1.65;
+       overflow:auto;white-space:pre-wrap}
+.ctl{display:flex;gap:9px}
+button{flex:1;background:#143A44;color:#EAF2F1;border:0;border-radius:8px;padding:11px;
+       font-size:14px;cursor:pointer;font-family:inherit}
+button:hover{background:#1c4d59}
+</style></head><body>
+<div class="hdr"><div><b id="t">—</b><br><span id="c"></span></div><div id="timer">00:00</div></div>
+<div class="nx"><b>Siguiente</b><span id="nx">—</span></div>
+<div id="notes">Esperando…</div>
+<div class="ctl"><button id="p">← Anterior</button><button id="r">Reiniciar reloj</button><button id="n">Siguiente →</button></div>
+<script>
+var t0=Date.now(), idx=0;
+var ch=('BroadcastChannel' in window)?new BroadcastChannel('deck-agentica'):null;
+function tick(){var s=Math.floor((Date.now()-t0)/1000);
+ document.getElementById('timer').textContent=
+   String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+setInterval(tick,500);
+function apply(d){ if(!d||d.type!=='sync')return; idx=d.i;
+ document.getElementById('t').textContent=d.title;
+ document.getElementById('c').textContent='Diapositiva '+(d.i+1)+' de '+d.n;
+ document.getElementById('nx').textContent=d.next;
+ document.getElementById('notes').textContent=d.notes||'(sin notas para esta diapositiva)';}
+if(ch) ch.onmessage=function(e){apply(e.data)};
+addEventListener('message',function(e){apply(e.data)});
+function goto(n){ var m={type:'goto',i:n}; if(ch)ch.postMessage(m);
+ try{ if(window.opener) window.opener.postMessage(m,'*'); }catch(err){} }
+document.getElementById('p').onclick=function(){goto(idx-1)};
+document.getElementById('n').onclick=function(){goto(idx+1)};
+document.getElementById('r').onclick=function(){t0=Date.now();tick()};
+addEventListener('keydown',function(e){
+ if(e.key==='ArrowRight'||e.key===' ')goto(idx+1);
+ if(e.key==='ArrowLeft')goto(idx-1);
+ if(e.key==='r'||e.key==='R'){t0=Date.now();tick()}
+ if(e.key==='Escape')close();});
+<\/script></body></html>`;
+
+  /* ---------- teclado ---------- */
+  addEventListener('keydown', e=>{
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    const k = e.key;
+    if(k==='ArrowRight'||k==='PageDown'||k===' '){ e.preventDefault(); go(i+1); }
+    else if(k==='ArrowLeft'||k==='PageUp'){ e.preventDefault(); go(i-1); }
+    else if(k==='Home'){ go(0); } else if(k==='End'){ go(N-1); }
+    else if(k==='f'||k==='F'){ document.fullscreenElement? document.exitFullscreen(): document.documentElement.requestFullscreen(); }
+    else if(k==='o'||k==='O'){ grid.classList.toggle('on'); }
+    else if(k==='n'||k==='N'){ drawer.classList.toggle('on'); }
+    else if(k==='s'||k==='S'){ openPresenter(); }
+    else if(k==='Escape'){ grid.classList.remove('on'); drawer.classList.remove('on'); }
+  });
+  deck.addEventListener('click', e=>{ if(!e.target.closest('a')) go(i+1); });
+
+  const m = location.hash.match(/^#\/(\d+)$/);
+  go(m ? (+m[1]-1) : 0, true);
+})();
+</script>
+</body>
+</html>
