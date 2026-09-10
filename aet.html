@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Herramienta interactiva del metodo AET: contrae el tensor de evidencia anotada, tipa el panel de fuentes con la cadena de precedencia y ordena solo las alternativas decidibles.">
+<meta name="author" content="Maikel Leyva-Vazquez">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#9878;</text></svg>">
+<style>html{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Analizador de Paneles AET</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#F5F6F8; --surface:#FFFFFF; --surface-2:#EDEFF3; --surface-3:#E4E8EF;
+  --ink:#171B22; --muted:#5C6675; --faint:#828C9B;
+  --line:#D6DCE5; --line-strong:#B9C2CF;
+  --accent:#2E4A7D; --accent-soft:#E3E9F4; --accent-ink:#1F3557;
+  --pro:#0F7A6B; --con:#A94436; --ind:#B07A18;
+  --t-crit:#A63A2E; --t-crit-bg:#F8E7E4;
+  --t-warn:#8F5510; --t-warn-bg:#FAEEDC;
+  --t-null:#5C6675; --t-null-bg:#E8EBF0;
+  --t-good:#166A51; --t-good-bg:#DFF0E9;
+  --t-info:#2E4A7D; --t-info-bg:#E3E9F4;
+  --shadow:0 1px 2px rgba(20,28,44,.06),0 6px 20px rgba(20,28,44,.06);
+  --radius:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#10141B; --surface:#171C25; --surface-2:#1E2530; --surface-3:#26303D;
+    --ink:#E6EAF0; --muted:#98A2B1; --faint:#7A8494;
+    --line:#2B3442; --line-strong:#3B4655;
+    --accent:#84A6DC; --accent-soft:#1D2A3D; --accent-ink:#A8C2E8;
+    --pro:#3FB5A0; --con:#DB8074; --ind:#D6A93F;
+    --t-crit:#E4867A; --t-crit-bg:#361F1C;
+    --t-warn:#D9A24A; --t-warn-bg:#332617;
+    --t-null:#98A2B1; --t-null-bg:#232B36;
+    --t-good:#4FBE96; --t-good-bg:#16302A;
+    --t-info:#84A6DC; --t-info-bg:#1D2A3D;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.32);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10141B; --surface:#171C25; --surface-2:#1E2530; --surface-3:#26303D;
+  --ink:#E6EAF0; --muted:#98A2B1; --faint:#7A8494;
+  --line:#2B3442; --line-strong:#3B4655;
+  --accent:#84A6DC; --accent-soft:#1D2A3D; --accent-ink:#A8C2E8;
+  --pro:#3FB5A0; --con:#DB8074; --ind:#D6A93F;
+  --t-crit:#E4867A; --t-crit-bg:#361F1C;
+  --t-warn:#D9A24A; --t-warn-bg:#332617;
+  --t-null:#98A2B1; --t-null-bg:#232B36;
+  --t-good:#4FBE96; --t-good-bg:#16302A;
+  --t-info:#84A6DC; --t-info-bg:#1D2A3D;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.32);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px; margin:0 auto; padding-inline:20px; padding-block:28px 56px}
+h1,h2,h3{font-family:"IBM Plex Serif",Georgia,serif; text-wrap:balance; margin:0}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace; font-variant-numeric:tabular-nums}
+
+/* ---------- header ---------- */
+header{display:flex; flex-wrap:wrap; gap:20px; align-items:flex-end; justify-content:space-between; margin-bottom:22px}
+.brand h1{font-size:1.9rem; font-weight:600; letter-spacing:-.01em}
+.brand p{margin:.4rem 0 0; color:var(--muted); max-width:60ch}
+.brand a{color:var(--accent); text-underline-offset:3px}
+.eyebrow{
+  font-size:.7rem; font-weight:600; letter-spacing:.13em; text-transform:uppercase;
+  color:var(--faint); margin-bottom:.35rem;
+}
+
+/* ---------- generic panel ---------- */
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow)}
+.panel-head{
+  display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+  padding:14px 16px; border-bottom:1px solid var(--line);
+}
+.panel-head h2{font-size:1.02rem; font-weight:600}
+.panel-head .hint{font-size:.78rem; color:var(--faint)}
+.panel-body{padding:16px}
+
+/* ---------- overview strip ---------- */
+.overview{margin-bottom:18px}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{
+  display:flex; align-items:center; gap:9px; padding:8px 12px 8px 10px;
+  border:1px solid var(--line); border-radius:8px; background:var(--surface-2);
+  cursor:pointer; font:inherit; color:inherit; text-align:left;
+}
+.chip:hover{border-color:var(--line-strong)}
+.chip[aria-pressed="true"]{border-color:var(--accent); background:var(--accent-soft); box-shadow:inset 0 0 0 1px var(--accent)}
+.chip .nm{font-weight:600; font-size:.9rem}
+.chip .rk{font-size:.75rem; color:var(--faint)}
+.tag{
+  display:inline-flex; align-items:center; justify-content:center; min-width:2.6em;
+  padding:2px 7px; border-radius:5px; font-size:.76rem; font-weight:600;
+  font-family:"IBM Plex Mono",monospace;
+}
+.tag.TOPm{color:var(--t-crit); background:var(--t-crit-bg)}
+.tag.TOPx{color:var(--t-warn); background:var(--t-warn-bg)}
+.tag.I{color:var(--t-warn); background:var(--t-warn-bg)}
+.tag.BOT{color:var(--t-null); background:var(--t-null-bg)}
+.tag.D{color:var(--t-good); background:var(--t-good-bg)}
+.tag.N{color:var(--t-info); background:var(--t-info-bg)}
+
+/* ---------- layout ---------- */
+.cols{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:18px; align-items:start}
+@media (max-width:900px){ .cols{grid-template-columns:minmax(0,1fr)} }
+.stack{display:flex; flex-direction:column; gap:18px}
+
+/* ---------- bands ---------- */
+.bands{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px}
+.field{display:flex; flex-direction:column; gap:5px}
+.field label{font-size:.74rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.field .desc{font-size:.75rem; color:var(--faint); line-height:1.4}
+input[type=number],input[type=text]{
+  width:100%; padding:7px 9px; border:1px solid var(--line-strong); border-radius:7px;
+  background:var(--surface); color:var(--ink); font:500 .88rem/1.3 "IBM Plex Mono",monospace;
+  font-variant-numeric:tabular-nums;
+}
+input[type=text]{font-family:"IBM Plex Sans",sans-serif; font-weight:500}
+input:focus-visible,button:focus-visible,.chip:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+input.bad{border-color:var(--t-crit); background:var(--t-crit-bg)}
+
+/* ---------- tables ---------- */
+.scroll{overflow-x:auto}
+table{border-collapse:collapse; width:100%; font-size:.85rem}
+th,td{padding:6px 8px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap}
+thead th{
+  font-size:.7rem; letter-spacing:.07em; text-transform:uppercase; color:var(--muted);
+  font-weight:600; border-bottom:1px solid var(--line-strong);
+}
+tbody tr:last-child td{border-bottom:none}
+td.num,th.num{text-align:right; font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums}
+.rowlabel{font-weight:600}
+
+/* tensor editor */
+.tensor td,.tensor th{padding:4px 6px}
+.trio{display:flex; gap:3px}
+.trio input{width:4.1em; padding:4px 5px; font-size:.79rem; text-align:right}
+.trio input.T{border-bottom:2px solid var(--pro)}
+.trio input.I{border-bottom:2px solid var(--ind)}
+.trio input.F{border-bottom:2px solid var(--con)}
+.legend-trio{display:flex; gap:14px; font-size:.75rem; color:var(--muted); margin-top:10px; flex-wrap:wrap}
+.legend-trio span{display:inline-flex; align-items:center; gap:5px}
+.swatch{width:14px; height:3px; border-radius:2px; display:inline-block}
+
+/* ---------- buttons ---------- */
+button{
+  font:600 .82rem/1 "IBM Plex Sans",sans-serif; padding:7px 12px; border-radius:7px;
+  border:1px solid var(--line-strong); background:var(--surface-2); color:var(--ink); cursor:pointer;
+}
+button:hover{background:var(--surface-3)}
+button.primary{background:var(--accent); border-color:var(--accent); color:var(--surface)}
+button.primary:hover{filter:brightness(1.08)}
+button.ghost{background:transparent; border-color:transparent; color:var(--muted); padding:4px 7px}
+button.ghost:hover{background:var(--surface-2); color:var(--ink)}
+.btnrow{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+
+/* ---------- precedence chain ---------- */
+.chain{display:flex; flex-direction:column; gap:2px; margin:0; padding:0; list-style:none}
+.chain li{
+  display:grid; grid-template-columns:22px 1fr auto; gap:10px; align-items:baseline;
+  padding:7px 10px; border-radius:7px; font-size:.83rem; color:var(--muted);
+  border:1px solid transparent;
+}
+.chain li .step{font-family:"IBM Plex Mono",monospace; font-size:.76rem; color:var(--faint)}
+.chain li .verdict{font-family:"IBM Plex Mono",monospace; font-size:.78rem}
+.chain li.fired{background:var(--accent-soft); border-color:var(--accent); color:var(--ink); font-weight:500}
+.chain li.skipped{opacity:.55}
+
+/* ---------- square ---------- */
+.square-wrap{display:flex; justify-content:center}
+svg.square{width:100%; max-width:330px; height:auto}
+.sqcap{font-size:.76rem; color:var(--faint); margin-top:8px; line-height:1.45}
+
+.note{
+  font-size:.8rem; color:var(--muted); background:var(--surface-2);
+  border-left:3px solid var(--accent); padding:10px 12px; border-radius:0 7px 7px 0;
+}
+.note strong{color:var(--ink)}
+footer{margin-top:34px; padding-top:18px; border-top:1px solid var(--line); font-size:.8rem; color:var(--faint)}
+footer a{color:var(--accent)}
+.err{color:var(--t-crit); font-size:.82rem; font-weight:500}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">
+    <div class="eyebrow">Lógica anotada paraconsistente · abstención tipada</div>
+    <h1>Analizador de Paneles AET</h1>
+    <p>Contrae un tensor de evidencia anotada, tipa el panel de fuentes con la cadena de precedencia y ordena
+      sólo las alternativas decidibles. Implementa el procedimiento de
+      <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=7441661" target="_blank" rel="noopener">Leyva-Vázquez (2026)</a>,
+      con la misma tolerancia τ&nbsp;=&nbsp;10⁻⁹ que la implementación de referencia.</p>
+  </div>
+  <div class="btnrow">
+    <button id="reset">Restaurar ejemplo</button>
+    <button id="copy">Copiar JSON</button>
+  </div>
+</header>
+
+<section class="panel overview">
+  <div class="panel-head">
+    <h2>Panel de alternativas</h2>
+    <span class="hint">Sólo las decidibles se ordenan · pulsa una para ver su diagnóstico</span>
+  </div>
+  <div class="panel-body">
+    <div class="chips" id="chips"></div>
+    <p class="err" id="globalerr" hidden></p>
+  </div>
+</section>
+
+<div class="cols">
+  <!-- ============ columna izquierda: entrada ============ -->
+  <div class="stack">
+
+    <section class="panel">
+      <div class="panel-head"><h2>Bandas declaradas</h2><span class="hint">antes de ver los datos</span></div>
+      <div class="panel-body">
+        <div class="bands">
+          <div class="field">
+            <label for="delta">δ · contradicción</label>
+            <input type="number" id="delta" min="0" max="1" step="0.01" value="0.15">
+            <span class="desc">Fuente dividida si G<sub>ct</sub> &gt; δ; silente si G<sub>ct</sub> &lt; −δ.</span>
+          </div>
+          <div class="field">
+            <label for="eps">ε · certeza</label>
+            <input type="number" id="eps" min="0" max="1" step="0.01" value="0.10">
+            <span class="desc">Decidible si |G<sub>c</sub>| de la media ≥ ε. Oposición si O &gt; ε.</span>
+          </div>
+          <div class="field">
+            <label for="deltaI">δ<sub>I</sub> · indeterminación</label>
+            <input type="number" id="deltaI" min="0" max="1" step="0.01" value="0.30">
+            <span class="desc">Separa I de ⊥ dentro de la rama silente.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Fuentes y criterios</h2><span class="hint">los pesos se normalizan a suma 1</span>
+      </div>
+      <div class="panel-body">
+        <div class="scroll">
+          <table id="sourcetable">
+            <thead><tr><th>Fuente</th><th class="num">Peso r</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="btnrow" style="margin-top:10px"><button id="addsource">Añadir fuente</button></div>
+        <div class="scroll" style="margin-top:18px">
+          <table id="crittable">
+            <thead><tr><th>Criterio</th><th class="num">Peso w</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="btnrow" style="margin-top:10px"><button id="addcrit">Añadir criterio</button></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Tensor de evidencia</h2>
+        <span class="hint" id="tensorwho"></span>
+      </div>
+      <div class="panel-body">
+        <div class="scroll"><table class="tensor" id="tensor"></table></div>
+        <div class="legend-trio">
+          <span><i class="swatch" style="background:var(--pro)"></i> T · evidencia a favor</span>
+          <span><i class="swatch" style="background:var(--ind)"></i> I · indeterminación declarada</span>
+          <span><i class="swatch" style="background:var(--con)"></i> F · evidencia en contra</span>
+        </div>
+        <div class="btnrow" style="margin-top:14px">
+          <button id="addalt">Añadir alternativa</button>
+          <button id="delalt" class="ghost">Eliminar esta alternativa</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ columna derecha: diagnóstico ============ -->
+  <div class="stack">
+
+    <section class="panel">
+      <div class="panel-head"><h2 id="dxtitle">Diagnóstico</h2><span class="hint" id="dxtype"></span></div>
+      <div class="panel-body">
+        <ol class="chain" id="chain"></ol>
+        <p class="note" id="action" style="margin-top:14px"></p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Cuadrado de anotaciones</h2><span class="hint">posiciones de fuente</span></div>
+      <div class="panel-body">
+        <div class="square-wrap"><svg class="square" id="square" viewBox="0 0 360 360" role="img"
+          aria-label="Cuadrado de anotaciones con las bandas de contradicción y de certeza y las posiciones de cada fuente"></svg></div>
+        <p class="sqcap" id="sqcap"></p>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Posiciones por fuente</h2><span class="hint">tras contraer criterios</span></div>
+      <div class="panel-body scroll">
+        <table id="positions">
+          <thead><tr>
+            <th>Fuente</th><th class="num">T</th><th class="num">I</th><th class="num">F</th>
+            <th class="num">G<sub>c</sub></th><th class="num">G<sub>ct</sub></th><th>Estado</th>
+          </tr></thead><tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>Diagnóstico por criterio</h2><span class="hint">lo que la contracción diluye</span></div>
+      <div class="panel-body scroll">
+        <table id="percrit">
+          <thead><tr>
+            <th>Criterio</th><th class="num">máx G<sub>ct</sub></th><th class="num">O</th><th class="num">máx I</th><th>Aviso</th>
+          </tr></thead><tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
+
+<section class="panel" style="margin-top:18px">
+  <div class="panel-head"><h2>Ordenación de las decidibles</h2><span class="hint">G<sub>c</sub> de la posición media · equivale al TOPSIS Manhattan</span></div>
+  <div class="panel-body scroll">
+    <table id="ranking">
+      <thead><tr>
+        <th class="num">#</th><th>Alternativa</th><th>Tipo</th>
+        <th class="num">G<sub>c</sub></th><th class="num">C₁</th><th class="num">S</th><th>Lectura</th>
+      </tr></thead><tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <p>Los tipos, las bandas y la cadena de precedencia siguen la Definición 8* del artículo de método.
+  Las acciones recomendadas son decisiones de diseño, no resultados demostrados.
+  El ejemplo cargado es <strong>estipulado</strong>: sirve para ver el procedimiento, no es un caso empírico.</p>
+</footer>
+</div>
+
+<script>
+"use strict";
+const TOL = 1e-9;
+const $ = s => document.querySelector(s);
+
+/* ---------------- ejemplo estipulado ---------------- */
+function demo(){
+  return {
+    delta:0.15, eps:0.10, deltaI:0.30,
+    sources:[{name:"Docentes",r:0.4},{name:"Proveedor",r:0.3},{name:"Unidad TI",r:0.3}],
+    criteria:[{name:"Costo",w:0.2},{name:"Seguridad",w:0.35},{name:"Soporte local",w:0.25},{name:"Interoperabilidad",w:0.2}],
+    alts:[
+      {name:"Plataforma A", cells:[
+        [[0.9,0,0.1],[0.8,0,0.1],[0.85,0,0.05]],
+        [[0.8,0,0.1],[0.9,0,0.1],[0.75,0,0.15]],
+        [[0.7,0,0.2],[0.8,0,0.1],[0.7,0,0.2]],
+        [[0.8,0,0.1],[0.7,0,0.2],[0.8,0,0.1]]]},
+      {name:"Plataforma B", cells:[
+        [[0.7,0,0.2],[0.6,0,0.3],[0.7,0,0.2]],
+        [[0.9,0,0.85],[0.5,0,0.4],[0.6,0,0.3]],
+        [[0.6,0,0.3],[0.7,0,0.2],[0.6,0,0.3]],
+        [[0.7,0,0.2],[0.6,0,0.3],[0.7,0,0.2]]]},
+      {name:"Plataforma C", cells:[
+        [[0.9,0,0.05],[0.1,0,0.9],[0.5,0,0.4]],
+        [[0.85,0,0.1],[0.05,0,0.9],[0.5,0,0.45]],
+        [[0.9,0,0.05],[0.1,0,0.85],[0.45,0,0.5]],
+        [[0.8,0,0.1],[0.15,0,0.8],[0.5,0,0.4]]]},
+      {name:"Plataforma D", cells:[
+        [[0.15,0,0.1],[0.1,0,0.15],[0.2,0,0.1]],
+        [[0.1,0,0.2],[0.15,0,0.1],[0.1,0,0.15]],
+        [[0.2,0,0.1],[0.1,0,0.2],[0.15,0,0.1]],
+        [[0.1,0,0.15],[0.2,0,0.1],[0.1,0,0.2]]]},
+      {name:"Plataforma E", cells:[
+        [[0.15,0.2,0.1],[0.1,0.9,0.15],[0.2,0.3,0.1]],
+        [[0.1,0.3,0.2],[0.15,0.95,0.1],[0.1,0.4,0.15]],
+        [[0.2,0.2,0.1],[0.1,0.9,0.2],[0.15,0.3,0.1]],
+        [[0.1,0.25,0.15],[0.2,0.9,0.1],[0.1,0.35,0.2]]]},
+      {name:"Plataforma F", cells:[
+        [[0.5,0,0.45],[0.45,0,0.5],[0.5,0,0.5]],
+        [[0.5,0,0.5],[0.5,0,0.45],[0.45,0,0.5]],
+        [[0.45,0,0.5],[0.5,0,0.5],[0.5,0,0.45]],
+        [[0.5,0,0.45],[0.45,0,0.5],[0.5,0,0.5]]]}
+    ]
+  };
+}
+
+let S = load() || demo();
+let sel = 0;
+
+function load(){
+  try{ const raw = localStorage.getItem("aet-state"); return raw ? JSON.parse(raw) : null; }
+  catch(e){ return null; }
+}
+function save(){
+  try{ localStorage.setItem("aet-state", JSON.stringify(S)); }catch(e){/* modo privado */}
+}
+
+/* ---------------- núcleo del método ---------------- */
+const Gc  = p => p.T - p.F;
+const Gct = p => p.T + p.F - 1;
+
+function norm(list, key){
+  const s = list.reduce((a,x)=>a+Math.max(0,Number(x[key])||0),0);
+  return list.map(x => s>0 ? Math.max(0,Number(x[key])||0)/s : 1/list.length);
+}
+
+/* Paso 1: contraer criterios DENTRO de cada fuente */
+function positionsOf(alt, w){
+  return S.sources.map((_,si)=>{
+    let T=0,I=0,F=0;
+    S.criteria.forEach((_,ci)=>{
+      const c = alt.cells[ci][si];
+      T += w[ci]*c[0]; I += w[ci]*c[1]; F += w[ci]*c[2];
+    });
+    return {T,I,F};
+  });
+}
+
+/* Paso 2: oposición del panel */
+function opposition(M){
+  if(M.length < 2) return -1;
+  let best = -Infinity;
+  for(let i=0;i<M.length;i++) for(let j=0;j<M.length;j++){
+    if(i===j) continue;
+    best = Math.max(best, Math.min(Gc(M[i]), -Gc(M[j])));
+  }
+  return best;
+}
+
+/* Paso 3: tipar, primer test que aplique */
+function classify(M, r, d, e, dI){
+  const gct = M.map(Gct);
+  const maxGct = Math.max(...gct);
+  const O = opposition(M);
+  const maxI = Math.max(...M.map(p=>p.I));
+  const Mbar = {T:0,I:0,F:0};
+  M.forEach((p,s)=>{ Mbar.T+=r[s]*p.T; Mbar.I+=r[s]*p.I; Mbar.F+=r[s]*p.F; });
+  const gcBar = Gc(Mbar);
+
+  let type, fired;
+  if(maxGct > d + TOL){ type="TOPm"; fired=1; }
+  else if(O > e + TOL){ type="TOPx"; fired=2; }
+  else if(maxGct < -d - TOL){ type = (maxI > dI + TOL) ? "I" : "BOT"; fired=3; }
+  else if(Math.abs(gcBar) >= e - TOL){ type="D"; fired=4; }
+  else { type="N"; fired=5; }
+
+  return {type, fired, maxGct, O, maxI, Mbar, gcBar,
+          C1:(1+gcBar)/2, Sscore:(2+Mbar.T-Mbar.I-Mbar.F)/3};
+}
+
+const TYPES = {
+  TOPm:{label:"⊤ₘ", name:"Fuente dividida",
+        read:"Al menos una fuente ha visto evidencia en los dos sentidos a la vez.",
+        action:"Reemplazar la clase de evidencia de esa fuente. El tipo persiste al añadir fuentes."},
+  TOPx:{label:"⊤ₓ", name:"Fuentes opuestas",
+        read:"Ninguna fuente está dividida, pero dos se oponen con confianza.",
+        action:"Las fuentes opuestas revisan sus posiciones. Puede pasar a ⊤ₘ, no a decidible."},
+  I:{label:"I", name:"Indeterminación declarada",
+     read:"Panel silente y alguna fuente declara que el criterio no se puede evaluar.",
+     action:"Examinar la declaración de no aplicabilidad. No es lo mismo que falta de evidencia."},
+  BOT:{label:"⊥", name:"Silente",
+       read:"Ninguna fuente reúne evidencia suficiente, y ninguna declaración supera δᵢ.",
+       action:"Recoger evidencia. Es el único tipo que se cura añadiendo datos."},
+  D:{label:"D", name:"Decidible",
+     read:"Sin conflicto, no silente, y la certeza media alcanza la banda ε.",
+     action:"Ordenar. El orden coincide con el del TOPSIS Manhattan de la agregación declarada."},
+  N:{label:"N", name:"Equilibrado",
+     read:"Sin conflicto y no silente, pero la certeza media no alcanza ε.",
+     action:"Sin decisión direccional bajo la banda. Puede cambiar al añadir una fuente."}
+};
+
+function computeAll(){
+  const d=+S.delta, e=+S.eps, dI=+S.deltaI;
+  const w = norm(S.criteria,"w"), r = norm(S.sources,"r");
+  return S.alts.map(alt=>{
+    const M = positionsOf(alt, w);
+    return {alt, M, w, r, ...classify(M, r, d, e, dI)};
+  });
+}
+
+/* ---------------- validación ---------------- */
+function validate(){
+  const msgs=[];
+  const d=+S.delta,e=+S.eps,dI=+S.deltaI;
+  [["δ",d],["ε",e],["δᵢ",dI]].forEach(([n,v])=>{
+    if(!(v>0 && v<1)) msgs.push(`La banda ${n} debe estar en el intervalo abierto (0, 1).`);
+  });
+  if(d + TOL >= 1) msgs.push("La implementación exige δ + τ < 1.");
+  S.alts.forEach(a=>a.cells.forEach((row,ci)=>row.forEach((c,si)=>{
+    c.forEach((v,k)=>{ if(!(v>=0 && v<=1))
+      msgs.push(`«${a.name}» · ${S.criteria[ci].name} · ${S.sources[si].name}: ${"TIF"[k]} fuera de [0, 1].`); });
+  })));
+  if(!S.sources.length) msgs.push("Hace falta al menos una fuente.");
+  if(!S.criteria.length) msgs.push("Hace falta al menos un criterio.");
+  return [...new Set(msgs)];
+}
+
+/* ---------------- render ---------------- */
+const f = (x,n=3) => (Number.isFinite(x) ? x.toFixed(n) : "—");
+
+function render(){
+  const errs = validate();
+  const box = $("#globalerr");
+  box.hidden = !errs.length;
+  box.textContent = errs.slice(0,3).join("  ");
+  if(errs.length) return;
+
+  const R = computeAll();
+  if(sel >= R.length) sel = 0;
+
+  renderChips(R);
+  renderSources();
+  renderCriteria();
+  renderTensor();
+  renderDiagnosis(R[sel]);
+  renderSquare(R[sel]);
+  renderPositions(R[sel]);
+  renderPerCriterion(R[sel]);
+  renderRanking(R);
+  save();
+}
+
+function renderChips(R){
+  const el = $("#chips"); el.textContent="";
+  const ranked = R.filter(x=>x.type==="D").sort((a,b)=>b.gcBar-a.gcBar);
+  R.forEach((x,i)=>{
+    const b = document.createElement("button");
+    b.className="chip"; b.setAttribute("aria-pressed", i===sel);
+    const pos = ranked.indexOf(x);
+    b.innerHTML = `<span class="tag ${x.type}">${TYPES[x.type].label}</span>
+      <span><span class="nm">${esc(x.alt.name)}</span>
+      <span class="rk">${pos>=0 ? " · puesto "+(pos+1) : " · sin ordenar"}</span></span>`;
+    b.onclick = ()=>{ sel=i; render(); };
+    el.appendChild(b);
+  });
+}
+
+function renderSources(){
+  const tb = $("#sourcetable tbody"); tb.textContent="";
+  const r = norm(S.sources,"r");
+  S.sources.forEach((s,i)=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML = `<td><input type="text" id="src-n-${i}" value="${esc(s.name)}"></td>
+      <td class="num"><input type="number" id="src-r-${i}" min="0" step="0.05" value="${s.r}"></td>
+      <td class="num mono" style="color:var(--faint)">${f(r[i],2)}</td>`;
+    tr.querySelector(`#src-n-${i}`).oninput = ev=>{ s.name=ev.target.value; renderChips(computeAll()); save(); };
+    tr.querySelector(`#src-r-${i}`).oninput = ev=>{ s.r=+ev.target.value; render(); };
+    if(S.sources.length>1){
+      const td=document.createElement("td");
+      const del=document.createElement("button"); del.className="ghost"; del.textContent="×";
+      del.title="Eliminar fuente";
+      del.onclick=()=>{ S.sources.splice(i,1); S.alts.forEach(a=>a.cells.forEach(row=>row.splice(i,1))); render(); };
+      td.appendChild(del); tr.appendChild(td);
+    }
+    tb.appendChild(tr);
+  });
+}
+
+function renderCriteria(){
+  const tb = $("#crittable tbody"); tb.textContent="";
+  const w = norm(S.criteria,"w");
+  S.criteria.forEach((c,i)=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML = `<td><input type="text" id="crit-n-${i}" value="${esc(c.name)}"></td>
+      <td class="num"><input type="number" id="crit-w-${i}" min="0" step="0.05" value="${c.w}"></td>
+      <td class="num mono" style="color:var(--faint)">${f(w[i],2)}</td>`;
+    tr.querySelector(`#crit-n-${i}`).oninput = ev=>{ c.name=ev.target.value; render(); };
+    tr.querySelector(`#crit-w-${i}`).oninput = ev=>{ c.w=+ev.target.value; render(); };
+    if(S.criteria.length>1){
+      const td=document.createElement("td");
+      const del=document.createElement("button"); del.className="ghost"; del.textContent="×";
+      del.title="Eliminar criterio";
+      del.onclick=()=>{ S.criteria.splice(i,1); S.alts.forEach(a=>a.cells.splice(i,1)); render(); };
+      td.appendChild(del); tr.appendChild(td);
+    }
+    tb.appendChild(tr);
+  });
+}
+
+function renderTensor(){
+  const alt = S.alts[sel];
+  $("#tensorwho").textContent = alt.name + " · T / I / F por celda";
+  const t = $("#tensor"); t.textContent="";
+  const thead=document.createElement("thead");
+  thead.innerHTML = "<tr><th>Criterio</th>" +
+    S.sources.map(s=>`<th>${esc(s.name)}</th>`).join("") + "</tr>";
+  t.appendChild(thead);
+  const tb=document.createElement("tbody");
+  S.criteria.forEach((c,ci)=>{
+    const tr=document.createElement("tr");
+    const th=document.createElement("th"); th.className="rowlabel"; th.textContent=c.name; tr.appendChild(th);
+    S.sources.forEach((s,si)=>{
+      const td=document.createElement("td");
+      const d=document.createElement("div"); d.className="trio";
+      ["T","I","F"].forEach((k,ki)=>{
+        const inp=document.createElement("input");
+        inp.type="number"; inp.min="0"; inp.max="1"; inp.step="0.05";
+        inp.className=k; inp.value=alt.cells[ci][si][ki];
+        inp.id=`cell-${sel}-${ci}-${si}-${ki}`;
+        inp.setAttribute("aria-label", `${k} de ${c.name} según ${s.name}`);
+        inp.oninput = ev=>{ alt.cells[ci][si][ki]=+ev.target.value; render(); };
+        d.appendChild(inp);
+      });
+      td.appendChild(d); tr.appendChild(td);
+    });
+    tb.appendChild(tr);
+  });
+  t.appendChild(tb);
+}
+
+function renderDiagnosis(x){
+  const d=+S.delta, e=+S.eps, dI=+S.deltaI;
+  $("#dxtitle").textContent = x.alt.name;
+  $("#dxtype").innerHTML = `<span class="tag ${x.type}">${TYPES[x.type].label}</span> ${TYPES[x.type].name}`;
+
+  const tests = [
+    {n:1, txt:`¿Alguna fuente dividida? máx G<sub>ct</sub> &gt; δ`,
+     val:`${f(x.maxGct)} vs ${f(d,2)}`, pass:x.maxGct > d+TOL},
+    {n:2, txt:`¿Fuentes opuestas? O &gt; ε`,
+     val:`${f(x.O)} vs ${f(e,2)}`, pass:x.O > e+TOL},
+    {n:3, txt:`¿Panel silente? máx G<sub>ct</sub> &lt; −δ`,
+     val:`${f(x.maxGct)} vs ${f(-d,2)}`, pass:x.maxGct < -d-TOL},
+    {n:4, txt:`¿Decidible? |G<sub>c</sub>| medio ≥ ε`,
+     val:`${f(Math.abs(x.gcBar))} vs ${f(e,2)}`, pass:Math.abs(x.gcBar) >= e-TOL},
+    {n:5, txt:`Resto → equilibrado`, val:"—", pass:true}
+  ];
+  const ol = $("#chain"); ol.textContent="";
+  tests.forEach(t=>{
+    const li=document.createElement("li");
+    const isFired = t.n === x.fired;
+    li.className = isFired ? "fired" : (t.n < x.fired ? "" : "skipped");
+    let extra = "";
+    if(isFired && t.n===3) extra = ` → máx I ${f(x.maxI)} vs δᵢ ${f(dI,2)}`;
+    li.innerHTML = `<span class="step">${t.n}</span><span>${t.txt}${extra}</span>
+      <span class="verdict">${t.n<=x.fired ? t.val : "no se evalúa"}</span>`;
+    ol.appendChild(li);
+  });
+  $("#action").innerHTML = `<strong>${TYPES[x.type].read}</strong> ${TYPES[x.type].action}`;
+}
+
+function renderSquare(x){
+  const d=+S.delta, e=+S.eps, P=360, m=42, L=P-2*m;
+  const X = T => m + T*L, Y = F => m + (1-F)*L;
+  const c = k => `var(--${k})`;
+  let g = "";
+  // banda de contradiccion |Gct| <= delta  ->  |x-y| <= delta*L  (diagonal principal)
+  const s = d*L;
+  g += `<polygon points="${m},${m+s} ${m+ (L-s)},${m} ${m+L},${m+L-s} ${m+s},${m+L}"
+        fill="${c('accent-soft')}" opacity=".85"/>`;
+  // banda de certeza |Gc| < eps  ->  |x+y-(2m+L)| <= eps*L (antidiagonal)
+  const q = e*L;
+  g += `<polygon points="${m},${m+L-q} ${m+L-q},${m} ${m+L},${m+q} ${m+q},${m+L}"
+        fill="${c('surface-3')}" opacity=".7"/>`;
+  // marco y diagonales
+  g += `<rect x="${m}" y="${m}" width="${L}" height="${L}" fill="none" stroke="${c('line-strong')}" stroke-width="1.2"/>`;
+  g += `<line x1="${m}" y1="${m}" x2="${m+L}" y2="${m+L}" stroke="${c('line-strong')}" stroke-dasharray="3 4" stroke-width="1"/>`;
+  g += `<line x1="${m}" y1="${m+L}" x2="${m+L}" y2="${m}" stroke="${c('line-strong')}" stroke-dasharray="3 4" stroke-width="1"/>`;
+  // vertices
+  const V = [[1,0,"verdadero","end","start"],[0,1,"falso","start","end"],
+             [1,1,"inconsistente","end","end"],[0,0,"paracompleto","start","start"]];
+  V.forEach(([T,F,lab,ax,ay])=>{
+    const px=X(T), py=Y(F);
+    const dx = ax==="end" ? -6 : 6, dy = (F===1 ? -8 : 15);
+    g += `<circle cx="${px}" cy="${py}" r="2.5" fill="${c('line-strong')}"/>
+          <text x="${px+dx}" y="${py+dy}" text-anchor="${ax==='end'?'end':'start'}"
+            font-family="IBM Plex Mono, monospace" font-size="10" fill="${c('faint')}">${lab}</text>`;
+  });
+  // ejes
+  g += `<text x="${m+L/2}" y="${P-10}" text-anchor="middle" font-family="IBM Plex Sans" font-size="11"
+        fill="${c('muted')}">T · evidencia a favor →</text>`;
+  g += `<text x="14" y="${m+L/2}" text-anchor="middle" font-family="IBM Plex Sans" font-size="11"
+        fill="${c('muted')}" transform="rotate(-90 14 ${m+L/2})">F · evidencia en contra →</text>`;
+  // posiciones de fuente
+  x.M.forEach((p,i)=>{
+    const px=X(p.T), py=Y(p.F);
+    const torn = Gct(p) > d+TOL, silent = Gct(p) < -d-TOL;
+    const fill = torn ? c('t-crit') : silent ? c('t-null') : c('pro');
+    g += `<circle cx="${px}" cy="${py}" r="6" fill="${fill}" fill-opacity=".85" stroke="${c('surface')}" stroke-width="1.5"/>
+          <text x="${px+10}" y="${py+4}" font-family="IBM Plex Mono, monospace" font-size="10"
+            fill="${c('ink')}">${esc(S.sources[i].name)}</text>`;
+  });
+  // posicion media
+  const bx=X(x.Mbar.T), by=Y(x.Mbar.F);
+  g += `<circle cx="${bx}" cy="${by}" r="9" fill="none" stroke="${c('accent')}" stroke-width="2.5"/>
+        <circle cx="${bx}" cy="${by}" r="2" fill="${c('accent')}"/>`;
+  $("#square").innerHTML = g;
+  $("#sqcap").innerHTML = `Banda de contradicción |G<sub>ct</sub>| ≤ ${f(d,2)} en tono de acento;
+    banda de certeza |G<sub>c</sub>| &lt; ${f(e,2)} en gris. El anillo marca la posición media ponderada;
+    un punto rojo es una fuente dividida y uno gris, una fuente silente.`;
+}
+
+function renderPositions(x){
+  const d=+S.delta;
+  const tb = $("#positions tbody"); tb.textContent="";
+  x.M.forEach((p,i)=>{
+    const torn = Gct(p) > d+TOL, silent = Gct(p) < -d-TOL;
+    const state = torn ? `<span class="tag TOPm">dividida</span>`
+                : silent ? `<span class="tag BOT">silente</span>`
+                : `<span class="tag D">consistente</span>`;
+    const tr=document.createElement("tr");
+    tr.innerHTML = `<td class="rowlabel">${esc(S.sources[i].name)}</td>
+      <td class="num">${f(p.T)}</td><td class="num">${f(p.I)}</td><td class="num">${f(p.F)}</td>
+      <td class="num">${f(Gc(p))}</td><td class="num">${f(Gct(p))}</td><td>${state}</td>`;
+    tb.appendChild(tr);
+  });
+  const tr=document.createElement("tr");
+  tr.style.borderTop="1px solid var(--line-strong)";
+  tr.innerHTML = `<td class="rowlabel" style="color:var(--accent)">media ponderada</td>
+    <td class="num">${f(x.Mbar.T)}</td><td class="num">${f(x.Mbar.I)}</td><td class="num">${f(x.Mbar.F)}</td>
+    <td class="num">${f(x.gcBar)}</td><td class="num">${f(Gct(x.Mbar))}</td><td>—</td>`;
+  tb.appendChild(tr);
+}
+
+function renderPerCriterion(x){
+  const d=+S.delta, e=+S.eps, dI=+S.deltaI;
+  const tb = $("#percrit tbody"); tb.textContent="";
+  S.criteria.forEach((c,ci)=>{
+    const cells = S.sources.map((_,si)=>{
+      const v = x.alt.cells[ci][si]; return {T:v[0], I:v[1], F:v[2]};
+    });
+    const mg = Math.max(...cells.map(Gct));
+    const O  = opposition(cells);
+    const mI = Math.max(...cells.map(p=>p.I));
+    const flags=[];
+    if(mg > d+TOL) flags.push("fuente dividida");
+    if(O  > e+TOL) flags.push("oposición");
+    if(mI > dI+TOL) flags.push("indeterminación");
+    const tr=document.createElement("tr");
+    tr.innerHTML = `<td class="rowlabel">${esc(c.name)}</td>
+      <td class="num">${f(mg)}</td><td class="num">${f(O)}</td><td class="num">${f(mI)}</td>
+      <td>${flags.length ? flags.join(", ") : `<span style="color:var(--faint)">—</span>`}</td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function renderRanking(R){
+  const tb = $("#ranking tbody"); tb.textContent="";
+  const ranked = R.filter(x=>x.type==="D").sort((a,b)=>b.gcBar-a.gcBar);
+  ranked.forEach((x,i)=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML = `<td class="num">${i+1}</td><td class="rowlabel">${esc(x.alt.name)}</td>
+      <td><span class="tag D">D</span></td>
+      <td class="num">${f(x.gcBar)}</td><td class="num">${f(x.C1)}</td><td class="num">${f(x.Sscore)}</td>
+      <td style="color:var(--muted)">ordenar</td>`;
+    tb.appendChild(tr);
+  });
+  R.filter(x=>x.type!=="D").forEach(x=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML = `<td class="num" style="color:var(--faint)">—</td><td class="rowlabel">${esc(x.alt.name)}</td>
+      <td><span class="tag ${x.type}">${TYPES[x.type].label}</span></td>
+      <td class="num" style="color:var(--faint)">—</td><td class="num" style="color:var(--faint)">—</td>
+      <td class="num" style="color:var(--faint)">—</td>
+      <td style="color:var(--muted)">${TYPES[x.type].action.split(".")[0]}</td>`;
+    tb.appendChild(tr);
+  });
+  if(!ranked.length){
+    const tr=document.createElement("tr");
+    tr.innerHTML = `<td colspan="7" style="color:var(--muted); padding:12px 8px">
+      Ninguna alternativa es decidible con estas bandas. El procedimiento retiene la ordenación:
+      eso es la salida, no un fallo.</td>`;
+    tb.prepend(tr);
+  }
+}
+
+function esc(s){ return String(s).replace(/[&<>"]/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m])); }
+
+/* ---------------- controles ---------------- */
+["delta","eps","deltaI"].forEach(k=>{
+  const el = $("#"+k); el.value = S[k];
+  el.oninput = ev=>{ S[k] = +ev.target.value; render(); };
+});
+
+$("#addalt").onclick = ()=>{
+  const cells = S.criteria.map(()=>S.sources.map(()=>[0.5,0,0.5]));
+  S.alts.push({name:"Alternativa "+(S.alts.length+1), cells});
+  sel = S.alts.length-1; render();
+};
+$("#delalt").onclick = ()=>{
+  if(S.alts.length<=1) return;
+  S.alts.splice(sel,1); sel=Math.max(0,sel-1); render();
+};
+$("#addsource").onclick = ()=>{
+  S.sources.push({name:"Fuente "+(S.sources.length+1), r:0.2});
+  S.alts.forEach(a=>a.cells.forEach(row=>row.push([0.5,0,0.5])));
+  render();
+};
+$("#addcrit").onclick = ()=>{
+  S.criteria.push({name:"Criterio "+(S.criteria.length+1), w:0.2});
+  S.alts.forEach(a=>a.cells.push(S.sources.map(()=>[0.5,0,0.5])));
+  render();
+};
+$("#reset").onclick = ()=>{ S = demo(); sel = 0;
+  ["delta","eps","deltaI"].forEach(k=>$("#"+k).value = S[k]); render(); };
+$("#copy").onclick = async ()=>{
+  const btn = $("#copy"), txt = JSON.stringify(S, null, 2);
+  try{ await navigator.clipboard.writeText(txt); btn.textContent="Copiado"; }
+  catch(e){ btn.textContent="No se pudo copiar"; }
+  setTimeout(()=>btn.textContent="Copiar JSON", 1600);
+};
+
+render();
+</script>
+
+</body>
+</html>
