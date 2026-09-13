@@ -36,6 +36,17 @@
   .sub { background:#FFF2CC; }
   small { color:var(--gris); }
   code { background:#E3E8EF; padding:1px 4px; border-radius:3px; }
+  .social-footer { max-width:1148px; margin:0 auto 28px; padding:24px; background:#fff; border:1px solid var(--linea); border-radius:10px; }
+  .social-footer h2 { margin:0 0 6px; font-size:21px; color:var(--navy); }
+  .social-footer p { margin:6px 0 14px; color:var(--gris); font-size:14px; }
+  .social-links { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+  .social-links a { display:inline-block; padding:10px 16px; border:1px solid var(--azul); border-radius:6px; text-decoration:none; color:var(--azul); font-size:14px; }
+  .social-links a:hover { background:#E3E8EF; }
+  .social-links a:focus-visible, .social-links button:focus-visible { outline:3px solid var(--naranja); outline-offset:3px; }
+  .social-footer .share-block { margin-top:22px; padding-top:18px; border-top:1px solid var(--linea); }
+  .social-footer h3 { margin:0 0 10px; font-size:16px; }
+  #share-status { display:block; margin-top:10px; min-height:20px; }
+  @media (max-width:800px) { .social-footer { margin:0 16px 24px; padding:18px; } }
 </style>
 </head>
 <body>
@@ -151,6 +162,32 @@ document.getElementById('copiar').onclick = async () => {
   if (!ultima) { msg.textContent = ' Calcule primero.'; return; }
   try { await navigator.clipboard.writeText(ultima); msg.textContent = ' Fila copiada: péguela en la hoja «Medición» de la plantilla.'; }
   catch (e) { msg.textContent = ' No se pudo copiar automáticamente: ' + ultima; }
+};
+</script>
+<footer class="social-footer" aria-label="Seguir al autor y compartir la herramienta">
+  <h2>¿Te resultó útil esta calculadora?</h2>
+  <p>Sigue a Maikel Leyva Vázquez para conocer más herramientas y recursos sobre inteligencia artificial, investigación y educación.</p>
+  <nav class="social-links" aria-label="Perfiles de Maikel Leyva Vázquez">
+    <a href="https://www.linkedin.com/in/mleyvaz" target="_blank" rel="noopener noreferrer">Seguir en LinkedIn ↗</a>
+    <a href="https://www.researchgate.net/profile/Maikel-Leyva-Vazquez" target="_blank" rel="noopener noreferrer">Seguir en ResearchGate ↗</a>
+  </nav>
+  <div class="share-block">
+    <h3>Comparte la herramienta con tus colegas</h3>
+    <p>Se comparte únicamente el enlace a la calculadora.</p>
+    <div class="social-links">
+      <a href="https://x.com/intent/post?text=Calculadora%20gratuita%20CER%20y%20WER%20para%20evaluar%20la%20precisi%C3%B3n%20del%20OCR%20%C2%B7%20Maikel%20Leyva%20V%C3%A1zquez&amp;url=https%3A%2F%2Fmleyvaz.github.io%2Fcalculadora_CER_WER.html" target="_blank" rel="noopener noreferrer">Compartir en X ↗</a>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fmleyvaz.github.io%2Fcalculadora_CER_WER.html" target="_blank" rel="noopener noreferrer">Compartir en LinkedIn ↗</a>
+      <button type="button" class="sec" id="copy-link">Copiar enlace</button>
+    </div>
+    <small id="share-status" role="status" aria-live="polite"></small>
+  </div>
+</footer>
+<script>
+document.getElementById('copy-link').onclick = async () => {
+  const url = 'https://mleyvaz.github.io/calculadora_CER_WER.html';
+  const status = document.getElementById('share-status');
+  try { await navigator.clipboard.writeText(url); status.textContent = 'Enlace copiado. Puedes pegarlo también en ResearchGate o en un mensaje.'; }
+  catch (e) { status.textContent = 'Copia este enlace: ' + url; }
 };
 </script>
 </body>
