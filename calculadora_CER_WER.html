@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora CER y WER · Taller de OCR</title>
+<style>
+  :root { --navy:#0B1F3A; --azul:#003976; --tinta:#1A2230; --gris:#5A6270; --linea:#D5DCE4; --fondo:#F6F7F9;
+          --verde:#1E8449; --naranja:#CA6F1E; --rojo:#B03A2E; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: Calibri, "Segoe UI", Arial, sans-serif; background:var(--fondo); color:var(--tinta); }
+  header { background:var(--navy); color:#fff; padding:18px 24px; }
+  header h1 { margin:0; font-size:24px; }
+  header p { margin:4px 0 0; color:#C8D4E4; font-size:14px; }
+  main { max-width:1180px; margin:0 auto; padding:18px 16px 40px; }
+  .aviso { background:#fff; border:1px solid var(--linea); border-left:5px solid var(--verde); padding:10px 14px; border-radius:6px; font-size:14px; }
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px; }
+  @media (max-width: 800px) { .cols { grid-template-columns:1fr; } }
+  label { font-weight:bold; color:var(--navy); display:block; margin-bottom:4px; }
+  textarea { width:100%; height:260px; font-family: Consolas, monospace; font-size:13px; padding:8px; border:1px solid var(--linea); border-radius:6px; resize:vertical; }
+  .opc { display:flex; flex-wrap:wrap; gap:14px; margin:14px 0; font-size:14px; background:#fff; border:1px solid var(--linea); border-radius:6px; padding:10px 14px; }
+  .opc input[type=text] { width:170px; }
+  button { background:var(--azul); color:#fff; border:0; border-radius:6px; padding:10px 18px; font-size:15px; cursor:pointer; }
+  button.sec { background:#fff; color:var(--azul); border:1px solid var(--azul); }
+  .res { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-top:16px; }
+  @media (max-width: 800px) { .res { grid-template-columns:1fr 1fr; } }
+  .tarj { background:#fff; border:1px solid var(--linea); border-radius:8px; padding:12px 14px; }
+  .tarj .n { font-size:32px; font-weight:bold; color:var(--navy); }
+  .tarj .t { font-size:13px; color:var(--gris); }
+  table { border-collapse:collapse; width:100%; background:#fff; font-size:14px; margin-top:14px; }
+  th, td { border:1px solid var(--linea); padding:6px 8px; text-align:left; }
+  th { background:#E3E8EF; }
+  .dif { background:#fff; border:1px solid var(--linea); border-radius:6px; padding:10px; font-family:Consolas, monospace; font-size:13px; line-height:1.7; white-space:pre-wrap; margin-top:10px; max-height:320px; overflow:auto; }
+  .del { background:#F4CCCC; text-decoration:line-through; }
+  .ins { background:#D9EAD3; }
+  .sub { background:#FFF2CC; }
+  small { color:var(--gris); }
+  code { background:#E3E8EF; padding:1px 4px; border-radius:3px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Calculadora de CER y WER</h1>
+  <p>Precisión del OCR contra su patrón oro · funciona sin internet: el texto no sale de su computadora</p>
+</header>
+<main>
+  <div class="aviso"><b>Cómo se usa.</b> A la izquierda, su <b>patrón oro</b>: la página transcrita a mano, tal como está en el documento. A la derecha, lo que devolvió <b>un motor de OCR</b> para esa misma página. Pulse <b>Calcular</b> y copie la fila en su tabla de medición. Repita con cada motor, sin cambiar el patrón oro.</div>
+
+  <div class="cols">
+    <div><label for="ref">1 · Patrón oro (transcripción a mano)</label><textarea id="ref" placeholder="Pegue aquí su transcripción a mano de la página"></textarea></div>
+    <div><label for="hyp">2 · Salida del motor de OCR</label><textarea id="hyp" placeholder="Pegue aquí el texto que devolvió el motor para la misma página"></textarea></div>
+  </div>
+
+  <div class="opc">
+    <span><label style="display:inline">Motor:</label> <input type="text" id="motor" placeholder="p. ej. Google Docs"></span>
+    <label style="display:inline;font-weight:normal"><input type="checkbox" id="espacios" checked> Unificar espacios y saltos de línea</label>
+    <label style="display:inline;font-weight:normal"><input type="checkbox" id="ilegible" checked> Quitar las marcas [ILEGIBLE] de los dos textos</label>
+    <label style="display:inline;font-weight:normal"><input type="checkbox" id="mayus"> Ignorar mayúsculas</label>
+    <label style="display:inline;font-weight:normal"><input type="checkbox" id="tildes"> Ignorar tildes</label>
+  </div>
+  <button id="calc">Calcular</button> <button class="sec" id="copiar">Copiar fila para la tabla</button>
+  <small id="msg"></small>
+
+  <div class="res">
+    <div class="tarj"><div class="n" id="cer">—</div><div class="t">CER · error por carácter</div></div>
+    <div class="tarj"><div class="n" id="wer">—</div><div class="t">WER · error por palabra</div></div>
+    <div class="tarj"><div class="n" id="nref">—</div><div class="t">caracteres / palabras del patrón oro</div></div>
+    <div class="tarj"><div class="n" id="nile">—</div><div class="t">marcas [ILEGIBLE] en el patrón oro</div></div>
+  </div>
+
+  <table>
+    <thead><tr><th>Nivel</th><th>Sustituciones (S)</th><th>Borrados (D)</th><th>Inserciones (I)</th><th>Aciertos</th><th>Referencia (N)</th><th>Tasa = (S+D+I)/N</th></tr></thead>
+    <tbody id="tabla"><tr><td colspan="7"><small>Sin calcular todavía</small></td></tr></tbody>
+  </table>
+
+  <p style="margin:18px 0 4px"><b>Diferencias por palabra</b> <small>(<span class="del">tachado</span> = está en el patrón oro y el motor lo perdió · <span class="ins">verde</span> = el motor lo añadió · <span class="sub">amarillo</span> = el motor lo cambió; entre corchetes, lo que puso el motor)</small></p>
+  <div class="dif" id="dif"><small>Aparecen al calcular.</small></div>
+
+  <p style="margin-top:22px"><small><b>Qué mide cada número.</b> CER = (S + D + I) / N con N = caracteres del patrón oro; WER igual, contando palabras. Puede pasar de 100 % si el motor inventa mucho texto. Un CER del 2 % en una página de 2.000 caracteres son unos 40 caracteres mal: puede ser aceptable en un informe y grave en un número de cédula o un código de expediente. El umbral lo decide usted según el uso del documento, y lo declara.</small></p>
+</main>
+<script>
+function normalizar(t, o) {
+  if (o.ilegible) t = t.replace(/\[\s*ILEGIBLE\s*\]/gi, ' ');
+  if (o.mayus) t = t.toLowerCase();
+  if (o.tildes) t = t.normalize('NFD').replace(/[̀-ͯ]/g, '');
+  else t = t.normalize('NFC');
+  if (o.espacios) t = t.replace(/\s+/g, ' ').trim();
+  return t;
+}
+// Levenshtein con traza: devuelve S, D, I y la alineacion
+function alinear(a, b) {
+  const n = a.length, m = b.length;
+  if (n * m > 60000000) throw new Error('Texto demasiado largo: use una página por vez.');
+  const dp = new Array(n + 1);
+  for (let i = 0; i <= n; i++) { dp[i] = new Uint32Array(m + 1); dp[i][0] = i; }
+  for (let j = 0; j <= m; j++) dp[0][j] = j;
+  for (let i = 1; i <= n; i++) {
+    const fila = dp[i], prev = dp[i - 1], ai = a[i - 1];
+    for (let j = 1; j <= m; j++) {
+      const c = prev[j - 1] + (ai === b[j - 1] ? 0 : 1);
+      const d = prev[j] + 1, ins = fila[j - 1] + 1;
+      fila[j] = c < d ? (c < ins ? c : ins) : (d < ins ? d : ins);
+    }
+  }
+  let i = n, j = m, S = 0, D = 0, I = 0, H = 0; const ops = [];
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && dp[i][j] === dp[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)) {
+      if (a[i - 1] === b[j - 1]) { H++; ops.push(['=', a[i - 1]]); } else { S++; ops.push(['s', a[i - 1], b[j - 1]]); }
+      i--; j--;
+    } else if (i > 0 && dp[i][j] === dp[i - 1][j] + 1) { D++; ops.push(['d', a[i - 1]]); i--; }
+    else { I++; ops.push(['i', b[j - 1]]); j--; }
+  }
+  ops.reverse();
+  return { S, D, I, H, N: n, ops, dist: dp[n][m] };
+}
+function pct(x) { return (x * 100).toFixed(2).replace('.', ',') + ' %'; }
+function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+let ultima = null;
+document.getElementById('calc').onclick = () => {
+  const o = { espacios: espacios.checked, ilegible: ilegible.checked, mayus: mayus.checked, tildes: tildes.checked };
+  const refCrudo = document.getElementById('ref').value, hypCrudo = document.getElementById('hyp').value;
+  const nIle = (refCrudo.match(/\[\s*ILEGIBLE\s*\]/gi) || []).length;
+  const r = normalizar(refCrudo, o), h = normalizar(hypCrudo, o);
+  const msg = document.getElementById('msg'); msg.textContent = '';
+  if (!r) { msg.textContent = ' Falta el patrón oro.'; return; }
+  try {
+    const c = alinear(Array.from(r), Array.from(h));
+    const rw = r.split(/\s+/).filter(Boolean), hw = h.split(/\s+/).filter(Boolean);
+    const w = alinear(rw, hw);
+    const cer = c.dist / c.N, wer = w.dist / w.N;
+    document.getElementById('cer').textContent = pct(cer);
+    document.getElementById('wer').textContent = pct(wer);
+    document.getElementById('nref').textContent = c.N.toLocaleString('es') + ' / ' + w.N.toLocaleString('es');
+    document.getElementById('nile').textContent = nIle;
+    document.getElementById('tabla').innerHTML =
+      `<tr><td>Carácter (CER)</td><td>${c.S}</td><td>${c.D}</td><td>${c.I}</td><td>${c.H}</td><td>${c.N}</td><td><b>${pct(cer)}</b></td></tr>` +
+      `<tr><td>Palabra (WER)</td><td>${w.S}</td><td>${w.D}</td><td>${w.I}</td><td>${w.H}</td><td>${w.N}</td><td><b>${pct(wer)}</b></td></tr>`;
+    document.getElementById('dif').innerHTML = w.ops.map(op => {
+      if (op[0] === '=') return esc(op[1]);
+      if (op[0] === 'd') return `<span class="del">${esc(op[1])}</span>`;
+      if (op[0] === 'i') return `<span class="ins">${esc(op[1])}</span>`;
+      return `<span class="sub">${esc(op[1])} [${esc(op[2])}]</span>`;
+    }).join(' ');
+    const motor = document.getElementById('motor').value || 'motor';
+    ultima = [motor, c.N, w.N, nIle, c.S, c.D, c.I, pct(cer), w.S, w.D, w.I, pct(wer),
+              Object.entries(o).filter(([k, v]) => v).map(([k]) => k).join('+') || 'sin normalizar'].join('\t');
+  } catch (e) { msg.textContent = ' ' + e.message; }
+};
+document.getElementById('copiar').onclick = async () => {
+  const msg = document.getElementById('msg');
+  if (!ultima) { msg.textContent = ' Calcule primero.'; return; }
+  try { await navigator.clipboard.writeText(ultima); msg.textContent = ' Fila copiada: péguela en la hoja «Medición» de la plantilla.'; }
+  catch (e) { msg.textContent = ' No se pudo copiar automáticamente: ' + ultima; }
+};
+</script>
+</body>
+</html>
