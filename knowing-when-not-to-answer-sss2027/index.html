@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knowing When Not to Answer — Proposed AAAI 2027 Spring Symposium</title>
+<meta name="description" content="Proposed symposium for the AAAI 2027 Spring Symposium Series: uncertainty, abstention, and disagreement in AI systems. Santa Clara University, March 22-24, 2027.">
+<style>
+:root{--ink:#16213a;--slate:#334166;--muted:#5b6884;--line:#e2e6ef;--accent:#b0402f;--bg:#f7f8fb;--card:#ffffff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Georgia,'Times New Roman',serif;color:var(--ink);background:var(--bg);line-height:1.65}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px}
+header{background:linear-gradient(160deg,#16213a 0%,#233156 100%);color:#fff;padding:64px 0 52px}
+.badge{display:inline-block;font-family:Arial,sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#c9d3ea;border:1px solid #47598a;border-radius:20px;padding:5px 14px;margin-bottom:20px}
+h1{font-size:2.2rem;line-height:1.2;font-weight:700;margin-bottom:10px}
+.sub{font-size:1.15rem;color:#d7deef;font-style:italic;max-width:680px}
+.meta{margin-top:24px;font-family:Arial,sans-serif;font-size:.95rem;color:#c9d3ea}
+.meta strong{color:#fff}
+section{padding:44px 0;border-bottom:1px solid var(--line)}
+h2{font-size:1.5rem;color:var(--slate);margin-bottom:16px}
+h2 .n{color:var(--accent);font-family:Arial,sans-serif;font-size:1rem;margin-right:8px}
+p{margin-bottom:14px;color:#26324d}
+.lead{font-size:1.08rem}
+.q{font-size:1.35rem;color:var(--accent);font-style:italic;margin:8px 0 4px}
+ul{margin:6px 0 6px 4px;list-style:none}
+li{padding:8px 0 8px 26px;position:relative;color:#26324d}
+li:before{content:"▸";position:absolute;left:0;color:var(--accent)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 34px}
+table{width:100%;border-collapse:collapse;font-family:Arial,sans-serif;font-size:.95rem;margin-top:6px}
+td{padding:11px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.d{color:var(--accent);font-weight:bold;white-space:nowrap;width:130px}
+.tag{display:inline-block;font-family:Arial,sans-serif;font-size:11px;background:#eef1f7;color:var(--muted);border-radius:4px;padding:2px 7px;margin-left:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-top:14px}
+.card h3{font-size:1.05rem;color:var(--ink);margin-bottom:2px}
+.card .aff{font-family:Arial,sans-serif;font-size:.88rem;color:var(--muted)}
+.note{font-family:Arial,sans-serif;font-size:.9rem;color:var(--muted);font-style:italic}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid #e3b7ad}
+a:hover{border-bottom-color:var(--accent)}
+footer{background:#16213a;color:#c9d3ea;padding:34px 0;font-family:Arial,sans-serif;font-size:.9rem;text-align:center}
+footer a{color:#fff;border:none}
+@media(max-width:640px){h1{font-size:1.7rem}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <span class="badge">Proposed &middot; AAAI 2027 Spring Symposium Series</span>
+    <h1>Knowing When Not to Answer</h1>
+    <p class="sub">Uncertainty, Abstention, and Disagreement in AI Systems</p>
+    <div class="meta"><strong>March 22&ndash;24, 2027</strong> &nbsp;&middot;&nbsp; Santa Clara University, Santa Clara, California, USA</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section id="status">
+  <p class="note">This symposium has been proposed to the AAAI 2027 Spring Symposium Series. The proposal is under review; AAAI will announce accepted symposia on December 8, 2026. If accepted, the call for papers and submission dates will be posted here.</p>
+</section>
+
+<section id="about">
+  <h2><span class="n">01</span>About</h2>
+  <p class="lead">AI systems are increasingly expected to say &ldquo;I don&rsquo;t know.&rdquo; Yet most work on hallucination, abstention, uncertainty quantification, and LLM-as-a-judge evaluation reduces a system&rsquo;s epistemic state to a single number. That number conflates situations that call for different actions:</p>
+  <ul>
+    <li><strong>Ignorance</strong>: the system lacks evidence. It should retrieve, ask, or defer.</li>
+    <li><strong>Conflict</strong>: the evidence, sources, judges, or stakeholders disagree. It should surface the disagreement, not average it away.</li>
+    <li><strong>Ill-posedness</strong>: the question has no determinate answer. It should reframe.</li>
+  </ul>
+  <p class="q">What should an AI system do when it does not know, when its evidence conflicts, or when the question has no single answer &mdash; and how do we measure whether it does so well?</p>
+  <p>The symposium brings together machine learning researchers working on LLM reliability with communities that have long had a vocabulary for these distinctions: belief functions, bilattices and Belnap&ndash;Dunn logic, paraconsistent and many-valued logics, subjective logic, and decision-making under non-probabilistic uncertainty.</p>
+</section>
+
+<section id="tracks">
+  <h2><span class="n">02</span>Tracks</h2>
+  <div class="card"><h3>T1. Abstention, hallucination, and knowing what you don&rsquo;t know</h3><p class="aff">Abstention and deferral in LLMs and agents; hallucination detection; selective and conformal prediction; epistemic vs. aleatoric uncertainty; evidential deep learning.</p></div>
+  <div class="card"><h3>T2. Conflicting evidence in retrieval and multi-source reasoning</h3><p class="aff">Knowledge conflicts in RAG; inter-document and context-memory contradictions; self-contradiction; evidence combination; source trust and provenance.</p></div>
+  <div class="card"><h3>T3. Evaluating AI under disagreement</h3><p class="aff">LLM-as-a-judge reliability; rater and model disagreement as signal; construct validity of benchmarks; calibration beyond a single score; synthetic respondents.</p></div>
+  <div class="card"><h3>T4. Agents that defer, ask, and escalate</h3><p class="aff">Human-in-the-loop handoff; clarifying questions; cost-sensitive abstention in tool-using agents; failure diagnosis in agentic pipelines.</p></div>
+  <div class="card"><h3>T5. Formal foundations of indeterminacy</h3><p class="aff">Belief functions, bilattices, paraconsistent and many-valued logics, bilateral evaluation, subjective logic, imprecise probabilities, and their use in ML pipelines.</p></div>
+  <div class="card"><h3>T6. Disagreement in values, governance, and decisions</h3><p class="aff">Value pluralism and alignment; AI governance and auditing under uncertainty; multi-criteria decision-making with conflicting or incomplete assessments; costs of abstention in health, law, education, and public administration.</p></div>
+</section>
+
+<section id="format">
+  <h2><span class="n">03</span>Format</h2>
+  <p>Two and a half days designed for discussion: keynotes, paper sessions by track with extended discussion, a shared target problem where ignorance, conflict, and ill-posedness are labeled and participants compare what their methods can distinguish, working groups, and a poster session. Full papers (6&ndash;8 pages) and short/position papers (2&ndash;4 pages) in AAAI format; work in progress is welcome.</p>
+  <p class="note">Following AAAI policy, all presentations are in person, and all participants must register.</p>
+</section>
+
+<section id="dates">
+  <h2><span class="n">04</span>Key Dates</h2>
+  <table>
+    <tr><td class="d">Dec 8, 2026</td><td>AAAI notification of accepted symposia</td></tr>
+    <tr><td class="d">TBA</td><td>Call for papers and submission deadline (if accepted)</td></tr>
+    <tr><td class="d">Mar 22&ndash;24, 2027</td><td>Symposium, Santa Clara University</td></tr>
+  </table>
+</section>
+
+<section id="committee">
+  <h2><span class="n">05</span>Organizing Committee</h2>
+  <div class="card"><h3>Maikel Leyva-V&aacute;zquez <span class="tag">Chair</span></h3><p class="aff">Universidad de Guayaquil, Ecuador</p></div>
+  <div class="card"><h3>Florentin Smarandache</h3><p class="aff">University of New Mexico, USA</p></div>
+  <div class="card"><h3>Alexis Matheu P&eacute;rez</h3><p class="aff">Universidad Bernardo O&rsquo;Higgins, Chile</p></div>
+</section>
+
+<section id="context">
+  <h2><span class="n">06</span>Background</h2>
+  <p>The symposium builds on the AAAI 2026 Fall Symposium <a href="../pluriversal-alignment-aaai2026/">&ldquo;Aligning with Whom? Pluriversal and Paraconsistent Frameworks for Value Alignment in AI Systems&rdquo;</a> and broadens its scope from alignment to uncertainty and disagreement in AI systems in general.</p>
+  <p>Interested in participating? Contact the chair at <a href="mailto:mleyvaz@gmail.com">mleyvaz@gmail.com</a>.</p>
+</section>
+
+</div>
+
+<footer>
+  <div class="wrap">Proposed for the <a href="https://aaai.org/">AAAI 2027 Spring Symposium Series</a> &middot; Association for the Advancement of Artificial Intelligence</div>
+</footer>
+</body>
+</html>
