@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escalas neutrosóficas y DEMATEL — ejemplos</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--night:#15223A;--ink:#1B2A44;--muted:#4A5568;--paper:#F6F3EC;--card:#FFFDF8;--line:#DDD5C4;--blue:#2B5F9E;--amber:#C98A1E;--red:#A8412F;--cream:#F3EEE3}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Public Sans',Arial,sans-serif;line-height:1.55}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px}
+header{background:var(--night);color:var(--cream);padding:40px 0 32px}
+header a{color:#BFC9D6;text-decoration:none;font-size:14px}
+h1{font-family:'Libre Baskerville',serif;font-size:clamp(26px,4.5vw,40px);margin:14px 0 8px}
+header p{color:#BFC9D6;max-width:720px}
+h2{font-family:'Libre Baskerville',serif;font-size:24px;color:var(--night);margin:36px 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:14px 0;border-top:6px solid var(--blue)}
+.card.a{border-top-color:var(--amber)}.card.r{border-top-color:var(--red)}
+.q{font-weight:600;margin-bottom:10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+label.opt{border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;background:#fff;font-size:14px}
+label.opt input{margin-right:6px}
+.sl{display:grid;grid-template-columns:150px 1fr 40px;gap:10px;align-items:center;margin:6px 0}
+input[type=range]{width:100%}
+.out{background:#EDE7DA;border-radius:10px;padding:12px 14px;margin-top:12px;font-size:15px}
+.out b{color:var(--night)}
+.note{color:var(--muted);font-size:14px}
+table{border-collapse:collapse;width:100%;font-size:14px;background:#fff}
+th,td{border:1px solid var(--line);padding:6px;text-align:center}
+th{background:var(--night);color:var(--cream)}
+select{font-size:14px;padding:2px}
+pre{background:#15223A;color:#F3EEE3;padding:14px;border-radius:10px;white-space:pre-wrap;font-size:13px}
+.tag{display:inline-block;font-size:12px;font-weight:600;background:#EDE7DA;color:#8E5A10;border-radius:999px;padding:2px 10px;margin-bottom:8px}
+@media(max-width:600px){.sl{grid-template-columns:110px 1fr 34px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<a href="./">← Posdoctorado en Neutrosofía y Complejidad</a>
+<h1>Escalas Likert neutrosóficas y DEMATEL: pruébelos aquí</h1>
+<p>Tres formas de recoger T, I y F en una encuesta, con sus medidas calculadas al momento, y un DEMATEL pequeño para entender cómo se calcula la influencia. Nada se guarda: es para practicar.</p>
+</div></header>
+<main class="wrap">
+
+<h2>Ítem de ejemplo</h2>
+<p>«El uso de IA generativa para corregir el estilo de un artículo es aceptable.»</p>
+
+<div class="card">
+<span class="tag">Formato 1 · Likert + tripleta</span>
+<p class="q">a) Su valoración clásica (1 = totalmente en desacuerdo … 5 = totalmente de acuerdo)</p>
+<div class="row" id="f1lik"></div>
+<p class="q" style="margin-top:12px">b) Ahora por separado, de 0 a 4</p>
+<div class="sl"><span>T · cuánto de acuerdo</span><input type="range" min="0" max="4" value="3" id="f1t"><b id="f1tv">3</b></div>
+<div class="sl"><span>I · cuánto no puede pronunciarse</span><input type="range" min="0" max="4" value="1" id="f1i"><b id="f1iv">1</b></div>
+<div class="sl"><span>F · cuánto en desacuerdo</span><input type="range" min="0" max="4" value="1" id="f1f"><b id="f1fv">1</b></div>
+<div class="out" id="f1out"></div>
+<p class="note">Es el formato del Delphi de la clase. Medidas: T, I y F en escala 0–1 (valor / 4); puntaje T − F; ambivalencia si T y F son altos a la vez (≥ 0,75); indeterminación alta si I ≥ 0,5. Con varias personas: % con T alto, % con F alto y media de I → consenso, conflicto o desconocimiento.</p>
+</div>
+
+<div class="card a">
+<span class="tag">Formato 2 · Tres preguntas cerradas</span>
+<p class="q">a) ¿Qué tan de acuerdo está?</p>
+<div class="row" id="f2a"></div>
+<p class="q">b) ¿Qué tan en desacuerdo está?</p>
+<div class="row" id="f2b"></div>
+<p class="q">c) ¿Qué tan seguro está de su respuesta?</p>
+<div class="row" id="f2c"></div>
+<div class="out" id="f2out"></div>
+<p class="note">Más fácil de responder en el teléfono. T = acuerdo / 4; F = desacuerdo / 4; I = 1 − seguridad / 4. Si alguien marca mucho acuerdo y mucho desacuerdo, no es un error: es ambivalencia, y se informa.</p>
+</div>
+
+<div class="card r">
+<span class="tag">Formato 3 · Likert con «No sé» separado</span>
+<p class="q">¿Qué tan de acuerdo está?</p>
+<div class="row" id="f3"></div>
+<p class="q" style="margin-top:10px">Si eligió «No sé», ¿por qué?</p>
+<div class="row" id="f3why"></div>
+<div class="out" id="f3out"></div>
+<p class="note">El más sencillo: la escala de siempre más «No sé» fuera de la escala. Así el 3 («neutral») ya no mezcla al indiferente con quien no sabe. Si se pregunta el motivo, la I se tipa: falta de información, información que choca o pregunta ambigua.</p>
+</div>
+
+<h2>Qué se calcula con un grupo</h2>
+<table>
+<tr><th>Medida</th><th>Cómo</th><th>Qué dice</th></tr>
+<tr><td>Media clásica</td><td>Promedio del 1 al 5</td><td>Lo que reporta cualquier encuesta</td></tr>
+<tr><td>% T alto · % F alto</td><td>Proporción con T ≥ 3 · con F ≥ 3</td><td>Consenso si uno llega al 70 %</td></tr>
+<tr><td>Conflicto</td><td>Ambos bandos ≥ 25 %</td><td>El grupo está dividido</td></tr>
+<tr><td>Desconocimiento</td><td>Media de I ≥ 0,5</td><td>El grupo no puede pronunciarse (pregunte el motivo)</td></tr>
+<tr><td>Contraste</td><td>Ítems «neutrales» en la media clásica</td><td>¿Cuántos son conflicto y cuántos desconocimiento?</td></tr>
+</table>
+
+<h2>DEMATEL en pequeño: llénelo y vea la influencia</h2>
+<div class="card">
+<p class="q">Tres factores: P = presión por publicar · F = falta de formación en IA · D = detectores poco confiables. ¿Cuánto influye la fila sobre la columna? (0 Ninguna … 4 Muy alta, o «No sé»)</p>
+<div style="overflow-x:auto"><table id="dm"></table></div>
+<p class="q" style="margin-top:12px">Simule a otros dos expertos (fijos) y compare las dos lecturas:</p>
+<div class="out" id="dmout"></div>
+<p class="note">Clásica: «No sé» cuenta como 0. Neutrosófica: se promedia solo entre quienes saben y la proporción de «No sé» es la I de la relación. Luego, en ambas: N = Z / s (s = mayor suma de fila o columna), T = N (I − N)⁻¹, D = suma de filas, R = suma de columnas, D + R prominencia, D − R &gt; 0 causa.</p>
+</div>
+
+<h2>Cómo pedirlo a Gemini (y verificarlo)</h2>
+<pre>Tengo las respuestas de 12 expertos a un DEMATEL de 6 factores en una hoja
+de cálculo (una fila por experto, una columna por par «factor A → factor B»,
+valores 0 a 4 o «No sé»). Calcula en dos versiones:
+1) clásica: «No sé» = 0; 2) neutrosófica: promedio solo entre quienes
+responden e I = proporción de «No sé» en cada relación.
+Para cada versión: matriz promedio Z, N = Z / s (s = máximo entre la mayor
+suma de fila y la mayor suma de columna), T = N (I − N)^-1, D, R, D + R y
+D − R. Indica qué factores son causa (D − R &gt; 0) y si alguno cambia de rol
+entre versiones. Muestra las fórmulas de la hoja para que pueda revisarlas.</pre>
+<p class="note">Verifique siempre: recalcule una relación a mano y compruebe que la diagonal de Z es 0. La plantilla del curso (DEMATEL_neutrosofico.xlsx, en la carpeta de Drive) hace lo mismo sin IA.</p>
+
+</main>
+<footer style="margin-top:40px;padding:22px 0;background:#15223A;color:#BFC9D6;font-size:14px"><div class="wrap">Dr. Maikel Y. Leyva Vázquez · <a href="./" style="color:#E8B04B">Posdoctorado en Neutrosofía y Complejidad</a></div></footer>
+
+<script>
+function opts(id,name,labels,checked){var el=document.getElementById(id);labels.forEach(function(l,k){var lab=document.createElement('label');lab.className='opt';lab.innerHTML='<input type="radio" name="'+name+'" value="'+k+'"'+(k===checked?' checked':'')+'>'+l;el.appendChild(lab);});el.addEventListener('change',update);}
+function val(name){var e=document.querySelector('input[name="'+name+'"]:checked');return e?+e.value:null;}
+var lik=['1','2','3','4','5'];
+opts('f1lik','f1lik',lik,3);
+['f1t','f1i','f1f'].forEach(function(id){document.getElementById(id).addEventListener('input',update);});
+var g=['Nada (0)','Poco (1)','Algo (2)','Bastante (3)','Totalmente (4)'];
+opts('f2a','f2a',g,3);opts('f2b','f2b',g,1);opts('f2c','f2c',g,2);
+opts('f3','f3',['1','2','3','4','5','No sé'],5);
+opts('f3why','f3why',['Me falta información','La información que conozco se contradice','La pregunta es ambigua'],0);
+function f2(x){return x.toFixed(2).replace('.',',');}
+function read(T,I,F){var s='';if(T>=0.75&&F>=0.75)s+=' <b>Ambivalencia:</b> mucho a favor y mucho en contra a la vez.';if(I>=0.5)s+=' <b>Indeterminación alta:</b> conviene preguntar el motivo.';return s;}
+function update(){
+var t=+document.getElementById('f1t').value,i=+document.getElementById('f1i').value,f=+document.getElementById('f1f').value;
+document.getElementById('f1tv').textContent=t;document.getElementById('f1iv').textContent=i;document.getElementById('f1fv').textContent=f;
+var T=t/4,I=i/4,F=f/4,L=val('f1lik')+1;
+document.getElementById('f1out').innerHTML='Clásica: <b>'+L+'</b> · Tripleta: <b>T '+f2(T)+' · I '+f2(I)+' · F '+f2(F)+'</b> · Puntaje T − F = <b>'+f2(T-F)+'</b>.'+read(T,I,F)+(L===3?' Su «3» clásico esconde esta tripleta.':'');
+var a=val('f2a')/4,b=val('f2b')/4,c=1-val('f2c')/4;
+document.getElementById('f2out').innerHTML='<b>T '+f2(a)+' · I '+f2(c)+' · F '+f2(b)+'</b> · Puntaje T − F = <b>'+f2(a-b)+'</b>.'+read(a,c,b);
+var v=val('f3'),w=val('f3why');
+document.getElementById('f3out').innerHTML=v===5?'Respuesta: <b>No sé</b> → sale de la media y cuenta como I, de tipo <b>'+['falta de información','conflicto','pregunta ambigua'][w]+'</b>.':'Respuesta: <b>'+(v+1)+'</b> → entra en la media clásica.'+(v===2?' Ojo: un 3 puede ser indiferencia; el «No sé» ya no se confunde con él.':'');
+dem();}
+var fac=['P','F','D'],pairs=[];
+(function(){var tb=document.getElementById('dm');var h='<tr><th>Influye →</th>';fac.forEach(function(c){h+='<th>'+c+'</th>';});h+='</tr>';
+var dflt={'P-F':'2','P-D':'1','F-P':'1','F-D':'3','D-P':'ns','D-F':'2'};
+fac.forEach(function(r){h+='<tr><th>'+r+'</th>';fac.forEach(function(c){if(r===c){h+='<td>—</td>';}else{var id=r+'-'+c;pairs.push(id);h+='<td><select id="s'+id+'">';['0','1','2','3','4','ns'].forEach(function(o){h+='<option value="'+o+'"'+(dflt[id]===o?' selected':'')+'>'+(o==='ns'?'No sé':o)+'</option>';});h+='</select></td>';}});h+='</tr>';});
+tb.innerHTML=h;pairs.forEach(function(p){document.getElementById('s'+p).addEventListener('change',update);});})();
+var others=[{'P-F':3,'P-D':2,'F-P':0,'F-D':'ns','D-P':1,'D-F':1},{'P-F':4,'P-D':'ns','F-P':1,'F-D':4,'D-P':'ns','D-F':2}];
+function inv(m){var n=m.length,a=m.map(function(r,i){return r.concat(m.map(function(_,j){return i===j?1:0;}));});for(var i=0;i<n;i++){var p=a[i][i];for(var j=0;j<2*n;j++)a[i][j]/=p;for(var k=0;k<n;k++)if(k!==i){var q=a[k][i];for(var j2=0;j2<2*n;j2++)a[k][j2]-=q*a[i][j2];}}return a.map(function(r){return r.slice(n);});}
+function mul(A,B){return A.map(function(r){return B[0].map(function(_,j){return r.reduce(function(s,x,k){return s+x*B[k][j];},0);});});}
+function dematel(Z){var n=Z.length,rs=Z.map(function(r){return r.reduce(function(a,b){return a+b;},0);}),cs=Z[0].map(function(_,j){return Z.reduce(function(a,r){return a+r[j];},0);});var s=Math.max(Math.max.apply(null,rs),Math.max.apply(null,cs))||1;var N=Z.map(function(r){return r.map(function(x){return x/s;});});var IN=N.map(function(r,i){return r.map(function(x,j){return (i===j?1:0)-x;});});var T=mul(N,inv(IN));var D=T.map(function(r){return r.reduce(function(a,b){return a+b;},0);}),R=T[0].map(function(_,j){return T.reduce(function(a,r){return a+r[j];},0);});return {D:D,R:R};}
+function dem(){var me={};pairs.forEach(function(p){var v=document.getElementById('s'+p).value;me[p]=v==='ns'?'ns':+v;});var all=[me].concat(others);
+var Zc=fac.map(function(r){return fac.map(function(c){if(r===c)return 0;var k=r+'-'+c;return all.reduce(function(s,e){return s+(e[k]==='ns'?0:e[k]);},0)/all.length;});});
+var Ii={},Zn=fac.map(function(r){return fac.map(function(c){if(r===c)return 0;var k=r+'-'+c;var v=all.filter(function(e){return e[k]!=='ns';}).map(function(e){return e[k];});Ii[k]=(all.length-v.length)/all.length;return v.length?v.reduce(function(a,b){return a+b;},0)/v.length:0;});});
+var c=dematel(Zc),n=dematel(Zn);
+var h='<table><tr><th>Factor</th><th>D − R clásica</th><th>Rol</th><th>D − R neutrosófica</th><th>Rol</th></tr>';
+fac.forEach(function(f,i){var a=c.D[i]-c.R[i],b=n.D[i]-n.R[i];h+='<tr><td>'+f+'</td><td>'+f2(a)+'</td><td>'+(a>0?'causa':'efecto')+'</td><td>'+f2(b)+'</td><td>'+(b>0?'causa':'efecto')+'</td></tr>';});
+h+='</table><p style="margin-top:8px">I por relación (proporción de «No sé»): '+pairs.map(function(p){return p.replace('-','→')+' '+f2(Ii[p]);}).join(' · ')+'</p>';
+document.getElementById('dmout').innerHTML=h;}
+update();
+</script>
+</body>
+</html>
